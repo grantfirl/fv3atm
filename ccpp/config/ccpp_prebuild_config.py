@@ -101,6 +101,7 @@ SCHEME_FILES_DEPENDENCIES = [
     'FV3/ccpp/physics/physics/module_SF_JSFC.F90',
     'FV3/ccpp/physics/physics/module_BL_MYJPBL.F90',
     'FV3/ccpp/physics/physics/module_sf_noahlsm.F90',
+    'FV3/ccpp/physics/physics/module_sf_noahlsm_glacial_only.F90',
     'FV3/ccpp/physics/physics/module_sf_noahmp_glacier.f90',
     'FV3/ccpp/physics/physics/module_sf_noahmplsm.f90',
     'FV3/ccpp/physics/physics/cires_ugwp_module.F90',
