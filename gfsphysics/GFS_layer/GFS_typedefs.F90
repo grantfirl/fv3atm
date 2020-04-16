@@ -278,7 +278,6 @@ module GFS_typedefs
     real (kind=kind_phys), pointer :: slc    (:,:) => null()  !< liquid soil moisture
     real (kind=kind_phys), pointer :: smc    (:,:) => null()  !< total soil moisture
     real (kind=kind_phys), pointer :: stc    (:,:) => null()  !< soil temperature
-    real (kind=kind_phys), pointer :: sthick (:)   => null()  !< soil layer thickness (m)
 
 !--- Out
     real (kind=kind_phys), pointer :: t2m    (:)   => null()  !< 2 meter temperature
@@ -1875,6 +1874,7 @@ module GFS_typedefs
     real (kind=kind_phys), pointer      :: soilm_in_m(:)      => null()  !<
     integer, pointer                    :: soiltype(:)        => null()  !<
     real (kind=kind_phys), pointer      :: stc_save(:,:)      => null()  !<
+    real (kind=kind_phys), pointer      :: sthick (:)         => null()  !<
     real (kind=kind_phys), pointer      :: stress(:)          => null()  !<
     real (kind=kind_phys), pointer      :: stress_ice(:)      => null()  !<
     real (kind=kind_phys), pointer      :: stress_land(:)     => null()  !<
@@ -2200,7 +2200,6 @@ module GFS_typedefs
     allocate (Sfcprop%slc    (IM,Model%lsoil))
     allocate (Sfcprop%smc    (IM,Model%lsoil))
     allocate (Sfcprop%stc    (IM,Model%lsoil))
-    allocate (Sfcprop%sthick (Model%lsoil))
 
     Sfcprop%hice   = clear_val
     Sfcprop%weasd  = clear_val
@@ -2214,7 +2213,6 @@ module GFS_typedefs
     Sfcprop%slc    = clear_val
     Sfcprop%smc    = clear_val
     Sfcprop%stc    = clear_val
-    Sfcprop%sthick = clear_val
 
 !--- Out
     allocate (Sfcprop%t2m (IM))
@@ -6151,6 +6149,7 @@ module GFS_typedefs
        allocate (Interstitial%snohf_snowmelt  (IM))
        allocate (Interstitial%soilm_in_m      (IM))
        allocate (Interstitial%stc_save        (IM,Model%lsoil))
+       allocate (Interstitial%sthick          (Model%lsoil))
        allocate (Interstitial%th1             (IM))
        allocate (Interstitial%tprcp_rate_land (IM))
        allocate (Interstitial%tsfc_land_save  (IM))
@@ -6696,6 +6695,7 @@ module GFS_typedefs
        Interstitial%snohf_snowmelt  = clear_val
        Interstitial%soilm_in_m      = clear_val
        Interstitial%stc_save        = clear_val
+       Interstitial%sthick          = clear_val
        Interstitial%th1             = clear_val
        Interstitial%tprcp_rate_land = huge
        Interstitial%tsfc_land_save  = huge
@@ -7068,6 +7068,7 @@ module GFS_typedefs
        write (0,*) 'sum(Interstitial%snohf_frzgra    ) = ', sum(Interstitial%snohf_frzgra    )
        write (0,*) 'sum(Interstitial%snohf_snowmelt  ) = ', sum(Interstitial%snohf_snowmelt  )
        write (0,*) 'sum(Interstitial%soilm_in_m      ) = ', sum(Interstitial%soilm_in_m      )
+       write (0,*) 'sum(Interstitial%sthick          ) = ', sum(Interstitial%sthick          )
        write (0,*) 'sum(Interstitial%th1             ) = ', sum(Interstitial%th1             )
        write (0,*) 'sum(Interstitial%tprcp_rate_land ) = ', sum(Interstitial%tprcp_rate_land )
        write (0,*) 'sum(Interstitial%tsfc_land_save  ) = ', sum(Interstitial%tsfc_land_save  )
