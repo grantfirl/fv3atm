@@ -724,6 +724,7 @@ module GFS_typedefs
     integer              :: lsm_noah=1      !< flag for NOAH land surface model
     integer              :: lsm_noahmp=2    !< flag for NOAH land surface model
     integer              :: lsm_ruc=3       !< flag for RUC land surface model
+    integer              :: lsm_noah_wrfv4 = 4 !< flag for NOAH land surface from WRF v4.0
     integer              :: lsoil           !< number of soil layers
 #ifdef CCPP
     integer              :: lsoil_lsm       !< number of soil layers internal to land surface model

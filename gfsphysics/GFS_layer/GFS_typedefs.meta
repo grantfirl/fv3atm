@@ -2636,6 +2636,12 @@
   units = flag
   dimensions = ()
   type = integer
+[lsm_noah_wrfv4]
+  standard_name = flag_for_noah_wrfv4_land_surface_scheme
+  long_name = flag for NOAH WRFv4 land surface model
+  units = flag
+  dimensions = ()
+  type = integer
 [lsoil]
   standard_name = soil_vertical_dimension
   long_name = number of soil layers
