@@ -148,6 +148,7 @@ SCHEME_FILES_DEPENDENCIES = [
     'FV3/ccpp/physics/physics/namelist_soilveg_ruc.F90',
     'FV3/ccpp/physics/physics/set_soilveg_ruc.F90',
     'FV3/ccpp/physics/physics/module_soil_pre.F90',
+    'FV3/ccpp/physics/physics/module_sf_exchcoef.f90',
     # derived data type definitions
     'FV3/gfsphysics/GFS_layer/GFS_typedefs.F90',
     'FV3/gfsphysics/CCPP_layer/CCPP_typedefs.F90',
@@ -189,6 +190,7 @@ SCHEME_FILES = {
     'FV3/ccpp/physics/physics/get_prs_fv3.F90'                   : [ 'slow_physics' ],
     'FV3/ccpp/physics/physics/gfdl_cloud_microphys.F90'          : [ 'slow_physics' ],
     'FV3/ccpp/physics/physics/gfdl_fv_sat_adj.F90'               : [ 'fast_physics' ],
+    'FV3/ccpp/physics/physics/gfdl_sfc_layer.F90'                : [ 'slow_physics' ],
     'FV3/ccpp/physics/physics/gscond.f'                          : [ 'slow_physics' ],
     'FV3/ccpp/physics/physics/gwdc.f'                            : [ 'slow_physics' ],
     'FV3/ccpp/physics/physics/gwdps.f'                           : [ 'slow_physics' ],

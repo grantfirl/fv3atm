@@ -771,6 +771,14 @@ module GFS_typedefs
 
     logical              :: use_ufo         !< flag for gcycle surface option
 
+#ifdef CCPP    
+    ! GFDL Surface Layer options
+    logical              :: lcurr_sf  !flag for taking ocean currents into account in GFDL surface layer
+    logical              :: pert_cd   !flag for perturbing the surface drag coefficient for momentum in surface layer scheme (1 = True)
+    integer              :: ntsflg    !flag for updating skin temperature in the GFDL surface layer scheme
+    real(kind=kind_phys) :: sfenth    !enthalpy flux factor 0 zot via charnock ..>0 zot enhanced>15m/s
+#endif
+    
 !--- tuning parameters for physical parameterizations
     logical              :: ras             !< flag for ras convection scheme
     logical              :: flipv           !< flag for vertical direction flip (ras)
@@ -2943,6 +2951,13 @@ module GFS_typedefs
 
     logical              :: use_ufo        = .false.         !< flag for gcycle surface option
 
+#ifdef CCPP
+    logical              :: lcurr_sf       = .false.                  !< flag for taking ocean currents into account in GFDL surface layer
+    logical              :: pert_cd        = .false.                  !< flag for perturbing the surface drag coefficient for momentum in surface layer scheme
+    integer              :: ntsflg         = 0                        !< flag for updating skin temperature in the GFDL surface layer scheme
+    real(kind=kind_phys) :: sfenth         = 0.0                      !< enthalpy flux factor 0 zot via charnock ..>0 zot enhanced>15m/s
+#endif
+    
 !--- tuning parameters for physical parameterizations
     logical              :: ras            = .false.                  !< flag for ras convection scheme
     logical              :: flipv          = .true.                   !< flag for vertical direction flip (ras)
@@ -3222,6 +3237,10 @@ module GFS_typedefs
                           !    Noah MP options
                                iopt_dveg,iopt_crs,iopt_btr,iopt_run,iopt_sfc, iopt_frz,     &
                                iopt_inf, iopt_rad,iopt_alb,iopt_snf,iopt_tbot,iopt_stc,     &
+#ifdef CCPP
+                          !    GFDL surface layer options
+                               lcurr_sf, pert_cd, ntsflg, sfenth,                           &
+#endif
                           !--- physical parameterizations
                                ras, trans_trac, old_monin, cnvgwd, mstrat, moist_adj,       &
                                cscnv, cal_pre, do_aw, do_shoc, shocaftcnv, shoc_cld,        &
@@ -3556,6 +3575,14 @@ module GFS_typedefs
     Model%isot             = isot
     Model%use_ufo          = use_ufo
 
+#ifdef CCPP
+! GFDL surface layer options
+    Model%lcurr_sf         = lcurr_sf
+    Model%pert_cd          = pert_cd
+    Model%ntsflg           = ntsflg
+    Model%sfenth           = sfenth
+#endif
+    
 ! Noah MP options from namelist
 !
     Model%iopt_dveg        = iopt_dveg
@@ -4667,6 +4694,12 @@ module GFS_typedefs
         print *, ' iopt_stc          : ', Model%iopt_stc
       endif
       print *, ' use_ufo           : ', Model%use_ufo
+#ifdef CCPP
+      print *, ' lcurr_sf          : ', Model%lcurr_sf
+      print *, ' pert_cd           : ', Model%pert_cd
+      print *, ' ntsflg            : ', Model%ntsflg
+      print *, ' sfenth            : ', Model%sfenth
+#endif
       print *, ' '
       print *, 'tuning parameters for physical parameterizations'
       print *, ' ras               : ', Model%ras
