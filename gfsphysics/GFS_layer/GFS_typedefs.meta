@@ -592,6 +592,7 @@
   dimensions = (horizontal_loop_extent)
   type = real
   kind = kind_phys
+  active = (do_myjsfc .or. do_myjpbl .or. (flag_for_land_surface_scheme == flag_for_noah_wrfv4_land_surface_scheme))
 [semisbase]
   standard_name = baseline_surface_longwave_emissivity
   long_name = baseline surface lw emissivity in fraction
@@ -2617,7 +2618,7 @@
   units = none
   dimensions =  ()
   type = character
-  kind = len=128 
+  kind = len=128
 [nGases]
   standard_name = number_of_active_gases_used_by_RRTMGP
   long_name = number of gases available used by RRTMGP (Model%nGases)
@@ -6368,6 +6369,7 @@
   dimensions = (horizontal_loop_extent,vertical_dimension)
   type = real
   kind = kind_phys
+  active = (flag_diagnostics_3D)
 [dv3dt(:,:,5)]
   standard_name = cumulative_change_in_y_wind_due_to_rayleigh_damping
   long_name = cumulative change in y wind due to Rayleigh damping
