@@ -850,7 +850,45 @@ module GFS_typedefs
 
     !--- Thompson,GFDL mp parameter
     logical              :: lrefres          !< flag for radar reflectivity in restart file
-
+    
+    !--- Tiedtke prognostic cloud scheme parameters
+    real(kind=kind_phys) :: u00
+    logical              :: u00_profile
+    real(kind=kind_phpys):: eros_scale
+    logical              :: eros_choice
+    real(kind=kind_phys) :: eros_scale_c
+    real(kind=kind_phys) :: eros_scale_t
+    real(kind=kind_phys) :: mc_thresh
+    real(kind=kind_phys) :: diff_thresh
+    real(kind=kidn_phys) :: efact
+    logical              :: add_ahuco
+    logical              :: use_qabar
+    logical              :: rk_repartition_first
+    logical              :: do_aero_eros
+    real(kind=kind_phys) :: ae_lb
+    real(kind=kind_phys) :: ae_ub
+    real(kind=kind_phys) :: ae_N_lb
+    real(kind=kind_phys) :: ae_N_ub
+    logical              :: include_neg_mc
+    logical              :: single_gaussian_pdf
+    real(kind=kind_phys) :: qmin
+    real(kind=kind_phys) :: qcvar !GJF: can probably combine with mg_qcvar
+    logical              :: limit_conv_cloud_frac
+    real(kind=kind_phys) :: dmin
+    real(kind=kind_phys) :: cfact
+    integer              :: super_ice_opt
+    !logical              :: do_pdf_clouds  !GJF: use pdfcld
+    integer              :: betaP
+    real(kind=kind_phys) :: qthalfwidth
+    integer              :: nsublevels
+    integer              :: kmap
+    integer              :: kord
+    logical              :: pdf_org
+    real(kind=kind_phys) :: dtcloud, inv_dtcloud
+    logical              :: do_rk_microphys
+    logical              :: total_activation
+    
+    
     !--- land/surface model parameters
     integer              :: lsm             !< flag for land surface model lsm=1 for noah lsm
     integer              :: lsm_noah=1      !< flag for NOAH land surface model
@@ -3243,7 +3281,44 @@ module GFS_typedefs
 
     !--- Thompson,GFDL microphysical parameter
     logical              :: lrefres        = .false.            !< flag for radar reflectivity in restart file
-
+    
+    !--- Tiedtke prognostic cloud scheme parameters
+    !GJF default values of u00 through single_gaussian_pdf come from tiedtke_macro module in AM4
+    real(kind=kind_phys) :: u00                  = 0.80
+    logical              :: u00_profile          = .true.
+    real(kind=kind_phpys):: eros_scale           = 1.E-06
+    logical              :: eros_choice          = .false.
+    real(kind=kind_phys) :: eros_scale_c         = 8.E-06
+    real(kind=kind_phys) :: eros_scale_t         = 5.E-05
+    real(kind=kind_phys) :: mc_thresh            = 0.001
+    real(kind=kind_phys) :: diff_thresh          = 0.1
+    real(kind=kidn_phys) :: efact                = 0.0
+    logical              :: add_ahuco            = .true.
+    logical              :: use_qabar            = .true.
+    logical              :: rk_repartition_first = .false.
+    logical              :: do_aero_eros         = .false.
+    real(kind=kind_phys) :: ae_lb                = 0.8
+    real(kind=kind_phys) :: ae_ub                = 1.2
+    real(kind=kind_phys) :: ae_N_lb              = 0.0
+    real(kind=kind_phys) :: ae_N_ub              = 150.0
+    logical              :: include_neg_mc       = .false.
+    logical              :: single_gaussian_pdf  = .false.
+    real(kind=kind_phys) :: qmin                 = 1.0e-10 !from physics_driver.F90 in AM4
+    real(kind=kind_phys) :: qcvar                = 1.0 !GJF: can probably combine with mg_qcvar; from physics_driver.F90 in AM4
+    logical              :: limit_conv_cloud_frac= .false. !from moist_processes.F90 in AM4
+    real(kind=kind_phys) :: dmin                 = 1.0e-7 !from lscloud_driver.F90 in AM4
+    real(kind=kind_phys) :: cfact                = 1.0 !from lscloud_driver.F90 in AM4
+    integer              :: super_ice_opt        = 0 !from lscloud_driver.F90 in AM4
+    !logical              :: do_pdf_clouds        = .false. !GJF: use pdfcld; default value from lscloud_driver.F90
+    integer              :: betaP                = 5 !from lscloud_driver.F90 in AM4
+    real(kind=kind_phys) :: qthalfwidth          = 0.1 !from lscloud_driver.F90 in AM4
+    integer              :: nsublevels           = 1 !from lscloud_driver.F90 in AM4
+    integer              :: kmap                 = 1 !from lscloud_driver.F90 in AM4
+    integer              :: kord                 = 7 !from lscloud_driver.F90 in AM4
+    logical              :: pdf_org              = .true. !from lscloud_driver.F90 in AM4
+    logical              :: do_rk_microphys      = .false. !(check) from lscloud_driver.F90 in AM4
+    logical              :: total_activation     = .false. !(check) from lscloud_driver.F90 in AM4
+    
     !--- land/surface model parameters
     integer              :: lsm            =  1              !< flag for land surface model to use =0  for osu lsm; =1  for noah lsm; =2  for noah mp lsm; =3  for RUC lsm
     integer              :: lsoil          =  4              !< number of soil layers
@@ -4109,6 +4184,41 @@ module GFS_typedefs
     Model%lgfdlmprad       = lgfdlmprad
 !--- Thompson,GFDL MP parameter
     Model%lrefres          = lrefres
+
+!---- Tiedtke prognostic cloud parameters
+    Model%u00                   = u00
+    Model%u00_profile           = u00_profile
+    Model%eros_scale            = eros_scale
+    Model%eros_choice           = eros_choice
+    Model%eros_scale_c          = eros_scale_c
+    Model%eros_scale_t          = eros_scale_t
+    Model%mc_thresh             = mc_thresh
+    Model%diff_thresh           = diff_thresh
+    Model%efact                 = efact
+    Model%add_ahuco             = add_ahuco
+    Model%use_qabar             = use_qabar
+    Model%rk_repartition_first  = rk_repartition_first
+    Model%do_aero_eros          = do_aero_eros
+    Model%ae_lb                 = ae_lb
+    Model%ae_ub                 = ae_ub
+    Model%ae_N_lb               = ae_N_lb
+    Model%ae_N_ub               = ae_N_ub
+    Model%include_neg_mc        = include_neg_mc
+    Model%single_gaussian_pdf   = single_gaussian_pdf
+    Model%qmin                  = qmin
+    Model%qcvar                 = qcvar
+    Model%limit_conv_cloud_frac = limit_conv_cloud_frac
+    Model%dmin                  = dmin
+    Model%cfact                 = cfact
+    Model%super_ice_opt         = super_ice_opt
+    Model%betaP                 = betaP
+    Model%qthalfwidth           = qthalfwidth
+    Model%nsublevels            = nsublevels
+    Model%kmap                  = kmap
+    Model%kord                  = kord
+    Model%pdf_org               = pdf_org
+    Model%do_rk_microphys       = do_rk_microphys
+    Model%total_activation      = total_activation
 
 !--- land/surface model parameters
     Model%lsm              = lsm
