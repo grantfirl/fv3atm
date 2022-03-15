@@ -3600,6 +3600,210 @@
   units = flag
   dimensions = ()
   type = logical
+[u00]
+  standard_name =
+  long_name =
+  units = 
+  dimensions = ()
+  type =
+[u00_profile]
+  standard_name =
+  long_name =
+  units = 
+  dimensions = ()
+  type =
+[eros_scale]
+  standard_name =
+  long_name =
+  units = 
+  dimensions = ()
+  type =
+[eros_choice]
+  standard_name =
+  long_name =
+  units = 
+  dimensions = ()
+  type =
+[eros_scale_c]
+  standard_name =
+  long_name =
+  units = 
+  dimensions = ()
+  type =
+[eros_scale_t]
+  standard_name =
+  long_name =
+  units = 
+  dimensions = ()
+  type =
+[mc_thresh]
+  standard_name =
+  long_name =
+  units = 
+  dimensions = ()
+  type =
+[diff_thresh]
+  standard_name =
+  long_name =
+  units = 
+  dimensions = ()
+  type =
+[efact]
+  standard_name =
+  long_name =
+  units = 
+  dimensions = ()
+  type =
+[add_ahuco]
+  standard_name =
+  long_name =
+  units = 
+  dimensions = ()
+  type =
+[use_qabar]
+  standard_name =
+  long_name =
+  units = 
+  dimensions = ()
+  type =
+[rk_repartition_first]
+  standard_name =
+  long_name =
+  units = 
+  dimensions = ()
+  type =
+[do_aero_eros]
+  standard_name =
+  long_name =
+  units = 
+  dimensions = ()
+  type =
+[do_aero_eros]
+  standard_name =
+  long_name =
+  units = 
+  dimensions = ()
+  type =
+[ae_lb]
+  standard_name =
+  long_name =
+  units = 
+  dimensions = ()
+  type =
+[ae_ub]
+  standard_name =
+  long_name =
+  units = 
+  dimensions = ()
+  type =
+[ae_N_lb]
+  standard_name =
+  long_name =
+  units = 
+  dimensions = ()
+  type =
+[ae_N_ub]
+  standard_name =
+  long_name =
+  units = 
+  dimensions = ()
+  type =
+[include_neg_mc]
+  standard_name =
+  long_name =
+  units = 
+  dimensions = ()
+  type =
+[single_gaussian_pdf]
+  standard_name =
+  long_name =
+  units = 
+  dimensions = ()
+  type =
+[qmin]
+  standard_name =
+  long_name =
+  units = 
+  dimensions = ()
+  type =  
+[qcvar]
+  standard_name =
+  long_name =
+  units = 
+  dimensions = ()
+  type =
+[limit_conv_cloud_frac]
+  standard_name =
+  long_name =
+  units = 
+  dimensions = ()
+  type =
+[dmin]
+  standard_name =
+  long_name =
+  units = 
+  dimensions = ()
+  type =
+[cfact]
+  standard_name =
+  long_name =
+  units = 
+  dimensions = ()
+  type =
+[super_ice_opt]
+  standard_name =
+  long_name =
+  units = 
+  dimensions = ()
+  type =
+[betaP]
+  standard_name =
+  long_name =
+  units = 
+  dimensions = ()
+  type =
+[qthalfwidth]
+  standard_name =
+  long_name =
+  units = 
+  dimensions = ()
+  type =
+[nsublevels]
+  standard_name =
+  long_name =
+  units = 
+  dimensions = ()
+  type =
+[kmap]
+  standard_name =
+  long_name =
+  units = 
+  dimensions = ()
+  type =
+[kord]
+  standard_name =
+  long_name =
+  units = 
+  dimensions = ()
+  type =
+[pdf_org]
+  standard_name =
+  long_name =
+  units = 
+  dimensions = ()
+  type =
+[do_rk_microphys]
+  standard_name =
+  long_name =
+  units = 
+  dimensions = ()
+  type =
+[total_activation]
+  standard_name =
+  long_name =
+  units = 
+  dimensions = ()
+  type =
 [lsm]
   standard_name = control_for_land_surface_scheme
   long_name = flag for land surface model
