@@ -891,6 +891,7 @@ module GFS_typedefs
     
     !--- Tiedtke prognostic cloud scheme parameters
     !real(kind=kind_phys) :: u00 !GJF: use rhgrd that already exists for FA scheme
+    logical              :: tiedtke_prog_clouds
     logical              :: u00_profile
     real(kind=kind_phys) :: eros_scale
     logical              :: eros_choice
@@ -3075,6 +3076,7 @@ module GFS_typedefs
     !--- Tiedtke prognostic cloud scheme parameters
     !GJF default values of u00 through single_gaussian_pdf come from tiedtke_macro module in AM4
     !real(kind=kind_phys) :: u00                  = 0.80
+    logical              :: tiedtke_prog_clouds  = .false.
     logical              :: u00_profile          = .true.
     real(kind=kind_phpys):: eros_scale           = 1.E-06
     logical              :: eros_choice          = .false.
@@ -4049,6 +4051,7 @@ module GFS_typedefs
 
 !---- Tiedtke prognostic cloud parameters
     !Model%u00                   = u00
+    Model%tiedtke_prog_clouds   = tiedtke_prog_clouds
     Model%u00_profile           = u00_profile
     Model%eros_scale            = eros_scale
     Model%eros_choice           = eros_choice

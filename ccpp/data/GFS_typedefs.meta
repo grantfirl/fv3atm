@@ -4004,6 +4004,12 @@
   units = flag
   dimensions = ()
   type = logical
+[tiedtke_prog_clouds]
+  standard_name = do_tiedtke_prognostic_clouds
+  long_name = flag for tiedtke prognostic cloud scheme
+  units = flag
+  dimensions = ()
+  type = logical
 [u00_profile]
   standard_name = do_ecmwf_profile_of_relative_humidity_threshold_for_condensation
   long_name = flag to activate the ECMWF profile of relative humidity threshold for large scale condensation
