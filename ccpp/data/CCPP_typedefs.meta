@@ -2259,6 +2259,20 @@
   units = count
   dimensions = ()
   type = integer
+[U_ca]
+  standard_name = relative_humidity_outside_convective_clouds
+  long_name = relative humidity outside of convective cloud portion of grid box
+  units = frac
+  dimensions = (horizontal_loop_extent, vertical_layer_dimension)
+  type = real
+  kind = kind_phys
+[U01]
+  standard_name = maximum_nonconvective_cloud_area_fraction
+  long_name = maximum portion of nonconvective grid box area that can be cloudy while maintaining grid-box-mean relative humidity
+  units = frac
+  dimensions = (horizontal_loop_extent, vertical_layer_dimension)
+  type = real
+  kind = kind_phys
 [uustar_water]
   standard_name = surface_friction_velocity_over_water
   long_name = surface friction velocity over water

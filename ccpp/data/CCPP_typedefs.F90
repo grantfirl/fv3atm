@@ -324,6 +324,8 @@ module CCPP_typedefs
     real (kind=kind_phys), pointer      :: tsurf_ice(:)       => null()  !<
     real (kind=kind_phys), pointer      :: tsurf_land(:)      => null()  !<
     real (kind=kind_phys), pointer      :: tsurf_water(:)     => null()  !<
+    real (kind=kind_phys), pointer      :: U_ca(:,:)          => null()
+    real (kind=kind_phys), pointer      :: U01(:,:)           => null()
     real (kind=kind_phys), pointer      :: ud_mf(:,:)         => null()  !<
     real (kind=kind_phys), pointer      :: uustar_ice(:)      => null()  !<
     real (kind=kind_phys), pointer      :: uustar_land(:)     => null()  !<
@@ -1012,6 +1014,8 @@ contains
       allocate (Interstitial%rhc_min       (IM,Model%levs))
       allocate (Interstitial%sa            (IM,Model%levs))
       allocate (Interstitial%sq            (IM,Model%levs))
+      allocate (Interstitial%U_ca          (IM,Model%levs))
+      allocate (Interstitial%U01           (IM,Model%levs))
     end if
     
     !
@@ -1667,6 +1671,8 @@ contains
       Interstitial%rhc_min   = clear_val
       Interstitial%sa        = clear_val
       Interstitial%sq        = clear_val
+      Interstitial%U_ca      = clear_val
+      Interstitial%U01       = clear_val
     end if
     !
   end subroutine gfs_interstitial_phys_reset
