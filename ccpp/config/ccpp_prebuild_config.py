@@ -211,6 +211,9 @@ SCHEME_FILES = [
     'physics/physics/sfc_nst_post.f',
     'physics/physics/sfc_ocean.F',
     'physics/physics/sfc_sice.f',
+    'physics/physics/tiedtke_prog_clouds_pre.F90',
+    'physics/physics/tiedtke_prog_clouds.F90',
+    'physics/physics/tiedtke_prog_clouds_post.F90',
     # HAFS FER_HIRES
     'physics/physics/mp_fer_hires.F90',
     # SMOKE
