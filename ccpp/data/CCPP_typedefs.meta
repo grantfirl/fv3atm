@@ -647,22 +647,6 @@
   type = real
   kind = kind_phys
   active = (do_tiedtke_prognostic_clouds)
-[drop1]
-  standard_name = volume_number_concentration_of_cloud_liquid_water_particles_in_air_of_new_state
-  long_name = number concentration of cloud droplets updated by physics
-  units = cm-3
-  dimensions = (horizontal_loop_extent,vertical_layer_dimension)
-  type = real
-  kind = kind_phys
-  active = (do_tiedtke_prognostic_clouds)
-[drop1]
-  standard_name = volume_number_concentration_of_cloud_liquid_water_particles_in_air_of_new_state
-  long_name = number concentration of cloud droplets updated by physics
-  units = cm-3
-  dimensions = (horizontal_loop_extent,vertical_layer_dimension)
-  type = real
-  kind = kind_phys
-  active = (do_tiedtke_prognostic_clouds)
 [dtdt]
   standard_name = process_split_cumulative_tendency_of_air_temperature
   long_name = air temperature tendency due to model physics
