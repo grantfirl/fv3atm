@@ -3196,21 +3196,21 @@
   dimensions = ()
   type = integer
 [iaermdl]
-  standard_name = flag_for_aerosol_radiation_scheme
-  long_name = flag for aerosol scheme to use in radiation
-  units = flag
+  standard_name = control_for_aerosol_radiation_scheme
+  long_name = control of aerosol scheme in radiation
+  units = 1
   dimensions = ()
   type = integer
 [iaerflg]
-  standard_name = flag_for_aerosol_effects_in_radiation
-  long_name = flag for aerosol effects to include in radiation
-  units = flag
+  standard_name = control_for_aerosol_effects_in_radiation
+  long_name = control of aerosol effects in radiation
+  units = 1
   dimensions = ()
   type = integer
 [lalw1bd]
-  standard_name = flag_for_longwave_aerosol_band_properties
-  long_name = flag for band or multiband longwave aerosol properties
-  units = flag
+  standard_name = do_longwave_aerosol_band_properties
+  long_name = control of band or multiband longwave aerosol properties
+  units = 1
   dimensions = ()
   type = logical
 [aeros_file]
@@ -3317,9 +3317,9 @@
   dimensions = ()
   type = integer
 [iswmode]
-  standard_name = flag_for_sw_scattering_choice
-  long_name = flag for rrtmg shortwave scattering choice
-  units = flag
+  standard_name = control_for_sw_scattering_choice
+  long_name = control of rrtmg shortwave scattering choice
+  units = 1
   dimensions = ()
   type = integer
 [lcrick]
@@ -3341,9 +3341,9 @@
   dimensions = ()
   type = logical
 [rad_hr_units]
-  standard_name = flag_for_radiation_heating_rate_units
-  long_name = flag to control heating rate units
-  units = count
+  standard_name = control_for_radiation_heating_rate_units
+  long_name = control of heating rate units
+  units = 1
   dimensions =  ()
   type = integer
 [inc_minor_gas]
@@ -3355,13 +3355,13 @@
 [ipsd0]
   standard_name = initial_seed_for_mcica
   long_name = initial permutaion seed for mcica radiation
-  units = none
+  units = 1
   dimensions =  ()
   type = integer
 [ipsdlim]
   standard_name = limit_for_initial_seed_for_mcica
   long_name = limit for initial permutaion seed for mcica radiation
-  units = none
+  units = 1
   dimensions =  ()
   type = integer
 [lwhtr]
