@@ -925,7 +925,7 @@ module GFS_typedefs
     integer              :: lsnow_lsm       !< maximum number of snow layers internal to land surface model
     integer              :: lsnow_lsm_lbound!< lower bound for snow arrays, depending on lsnow_lsm
     integer              :: lsnow_lsm_ubound!< upper bound for snow arrays, depending on lsnow_lsm
-    logical              :: vrbliceden_noah !< flag for variable precip ice density for NOAH LSM
+    logical              :: exticeden       !< flag for external precip ice density (e.g. calculated after microphysics rather than inside LSM)
     real(kind=kind_phys), pointer :: zs(:)    => null() !< depth of soil levels for land surface model
     real(kind=kind_phys), pointer :: dzs(:)   => null() !< thickness of soil levels for land surface model
     real(kind=kind_phys), pointer :: pores(:) => null() !< max soil moisture for a given soil type for land surface model
@@ -3124,7 +3124,7 @@ module GFS_typedefs
     integer              :: lsoil          =  4              !< number of soil layers
     integer              :: lsoil_lsm      =  -1             !< number of soil layers internal to land surface model; -1 use lsoil
     integer              :: lsnow_lsm      =  3              !< maximum number of snow layers internal to land surface model
-    logical              :: vrbliceden_noah = .false.        !< Use variable precip ice density for NOAH LSM if true or original formulation
+    logical              :: exticeden      = .false.         !< Use external precip ice density for LSM if true; use internal LSM formulation of false
     logical              :: rdlai          = .false.         !< read LAI from input file (for RUC LSM or NOAH LSM WRFv4)
     logical              :: ua_phys        = .false.         !< flag for using University of Arizona? extension to NOAH LSM WRFv4
     logical              :: usemonalb      = .true.          !< flag to read surface diffused shortwave albedo from input file for NOAH LSM WRFv4
@@ -3528,7 +3528,7 @@ module GFS_typedefs
                           !--- land/surface model control
                                lsm, lsoil, lsoil_lsm, lsnow_lsm, kice, rdlai,               &
                                nmtvr, ivegsrc, use_ufo, iopt_thcnd, ua_phys, usemonalb,     &
-                               aoasis, fasdas,vrbliceden_noah,                              &
+                               aoasis, fasdas, exticeden,                                   &
                           !    Noah MP options
                                iopt_dveg,iopt_crs,iopt_btr,iopt_run,iopt_sfc, iopt_frz,     &
                                iopt_inf, iopt_rad,iopt_alb,iopt_snf,iopt_tbot,iopt_stc,     &
@@ -4174,7 +4174,12 @@ module GFS_typedefs
     Model%ivegsrc          = ivegsrc
     Model%isot             = isot
     Model%use_ufo          = use_ufo
-    Model%vrbliceden_noah  = vrbliceden_noah
+    Model%exticeden        = exticeden
+    if (Model%exticeden .and. (imp_physics /= imp_physics_gfdl .and. imp_physics /= imp_physics_thompson .and. imp_physics /= imp_physics_nssl )) then
+      !see GFS_MP_generic_post.F90; exticeden is only compatible with GFDL, Thompson, or NSSL MP 
+      print *,' Using exticeden = T is only valid when using GFDL, Thompson, or NSSL microphysics.'
+      stop
+    end if
 
 ! GFDL surface layer options
     Model%lcurr_sf         = lcurr_sf
@@ -4196,7 +4201,11 @@ module GFS_typedefs
     Model%iopt_inf         = iopt_inf
     Model%iopt_rad         = iopt_rad
     Model%iopt_alb         = iopt_alb
-    Model%iopt_snf         = iopt_snf
+    if (Model%lsm==Model%lsm_noahmp .and. Model%exticeden .and. iopt_snf == 4) then
+       Model%iopt_snf         = 5
+    else
+      Model%iopt_snf         = iopt_snf
+    end if
     Model%iopt_tbot        = iopt_tbot
     Model%iopt_stc         = iopt_stc
     Model%iopt_trs         = iopt_trs
@@ -5065,7 +5074,7 @@ module GFS_typedefs
     if (Model%me == Model%master) then
       if (Model%lsm == 1) then
         print *,' NOAH Land Surface Model used'
-        print *,'vrbliceden_noah = ', Model%vrbliceden_noah
+        print *,'exticeden = ', Model%exticeden
 
       elseif (Model%lsm == 0) then
         print *,' OSU no longer supported - job aborted'
@@ -5924,7 +5933,7 @@ module GFS_typedefs
       print *, ' lsoil             : ', Model%lsoil
       print *, ' rdlai             : ', Model%rdlai
       print *, ' lsoil_lsm         : ', Model%lsoil_lsm
-      print *, ' vrbliceden_noah   : ', Model%vrbliceden_noah
+      print *, ' exticeden         : ', Model%exticeden
       if (Model%lsm==Model%lsm_noahmp) then
         print *, ' lsnow_lsm         : ', Model%lsnow_lsm
         print *, ' lsnow_lsm_lbound  : ', Model%lsnow_lsm_lbound
