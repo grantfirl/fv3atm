@@ -4176,7 +4176,7 @@ module GFS_typedefs
     Model%use_ufo          = use_ufo
     Model%exticeden        = exticeden
     if (Model%exticeden .and. &
-      (Model%imp_physics /= Model%imp_physics_gfdl .and. Model%imp_physics /= Model%imp_physics_thompson .and. 
+      (Model%imp_physics /= Model%imp_physics_gfdl .and. Model%imp_physics /= Model%imp_physics_thompson .and. &
        Model%imp_physics /= Model%imp_physics_nssl )) then
       !see GFS_MP_generic_post.F90; exticeden is only compatible with GFDL, Thompson, or NSSL MP 
       print *,' Using exticeden = T is only valid when using GFDL, Thompson, or NSSL microphysics.'
