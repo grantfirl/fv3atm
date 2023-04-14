@@ -19,6 +19,15 @@
 !
 !-----------------------------------------------------------------------
 !
+      type output_grid_info
+        integer :: im, jm, lm
+        integer :: i_start,i_end, j_start,j_end
+        real,dimension(:,:),allocatable  :: lonPtr, latPtr
+        integer,dimension(:),allocatable :: i_start_wrtgrp, i_end_wrtgrp, j_start_wrtgrp, j_end_wrtgrp
+        real    :: latse, latnw, lonse, lonnw
+        real    :: latstart, latlast, lonstart, lonlast
+      end type output_grid_info
+
       type wrt_internal_state
 
 !--------------------------------
@@ -31,36 +40,15 @@
 !--------------------
 !*** grid information
 !--------------------
-      character(64)   :: output_grid
       type(esmf_grid) :: wrtgrid
-!
-!-----------------------------
-!***  full domain information
-!-----------------------------
-!
-      integer :: im
-      integer :: jm
-      integer :: lm
-!
-!-----------------------------
-!***  subdomain domain information
-!-----------------------------
-!
-      integer :: lat_start, lon_start
-      integer :: lat_end, lon_end
-      real    :: latstart, latlast, lonstart, lonlast
-      integer,dimension(:),allocatable :: lat_start_wrtgrp, lon_start_wrtgrp
-      integer,dimension(:),allocatable :: lat_end_wrtgrp, lon_end_wrtgrp
-      real,dimension(:,:),allocatable  :: lonPtr, latPtr
+
+      type(output_grid_info) ,dimension(:), allocatable :: out_grid_info
 !
 !--------------------------
 !*** file bundle for output
 !--------------------------
       integer :: FBCount
-      integer,dimension(:), allocatable           :: ncount_attribs
-      integer,dimension(:), allocatable           :: ncount_fields
       character(128),dimension(:),allocatable     :: wrtFB_names
-      character(128),dimension(:,:),allocatable   :: field_names
 !
 !-----------------------------------------------------------------------
 !***  THE OUTPUT FILE
@@ -95,7 +83,6 @@
       logical                  :: write_dopost
       character(80)            :: post_namelist
 !
-      integer                  :: post_maptype
       integer                  :: fhzero
       integer                  :: ntrac
       integer                  :: ncld
