@@ -96,8 +96,11 @@ module CCPP_typedefs
     real (kind=kind_phys), pointer      :: ctei_rml(:)        => null()  !<
     real (kind=kind_phys), pointer      :: cumabs(:)          => null()  !<
     real (kind=kind_phys), pointer      :: da_ls(:,:)         => null()
-    real (kind=kind_phys), pointer      :: dcond_ls(:,:)      => null()
-    real (kind=kind_phys), pointer      :: D_eros(:,:)        => null()
+    real (kind=kind_phys), pointer      :: dcond_ls_l(:,:)    => null()
+    real (kind=kind_phys), pointer      :: dcond_ls_i(:,:)    => null()
+    real (kind=kind_phys), pointer      :: d_eros(:,:)        => null()
+    real (kind=kind_phys), pointer      :: d_eros_l(:,:)      => null()
+    real (kind=kind_phys), pointer      :: d_eros_i(:,:)      => null()
     real (kind=kind_phys), pointer      :: dd_mf(:,:)         => null()  !<
     real (kind=kind_phys), pointer      :: de_lgth(:)         => null()  !<
     real (kind=kind_phys), pointer      :: del(:,:)           => null()  !<
@@ -105,6 +108,8 @@ module CCPP_typedefs
     real (kind=kind_phys), pointer      :: delr(:,:)          => null()  !<
     real (kind=kind_phys), pointer      :: dlength(:)         => null()  !<
     real (kind=kind_phys), pointer      :: dqdt(:,:,:)        => null()  !<
+    real (kind=kind_phys), pointer      :: dqcdt(:,:)         => null()  !<
+    real (kind=kind_phys), pointer      :: dqidt(:,:)         => null()  !<
     real (kind=kind_phys), pointer      :: dqsdT(:,:)         => null()  !<
     real (kind=kind_phys), pointer      :: dqsfc1(:)          => null()  !<
     real (kind=kind_phys), pointer      :: drain(:)           => null()  !<
@@ -224,6 +229,8 @@ module CCPP_typedefs
     real (kind=kind_phys), pointer      :: ncps(:,:)          => null()  !<
     integer                             :: ncstrac                       !<
     integer                             :: nday                          !<
+    real (kind=kind_phys), pointer      :: nerosc(:,:)        => null()
+    real (kind=kind_phys), pointer      :: nerosi(:,:)        => null()
     integer                             :: nf_aelw                       !<
     integer                             :: nf_aesw                       !<
     integer                             :: nf_albd                       !<
@@ -242,6 +249,7 @@ module CCPP_typedefs
     real (kind=kind_phys), pointer      :: olyr(:,:)          => null()  !<
     logical              , pointer      :: otspt(:,:)         => null()  !<
     logical              , pointer      :: otsptflag(:)       => null()  !<
+    real (kind=kind_phys), pointer      :: ovhd_cldcov(:,:)   => null()  !<
     integer                             :: oz_coeffp5                    !<
     logical                             :: phys_hydrostatic              !<
     real (kind=kind_phys), pointer      :: plvl(:,:)          => null()  !<
@@ -903,13 +911,21 @@ contains
     if (Model%tiedtke_prog_clouds) then
       allocate (Interstitial%airdens       (IM,Model%levs))
       allocate (Interstitial%da_ls         (IM,Model%levs))
-      allocate (Interstitial%dcond_ls      (IM,Model%levs))
-      allocate (Interstitial%D_eros        (IM,Model%levs))
+      allocate (Interstitial%dcond_ls_l    (IM,Model%levs))
+      allocate (Interstitial%dcond_ls_i    (IM,Model%levs))
+      allocate (Interstitial%d_eros        (IM,Model%levs))
+      allocate (Interstitial%d_eros_l      (IM,Model%levs))
+      allocate (Interstitial%d_eros_i      (IM,Model%levs))
+      allocate (Interstitial%dqcdt         (IM,Model%levs))
+      allocate (Interstitial%dqidt         (IM,Model%levs))
       allocate (Interstitial%dqsdT         (IM,Model%levs))
       allocate (Interstitial%drop1         (IM,Model%levs))
       allocate (Interstitial%hom           (IM,Model%levs))
       allocate (Interstitial%L_cp_dqsdT    (IM,Model%levs))
       allocate (Interstitial%mc_full       (IM,Model%levs))
+      allocate (Interstitial%nerosc        (IM,Model%levs))
+      allocate (Interstitial%nerosi        (IM,Model%levs))
+      allocate (Interstitial%ovhd_cldcov   (IM,Model%levs))
       allocate (Interstitial%ql_upd        (IM,Model%levs))
       allocate (Interstitial%qn_upd        (IM,Model%levs))
       allocate (Interstitial%qni_upd       (IM,Model%levs))
@@ -1552,13 +1568,21 @@ contains
     if (Model%tiedtke_prog_clouds) then
       Interstitial%airdens   = clear_val
       Interstitial%da_ls     = clear_val
-      Interstitial%dcond_ls  = clear_val
-      Interstitial%D_eros    = clear_val
+      Interstitial%dcond_ls_l= clear_val
+      Interstitial%dcond_ls_i= clear_val
+      Interstitial%d_eros    = clear_val
+      Interstitial%d_eros_l  = clear_val
+      Interstitial%d_eros_i  = clear_val
+      Interstitial%dqcdt     = clear_val
+      Interstitial%dqidt     = clear_val
       Interstitial%dqsdT     = clear_val
       Interstitial%drop1     = clear_val
       Interstitial%hom       = clear_val
       Interstitial%L_cp_dqsdT= clear_val
       Interstitial%mc_full   = clear_val
+      Interstitial%nerosc    = clear_val
+      Interstitial%nerosi    = clear_val
+      Interstitial%ovhd_cldcov = clear_val
       Interstitial%qa_upd    = clear_val
       Interstitial%qi_upd    = clear_val
       Interstitial%ql_upd    = clear_val

@@ -1674,6 +1674,8 @@ module GFS_typedefs
     real (kind=kind_phys), pointer :: tsq        (:,:)   => null()  !
     real (kind=kind_phys), pointer :: qsq        (:,:)   => null()  !
     real (kind=kind_phys), pointer :: cov        (:,:)   => null()  !
+    real (kind=kind_phys), pointer :: dqadt_pbl  (:,:)   => null()  !
+    real (kind=kind_phys), pointer :: dqcdt_pbl  (:,:)   => null()  !
 
     !--- MYJ schemes saved variables (from previous time step)
     real (kind=kind_phys), pointer :: phy_myj_qsfc(:)    => null()  !
@@ -1874,7 +1876,11 @@ module GFS_typedefs
     real (kind=kind_phys), pointer :: qshear     (:,:)   => null()  !< shear production of tke
     real (kind=kind_phys), pointer :: qbuoy      (:,:)   => null()  !< buoyancy production of tke
     real (kind=kind_phys), pointer :: qdiss      (:,:)   => null()  !< dissipation of tke
-
+    real (kind=kind_phys), pointer :: dqcdt_mynn (:,:)   => null()  !< instantaneous tendency of cloud liquid water from MYNN
+    real (kind=kind_phys), pointer :: dqidt_mynn (:,:)   => null()  !< instantaneous tendency of cloud ice from MYNN
+    real (kind=kind_phys), pointer :: dqndt_mynn (:,:)   => null()  !< instantaneous tendency of cloud droplet number concentration from MYNN
+    real (kind=kind_phys), pointer :: dqnidt_mynn(:,:)   => null()  !< instantaneous tendency of cloud ice number concentration from MYNN
+    
 ! Output - only in physics
     real (kind=kind_phys), pointer :: u10m   (:)     => null()   !< 10 meter u/v wind speed
     real (kind=kind_phys), pointer :: v10m   (:)     => null()   !< 10 meter u/v wind speed
@@ -3311,7 +3317,7 @@ module GFS_typedefs
     !--- Tiedtke prognostic cloud scheme parameters
     !GJF default values of u00 through single_gaussian_pdf come from tiedtke_macro module in AM4
     !real(kind=kind_phys) :: u00                  = 0.80
-    logical              :: tiedtke_prog_clouds  = .true.
+    logical              :: tiedtke_prog_clouds  = .false.
     logical              :: u00_profile          = .true.
     real(kind=kind_phys) :: eros_scale           = 1.E-06
     logical              :: eros_choice          = .false.
@@ -3864,6 +3870,8 @@ module GFS_typedefs
                           !--- (DFI) time ranges with radar-prescribed microphysics tendencies
                           !          and (maybe) convection suppression
                                fh_dfi_radar, radar_tten_limits, do_cap_suppress,            &
+                          !--- Tiedtke prognostic clouds
+                               tiedtke_prog_clouds,                                         &
                           !--- GSL lightning threat indices
                                lightning_threat
 
@@ -6903,6 +6911,12 @@ module GFS_typedefs
        Tbd%tsq           = clear_val
        Tbd%qsq           = clear_val
        Tbd%cov           = clear_val
+       if (Model%tiedtke_prog_clouds) then
+          allocate (Tbd%dqadt_pbl (IM,Model%levs))
+          allocate (Tbd%dqcdt_pbl (IM,Model%levs))
+          Tbd%dqadt_pbl  = zero
+          Tbd%dqcdt_pbl  = zero
+       endif
     end if
 
     ! MYJ variables
@@ -7510,6 +7524,10 @@ module GFS_typedefs
       allocate (Diag%ktop_plume(IM))
       allocate (Diag%exch_h    (IM,Model%levs))
       allocate (Diag%exch_m    (IM,Model%levs))
+      allocate (Diag%dqcdt_mynn(IM,Model%levs))
+      allocate (Diag%dqidt_mynn(IM,Model%levs))
+      allocate (Diag%dqndt_mynn(IM,Model%levs))
+      allocate (Diag%dqnidt_mynn(IM,Model%levs))
       if (Model%bl_mynn_output .ne. 0) then
         Diag%edmf_a        = clear_val
         Diag%edmf_w        = clear_val
@@ -7534,6 +7552,10 @@ module GFS_typedefs
       Diag%ktop_plume    = 0
       Diag%exch_h        = clear_val
       Diag%exch_m        = clear_val
+      Diag%dqcdt_mynn    = clear_val
+      Diag%dqidt_mynn    = clear_val
+      Diag%dqndt_mynn    = clear_val
+      Diag%dqnidt_mynn    = clear_val
     endif
 
     ! Extended diagnostics for Thompson MP
