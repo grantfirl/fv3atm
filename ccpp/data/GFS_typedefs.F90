@@ -162,7 +162,7 @@ module GFS_typedefs
     real (kind=kind_phys), pointer :: pgr  (:)     => null()  !< surface pressure (Pa) real
     real (kind=kind_phys), pointer :: ugrs (:,:)   => null()  !< u component of layer wind
     real (kind=kind_phys), pointer :: vgrs (:,:)   => null()  !< v component of layer wind
-    real (kind=kind_phys), pointer :: wgrs (:,:)   => null()  !< w component of layer wind
+    real (kind=kind_phys), allocatable :: wgrs (:,:)  !< w component of layer wind
     real (kind=kind_phys), pointer :: vvl  (:,:)   => null()  !< layer mean vertical velocity in pa/sec
     real (kind=kind_phys), pointer :: tgrs (:,:)   => null()  !< model layer mean temperature in k
     real (kind=kind_phys), pointer :: qgrs (:,:,:) => null()  !< layer mean tracer concentration
@@ -215,21 +215,21 @@ module GFS_typedefs
 !--- In (lakes)
     real (kind=kind_phys), pointer :: lakefrac(:)  => null()  !< lake  fraction [0:1]
     real (kind=kind_phys), pointer :: lakedepth(:) => null()  !< lake  depth [ m ]
-    real (kind=kind_phys), pointer :: clm_lakedepth(:) => null()  !< clm internal lake depth [ m ]
+    real (kind=kind_phys), allocatable :: clm_lakedepth(:) !< clm internal lake depth [ m ]
     integer,               pointer :: use_lake_model(:) => null()!1=run lake, 2=run lake&nsst, 0=no lake
-    real (kind=kind_phys), pointer :: lake_t2m (:)   => null()  !< 2 meter temperature from CLM Lake model
-    real (kind=kind_phys), pointer :: lake_q2m (:)   => null()  !< 2 meter humidity from CLM Lake model
+    real (kind=kind_phys), allocatable :: lake_t2m (:)  !< 2 meter temperature from CLM Lake model
+    real (kind=kind_phys), allocatable :: lake_q2m (:)  !< 2 meter humidity from CLM Lake model
 
-    real (kind=kind_phys), pointer :: h_ML(:)      => null()  !Mixed Layer depth of lakes [m]
-    real (kind=kind_phys), pointer :: t_ML(:)      => null()  !Mixing layer temperature in K
-    real (kind=kind_phys), pointer :: t_mnw(:)     => null()  !Mean temperature of the water column [K]
-    real (kind=kind_phys), pointer :: h_talb(:)    => null()  !the thermally active layer depth of the bottom sediments [m]
-    real (kind=kind_phys), pointer :: t_talb(:)    => null()  !Temperature at the bottom of the sediment upper layer [K]
-    real (kind=kind_phys), pointer :: t_bot1(:)    => null()  !Temperature at the water-bottom sediment interface [K]
-    real (kind=kind_phys), pointer :: t_bot2(:)    => null()  !Temperature for bottom layer of water [K]
-    real (kind=kind_phys), pointer :: c_t(:)       => null()  !Shape factor of water temperature vertical profile
-    real (kind=kind_phys), pointer :: T_snow(:)    => null()  !temperature of snow on a lake [K]
-    real (kind=kind_phys), pointer :: T_ice(:)     => null()  !temperature of ice on a lake [K]
+    real (kind=kind_phys), allocatable :: h_ML(:)    !Mixed Layer depth of lakes [m]
+    real (kind=kind_phys), allocatable :: t_ML(:)    !Mixing layer temperature in K
+    real (kind=kind_phys), allocatable :: t_mnw(:)   !Mean temperature of the water column [K]
+    real (kind=kind_phys), allocatable :: h_talb(:)  !the thermally active layer depth of the bottom sediments [m]
+    real (kind=kind_phys), allocatable :: t_talb(:)  !Temperature at the bottom of the sediment upper layer [K]
+    real (kind=kind_phys), allocatable :: t_bot1(:)  !Temperature at the water-bottom sediment interface [K]
+    real (kind=kind_phys), allocatable :: t_bot2(:)  !Temperature for bottom layer of water [K]
+    real (kind=kind_phys), allocatable :: c_t(:)     !Shape factor of water temperature vertical profile
+    real (kind=kind_phys), allocatable :: T_snow(:)  !temperature of snow on a lake [K]
+    real (kind=kind_phys), allocatable :: T_ice(:)   !temperature of ice on a lake [K]
 
     real (kind=kind_phys), pointer :: tsfc   (:)   => null()  !< surface air temperature in K
     real (kind=kind_phys), pointer :: vegtype_frac (:,:) => null()  !< fractions [0:1] of veg. categories
@@ -254,14 +254,14 @@ module GFS_typedefs
     real (kind=kind_phys), pointer :: dust12m_in  (:,:,:) => null()  !< fengsha dust input
     real (kind=kind_phys), pointer :: emi_in (:,:) => null()  !< anthropogenic background input
     real (kind=kind_phys), pointer :: smoke_RRFS(:,:,:) => null()  !< RRFS fire input
-    real (kind=kind_phys), pointer :: z0base (:)   => null()  !< background or baseline surface roughness length in m
+    real (kind=kind_phys), allocatable :: z0base (:)  !< background or baseline surface roughness length in m
     real (kind=kind_phys), pointer :: semisbase(:) => null()  !< background surface emissivity
-    real (kind=kind_phys), pointer :: sfalb_lnd (:) => null() !< surface albedo over land for LSM
-    real (kind=kind_phys), pointer :: sfalb_ice (:) => null() !< surface albedo over ice for LSM
+    real (kind=kind_phys), allocatable :: sfalb_lnd (:) !< surface albedo over land for LSM
+    real (kind=kind_phys), allocatable :: sfalb_ice (:) !< surface albedo over ice for LSM
     real (kind=kind_phys), pointer :: emis_lnd (:)  => null() !< surface emissivity over land for LSM
     real (kind=kind_phys), pointer :: emis_ice (:)  => null() !< surface emissivity over ice for LSM
     real (kind=kind_phys), pointer :: emis_wat (:)  => null() !< surface emissivity over water
-    real (kind=kind_phys), pointer :: sfalb_lnd_bck (:) => null() !< snow-free albedo over land
+    real (kind=kind_phys), allocatable :: sfalb_lnd_bck (:) !< snow-free albedo over land
 
 !--- In (radiation only)
     real (kind=kind_phys), pointer :: sncovr (:)   => null()  !< snow cover in fraction over land
@@ -295,9 +295,9 @@ module GFS_typedefs
     real (kind=kind_phys), pointer :: qss    (:)   => null()  !<
 
 !-- In/Out
-    real (kind=kind_phys), pointer :: maxupmf(:)   => null()  !< maximum up draft mass flux for Grell-Freitas
-    real (kind=kind_phys), pointer :: conv_act(:)  => null()  !< convective activity counter for Grell-Freitas
-    real (kind=kind_phys), pointer :: conv_act_m(:)=> null()  !< midlevel convective activity counter for Grell-Freitas
+    real (kind=kind_phys), allocatable :: maxupmf(:)     !< maximum up draft mass flux for Grell-Freitas
+    real (kind=kind_phys), allocatable :: conv_act(:)    !< convective activity counter for Grell-Freitas
+    real (kind=kind_phys), allocatable :: conv_act_m(:)  !< midlevel convective activity counter for Grell-Freitas
     real (kind=kind_phys), pointer :: hice   (:)   => null()  !< sea ice thickness
     real (kind=kind_phys), pointer :: weasd  (:)   => null()  !< water equiv of accumulated snow depth (kg/m**2)
                                                               !< over land and sea ice
@@ -305,7 +305,7 @@ module GFS_typedefs
     real (kind=kind_phys), pointer :: ffmm   (:)   => null()  !< fm parameter from PBL scheme
     real (kind=kind_phys), pointer :: ffhh   (:)   => null()  !< fh parameter from PBL scheme
     real (kind=kind_phys), pointer :: f10m   (:)   => null()  !< fm at 10m - Ratio of sigma level 1 wind and 10m wind
-    real (kind=kind_phys), pointer :: rca     (:)  => null()  !< canopy resistance
+    real (kind=kind_phys), allocatable :: rca     (:)  !< canopy resistance
     real (kind=kind_phys), pointer :: tprcp  (:)   => null()  !< sfc_fld%tprcp - total precipitation
     real (kind=kind_phys), pointer :: srflag (:)   => null()  !< sfc_fld%srflag - snow/rain flag for precipitation
     real (kind=kind_phys), pointer :: slc    (:,:) => null()  !< liquid soil moisture
@@ -318,44 +318,44 @@ module GFS_typedefs
     real (kind=kind_phys), pointer :: q2m    (:)   => null()  !< 2 meter humidity
 
 ! -- In/Out for Noah MP
-    real (kind=kind_phys), pointer :: snowxy  (:)  => null()  !<
-    real (kind=kind_phys), pointer :: tvxy    (:)  => null()  !< veg temp
-    real (kind=kind_phys), pointer :: tgxy    (:)  => null()  !< ground temp
-    real (kind=kind_phys), pointer :: canicexy(:)  => null()  !<
-    real (kind=kind_phys), pointer :: canliqxy(:)  => null()  !<
-    real (kind=kind_phys), pointer :: eahxy   (:)  => null()  !<
-    real (kind=kind_phys), pointer :: tahxy   (:)  => null()  !<
-    real (kind=kind_phys), pointer :: cmxy    (:)  => null()  !<
-    real (kind=kind_phys), pointer :: chxy    (:)  => null()  !<
-    real (kind=kind_phys), pointer :: fwetxy  (:)  => null()  !<
-    real (kind=kind_phys), pointer :: sneqvoxy(:)  => null()  !<
-    real (kind=kind_phys), pointer :: alboldxy(:)  => null()  !<
-    real (kind=kind_phys), pointer :: qsnowxy (:)  => null()  !<
-    real (kind=kind_phys), pointer :: wslakexy(:)  => null()  !<
-    real (kind=kind_phys), pointer :: zwtxy   (:)  => null()  !<
-    real (kind=kind_phys), pointer :: waxy    (:)  => null()  !<
-    real (kind=kind_phys), pointer :: wtxy    (:)  => null()  !<
-    real (kind=kind_phys), pointer :: lfmassxy(:)  => null()  !<
-    real (kind=kind_phys), pointer :: rtmassxy(:)  => null()  !<
-    real (kind=kind_phys), pointer :: stmassxy(:)  => null()  !<
-    real (kind=kind_phys), pointer :: woodxy  (:)  => null()  !<
-    real (kind=kind_phys), pointer :: stblcpxy(:)  => null()  !<
-    real (kind=kind_phys), pointer :: fastcpxy(:)  => null()  !<
-    real (kind=kind_phys), pointer :: xsaixy  (:)  => null()  !<
-    real (kind=kind_phys), pointer :: xlaixy  (:)  => null()  !<
-    real (kind=kind_phys), pointer :: taussxy (:)  => null()  !<
-    real (kind=kind_phys), pointer :: smcwtdxy(:)  => null()  !<
-    real (kind=kind_phys), pointer :: deeprechxy(:)=> null()  !<
-    real (kind=kind_phys), pointer :: rechxy  (:)  => null()  !<
-    real (kind=kind_phys), pointer :: albdirvis_lnd (:) => null()  !<
-    real (kind=kind_phys), pointer :: albdirnir_lnd (:) => null()  !<
-    real (kind=kind_phys), pointer :: albdifvis_lnd (:) => null()  !<
-    real (kind=kind_phys), pointer :: albdifnir_lnd (:) => null()  !<
+    real (kind=kind_phys), allocatable :: snowxy  (:)    !<
+    real (kind=kind_phys), allocatable :: tvxy    (:)    !< veg temp
+    real (kind=kind_phys), allocatable :: tgxy    (:)    !< ground temp
+    real (kind=kind_phys), allocatable :: canicexy(:)    !<
+    real (kind=kind_phys), allocatable :: canliqxy(:)    !<
+    real (kind=kind_phys), allocatable :: eahxy   (:)    !<
+    real (kind=kind_phys), allocatable :: tahxy   (:)    !<
+    real (kind=kind_phys), allocatable :: cmxy    (:)    !<
+    real (kind=kind_phys), allocatable :: chxy    (:)    !<
+    real (kind=kind_phys), allocatable :: fwetxy  (:)    !<
+    real (kind=kind_phys), allocatable :: sneqvoxy(:)    !<
+    real (kind=kind_phys), allocatable :: alboldxy(:)    !<
+    real (kind=kind_phys), allocatable :: qsnowxy (:)    !<
+    real (kind=kind_phys), allocatable :: wslakexy(:)    !<
+    real (kind=kind_phys), allocatable :: zwtxy   (:)    !<
+    real (kind=kind_phys), allocatable :: waxy    (:)    !<
+    real (kind=kind_phys), allocatable :: wtxy    (:)    !<
+    real (kind=kind_phys), allocatable :: lfmassxy(:)    !<
+    real (kind=kind_phys), allocatable :: rtmassxy(:)    !<
+    real (kind=kind_phys), allocatable :: stmassxy(:)    !<
+    real (kind=kind_phys), allocatable :: woodxy  (:)    !<
+    real (kind=kind_phys), allocatable :: stblcpxy(:)    !<
+    real (kind=kind_phys), allocatable :: fastcpxy(:)    !<
+    real (kind=kind_phys), allocatable :: xsaixy  (:)    !<
+    real (kind=kind_phys), allocatable :: xlaixy  (:)    !<
+    real (kind=kind_phys), allocatable :: taussxy (:)    !<
+    real (kind=kind_phys), allocatable :: smcwtdxy(:)    !<
+    real (kind=kind_phys), allocatable :: deeprechxy(:)  !<
+    real (kind=kind_phys), allocatable :: rechxy  (:)    !<
+    real (kind=kind_phys), allocatable :: albdirvis_lnd (:)  !<
+    real (kind=kind_phys), allocatable :: albdirnir_lnd (:)  !<
+    real (kind=kind_phys), allocatable :: albdifvis_lnd (:)  !<
+    real (kind=kind_phys), allocatable :: albdifnir_lnd (:)  !<
 
-    real (kind=kind_phys), pointer :: albdirvis_ice (:) => null()  !<
-    real (kind=kind_phys), pointer :: albdifvis_ice (:) => null()  !<
-    real (kind=kind_phys), pointer :: albdirnir_ice (:) => null()  !<
-    real (kind=kind_phys), pointer :: albdifnir_ice (:) => null()  !<
+    real (kind=kind_phys), allocatable :: albdirvis_ice (:)  !<
+    real (kind=kind_phys), allocatable :: albdifvis_ice (:)  !<
+    real (kind=kind_phys), allocatable :: albdirnir_ice (:)  !<
+    real (kind=kind_phys), allocatable :: albdifnir_ice (:)  !<
 !   real (kind=kind_phys), pointer :: sfalb_ice     (:) => null()  !<
 
     real (kind=kind_phys), pointer :: snicexy   (:,:) => null()  !<
@@ -365,32 +365,32 @@ module GFS_typedefs
     real (kind=kind_phys), pointer :: zsnsoxy   (:,:) => null()  !<
 
 !--- NSSTM variables  (only allocated when [Model%nstf_name(1) > 0])
-    real (kind=kind_phys), pointer :: tref   (:)   => null()  !< nst_fld%Tref - Reference Temperature
-    real (kind=kind_phys), pointer :: z_c    (:)   => null()  !< nst_fld%z_c - Sub layer cooling thickness
-    real (kind=kind_phys), pointer :: c_0    (:)   => null()  !< nst_fld%c_0 - coefficient1 to calculate d(Tz)/d(Ts)
-    real (kind=kind_phys), pointer :: c_d    (:)   => null()  !< nst_fld%c_d - coefficient2 to calculate d(Tz)/d(Ts)
-    real (kind=kind_phys), pointer :: w_0    (:)   => null()  !< nst_fld%w_0 - coefficient3 to calculate d(Tz)/d(Ts)
-    real (kind=kind_phys), pointer :: w_d    (:)   => null()  !< nst_fld%w_d - coefficient4 to calculate d(Tz)/d(Ts)
-    real (kind=kind_phys), pointer :: xt     (:)   => null()  !< nst_fld%xt      heat content in DTL
-    real (kind=kind_phys), pointer :: xs     (:)   => null()  !< nst_fld%xs      salinity  content in DTL
-    real (kind=kind_phys), pointer :: xu     (:)   => null()  !< nst_fld%xu      u current content in DTL
-    real (kind=kind_phys), pointer :: xv     (:)   => null()  !< nst_fld%xv      v current content in DTL
-    real (kind=kind_phys), pointer :: xz     (:)   => null()  !< nst_fld%xz      DTL thickness
-    real (kind=kind_phys), pointer :: zm     (:)   => null()  !< nst_fld%zm      MXL thickness
-    real (kind=kind_phys), pointer :: xtts   (:)   => null()  !< nst_fld%xtts    d(xt)/d(ts)
-    real (kind=kind_phys), pointer :: xzts   (:)   => null()  !< nst_fld%xzts    d(xz)/d(ts)
-    real (kind=kind_phys), pointer :: d_conv (:)   => null()  !< nst_fld%d_conv  thickness of Free Convection Layer (FCL)
-    real (kind=kind_phys), pointer :: ifd    (:)   => null()  !< nst_fld%ifd     index to start DTM run or not
-    real (kind=kind_phys), pointer :: dt_cool(:)   => null()  !< nst_fld%dt_cool Sub layer cooling amount
-    real (kind=kind_phys), pointer :: qrain  (:)   => null()  !< nst_fld%qrain   sensible heat flux due to rainfall (watts)
+    real (kind=kind_phys), allocatable :: tref   (:)  !< nst_fld%Tref - Reference Temperature
+    real (kind=kind_phys), allocatable :: z_c    (:)  !< nst_fld%z_c - Sub layer cooling thickness
+    real (kind=kind_phys), allocatable :: c_0    (:)  !< nst_fld%c_0 - coefficient1 to calculate d(Tz)/d(Ts)
+    real (kind=kind_phys), allocatable :: c_d    (:)  !< nst_fld%c_d - coefficient2 to calculate d(Tz)/d(Ts)
+    real (kind=kind_phys), allocatable :: w_0    (:)  !< nst_fld%w_0 - coefficient3 to calculate d(Tz)/d(Ts)
+    real (kind=kind_phys), allocatable :: w_d    (:)  !< nst_fld%w_d - coefficient4 to calculate d(Tz)/d(Ts)
+    real (kind=kind_phys), allocatable :: xt     (:)  !< nst_fld%xt      heat content in DTL
+    real (kind=kind_phys), allocatable :: xs     (:)  !< nst_fld%xs      salinity  content in DTL
+    real (kind=kind_phys), allocatable :: xu     (:)  !< nst_fld%xu      u current content in DTL
+    real (kind=kind_phys), allocatable :: xv     (:)  !< nst_fld%xv      v current content in DTL
+    real (kind=kind_phys), allocatable :: xz     (:)  !< nst_fld%xz      DTL thickness
+    real (kind=kind_phys), allocatable :: zm     (:)  !< nst_fld%zm      MXL thickness
+    real (kind=kind_phys), allocatable :: xtts   (:)  !< nst_fld%xtts    d(xt)/d(ts)
+    real (kind=kind_phys), allocatable :: xzts   (:)  !< nst_fld%xzts    d(xz)/d(ts)
+    real (kind=kind_phys), allocatable :: d_conv (:)  !< nst_fld%d_conv  thickness of Free Convection Layer (FCL)
+    real (kind=kind_phys), allocatable :: ifd    (:)  !< nst_fld%ifd     index to start DTM run or not
+    real (kind=kind_phys), allocatable :: dt_cool(:)  !< nst_fld%dt_cool Sub layer cooling amount
+    real (kind=kind_phys), allocatable :: qrain  (:)  !< nst_fld%qrain   sensible heat flux due to rainfall (watts)
 
     ! Soil properties for RUC LSM (number of levels different from NOAH 4-layer model)
-    real (kind=kind_phys), pointer :: wetness(:)         => null()  !< normalized soil wetness for lsm
-    real (kind=kind_phys), pointer :: sh2o(:,:)          => null()  !< volume fraction of unfrozen soil moisture for lsm
-    real (kind=kind_phys), pointer :: keepsmfr(:,:)      => null()  !< RUC LSM: frozen moisture in soil
-    real (kind=kind_phys), pointer :: smois(:,:)         => null()  !< volumetric fraction of soil moisture for lsm
-    real (kind=kind_phys), pointer :: tslb(:,:)          => null()  !< soil temperature for land surface model
-    real (kind=kind_phys), pointer :: flag_frsoil(:,:)   => null()  !< RUC LSM: flag for frozen soil physics
+    real (kind=kind_phys), allocatable :: wetness(:)        !< normalized soil wetness for lsm
+    real (kind=kind_phys), allocatable :: sh2o(:,:)         !< volume fraction of unfrozen soil moisture for lsm
+    real (kind=kind_phys), allocatable :: keepsmfr(:,:)     !< RUC LSM: frozen moisture in soil
+    real (kind=kind_phys), allocatable :: smois(:,:)        !< volumetric fraction of soil moisture for lsm
+    real (kind=kind_phys), allocatable :: tslb(:,:)         !< soil temperature for land surface model
+    real (kind=kind_phys), allocatable :: flag_frsoil(:,:)  !< RUC LSM: flag for frozen soil physics
     !
     real (kind=kind_phys), pointer :: clw_surf_land(:)   => null()  !< RUC LSM: moist cloud water mixing ratio at surface over land
     real (kind=kind_phys), pointer :: clw_surf_ice(:)    => null()  !< RUC LSM: moist cloud water mixing ratio at surface over ice
@@ -405,71 +405,71 @@ module GFS_typedefs
     real (kind=kind_phys), pointer :: acsnow_ice(:)      => null()  !< ruc lsm diagnostics over ice
 
     !  MYNN surface layer
-    real (kind=kind_phys), pointer :: ustm (:)         => null()  !u* including drag
-    real (kind=kind_phys), pointer :: zol(:)           => null()  !surface stability parameter
-    real (kind=kind_phys), pointer :: mol(:)           => null()  !theta star
+    real (kind=kind_phys), allocatable :: ustm (:)  !u* including drag
+    real (kind=kind_phys), allocatable :: zol(:)    !surface stability parameter
+    real (kind=kind_phys), allocatable :: mol(:)    !theta star
     real (kind=kind_phys), pointer :: rmol(:)          => null()  !reciprocal of obukhov length
     real (kind=kind_phys), pointer :: flhc(:)          => null()  !drag coeff for heat
     real (kind=kind_phys), pointer :: flqc(:)          => null()  !drag coeff for moisture
-    real (kind=kind_phys), pointer :: chs2(:)          => null()  !exch coeff for heat at 2m
-    real (kind=kind_phys), pointer :: cqs2(:)          => null()  !exch coeff for moisture at 2m
-    real (kind=kind_phys), pointer :: lh(:)            => null()  !latent heating at the surface
+    real (kind=kind_phys), allocatable :: chs2(:)   !exch coeff for heat at 2m
+    real (kind=kind_phys), allocatable :: cqs2(:)   !exch coeff for moisture at 2m
+    real (kind=kind_phys), allocatable :: lh(:)     !latent heating at the surface
 
     !---- precipitation amounts from previous time step for RUC LSM/NoahMP LSM
-    real (kind=kind_phys), pointer :: raincprv  (:)    => null()  !< explicit rainfall from previous timestep
-    real (kind=kind_phys), pointer :: rainncprv (:)    => null()  !< convective_precipitation_amount from previous timestep
-    real (kind=kind_phys), pointer :: iceprv    (:)    => null()  !< ice amount from previous timestep
-    real (kind=kind_phys), pointer :: snowprv   (:)    => null()  !< snow amount from previous timestep
-    real (kind=kind_phys), pointer :: graupelprv(:)    => null()  !< graupel amount from previous timestep
+    real (kind=kind_phys), allocatable :: raincprv  (:) !< explicit rainfall from previous timestep
+    real (kind=kind_phys), allocatable :: rainncprv (:) !< convective_precipitation_amount from previous timestep
+    real (kind=kind_phys), allocatable :: iceprv    (:) !< ice amount from previous timestep
+    real (kind=kind_phys), allocatable :: snowprv   (:) !< snow amount from previous timestep
+    real (kind=kind_phys), allocatable :: graupelprv(:) !< graupel amount from previous timestep
 
     !---- precipitation rates from previous time step for NoahMP LSM
-    real (kind=kind_phys), pointer :: draincprv  (:)    => null()  !< convective precipitation rate from previous timestep
-    real (kind=kind_phys), pointer :: drainncprv (:)    => null()  !< explicit rainfall rate from previous timestep
-    real (kind=kind_phys), pointer :: diceprv    (:)    => null()  !< ice precipitation rate from previous timestep
-    real (kind=kind_phys), pointer :: dsnowprv   (:)    => null()  !< snow precipitation rate from previous timestep
-    real (kind=kind_phys), pointer :: dgraupelprv(:)    => null()  !< graupel precipitation rate from previous timestep
+    real (kind=kind_phys), allocatable :: draincprv  (:) !< convective precipitation rate from previous timestep
+    real (kind=kind_phys), allocatable :: drainncprv (:) !< explicit rainfall rate from previous timestep
+    real (kind=kind_phys), allocatable :: diceprv    (:) !< ice precipitation rate from previous timestep
+    real (kind=kind_phys), allocatable :: dsnowprv   (:) !< snow precipitation rate from previous timestep
+    real (kind=kind_phys), allocatable :: dgraupelprv(:) !< graupel precipitation rate from previous timestep
 
     ! CLM Lake model internal variables:
-    real (kind=kind_phys), pointer :: lake_albedo(:)     => null()  !
-    real (kind=kind_phys), pointer :: input_lakedepth(:) => null()  !
-    real (kind=kind_phys), pointer :: lake_h2osno2d(:)   => null()  !
-    real (kind=kind_phys), pointer :: lake_sndpth2d(:)   => null()  !
-    real (kind=kind_phys), pointer :: lake_snl2d(:)      => null()  !
-    real (kind=kind_phys), pointer :: lake_snow_z3d(:,:)      => null()  !
-    real (kind=kind_phys), pointer :: lake_snow_dz3d(:,:)     => null()  !
-    real (kind=kind_phys), pointer :: lake_snow_zi3d(:,:)     => null()  !
-    real (kind=kind_phys), pointer :: lake_h2osoi_vol3d(:,:)  => null()  !
-    real (kind=kind_phys), pointer :: lake_h2osoi_liq3d(:,:)   => null()  !
-    real (kind=kind_phys), pointer :: lake_h2osoi_ice3d(:,:)   => null()  !
-    real (kind=kind_phys), pointer :: lake_tsfc(:)   => null()  !
-    real (kind=kind_phys), pointer :: lake_t_soisno3d(:,:) => null()  !
-    real (kind=kind_phys), pointer :: lake_t_lake3d(:,:) => null()  !
-    real (kind=kind_phys), pointer :: lake_savedtke12d(:)=> null()  !
-    real (kind=kind_phys), pointer :: lake_icefrac3d(:,:)=> null()
-    real (kind=kind_phys), pointer :: lake_rho0(:)=> null()
-    real (kind=kind_phys), pointer :: lake_ht(:)=> null()
-    integer, pointer :: lake_is_salty(:) => null()
-    integer, pointer :: lake_cannot_freeze(:) => null()
-    real (kind=kind_phys), pointer :: clm_lake_initialized(:) => null() !< lakeini was called
+    real (kind=kind_phys), allocatable :: lake_albedo(:)      !
+    real (kind=kind_phys), allocatable :: input_lakedepth(:)  !
+    real (kind=kind_phys), allocatable :: lake_h2osno2d(:)    !
+    real (kind=kind_phys), allocatable :: lake_sndpth2d(:)    !
+    real (kind=kind_phys), allocatable :: lake_snl2d(:)       !
+    real (kind=kind_phys), allocatable :: lake_snow_z3d(:,:)      !
+    real (kind=kind_phys), allocatable :: lake_snow_dz3d(:,:)     !
+    real (kind=kind_phys), allocatable :: lake_snow_zi3d(:,:)     !
+    real (kind=kind_phys), allocatable :: lake_h2osoi_vol3d(:,:)  !
+    real (kind=kind_phys), allocatable :: lake_h2osoi_liq3d(:,:)  !
+    real (kind=kind_phys), allocatable :: lake_h2osoi_ice3d(:,:)  !
+    real (kind=kind_phys), allocatable :: lake_tsfc(:)    !
+    real (kind=kind_phys), allocatable :: lake_t_soisno3d(:,:)  !
+    real (kind=kind_phys), allocatable :: lake_t_lake3d(:,:)   !
+    real (kind=kind_phys), allocatable :: lake_savedtke12d(:)  !
+    real (kind=kind_phys), allocatable :: lake_icefrac3d(:,:)
+    real (kind=kind_phys), allocatable :: lake_rho0(:)
+    real (kind=kind_phys), allocatable :: lake_ht(:)
+    integer, allocatable :: lake_is_salty(:)
+    integer, allocatable :: lake_cannot_freeze(:)
+    real (kind=kind_phys), allocatable :: clm_lake_initialized(:) !< lakeini was called
     !--- aerosol surface emissions for Thompson microphysics & smoke dust
-    real (kind=kind_phys), pointer :: emdust  (:)     => null()  !< instantaneous dust emission
-    real (kind=kind_phys), pointer :: emseas  (:)     => null()  !< instantaneous sea salt emission
-    real (kind=kind_phys), pointer :: emanoc  (:)     => null()  !< instantaneous anthro. oc emission
+    real (kind=kind_phys), allocatable :: emdust  (:)  !< instantaneous dust emission
+    real (kind=kind_phys), allocatable :: emseas  (:)  !< instantaneous sea salt emission
+    real (kind=kind_phys), allocatable :: emanoc  (:)  !< instantaneous anthro. oc emission
 
     !--- Smoke. These 3 arrays are hourly, so their dimension is imx24 (output is hourly)
-    real (kind=kind_phys), pointer :: ebb_smoke_hr(:)    => null()  !< hourly smoke emission
-    real (kind=kind_phys), pointer :: frp_hr      (:)    => null()  !< hourly FRP
-    real (kind=kind_phys), pointer :: frp_std_hr  (:)    => null()  !< hourly std. FRP
+    real (kind=kind_phys), allocatable :: ebb_smoke_hr(:) !< hourly smoke emission
+    real (kind=kind_phys), allocatable :: frp_hr      (:) !< hourly FRP
+    real (kind=kind_phys), allocatable :: frp_std_hr  (:) !< hourly std. FRP
 
     !--- For fire diurnal cycle
-    real (kind=kind_phys), pointer :: fhist       (:)   => null()  !< instantaneous fire coef_bb
-    real (kind=kind_phys), pointer :: coef_bb_dc  (:)   => null()  !< instantaneous fire coef_bb
+    real (kind=kind_phys), allocatable :: fhist       (:)  !< instantaneous fire coef_bb
+    real (kind=kind_phys), allocatable :: coef_bb_dc  (:)  !< instantaneous fire coef_bb
     !--- wildfire heat flux
-    real (kind=kind_phys), pointer :: fire_heat_flux_out (:) => null() !< heat flux from wildfire
-    real (kind=kind_phys), pointer :: frac_grid_burned_out (:) => null() !< fraction of grid cell burning
+    real (kind=kind_phys), allocatable :: fire_heat_flux_out (:) !< heat flux from wildfire
+    real (kind=kind_phys), allocatable :: frac_grid_burned_out (:) !< fraction of grid cell burning
 
     !--- For smoke and dust auxiliary inputs
-    real (kind=kind_phys), pointer :: fire_in   (:,:)   => null()  !< fire auxiliary inputs
+    real (kind=kind_phys), allocatable :: fire_in   (:,:) !< fire auxiliary inputs
 
     contains
       procedure :: create  => sfcprop_create  !<   allocate array data
@@ -496,11 +496,11 @@ module GFS_typedefs
     real (kind=kind_phys), pointer :: visdfui(:)     => null()   !< sfc uv+vis diff sw upward flux (w/m2)
 
     ! RRTMGP
-    real (kind=kind_phys), pointer :: fluxlwUP_jac(:,:)       => null()  !< RRTMGP Jacobian of upward longwave all-sky flux
-    real (kind=kind_phys), pointer :: htrlw(:,:)              => null()  !< RRTMGP updated LW heating rate
-    real (kind=kind_phys), pointer :: tsfc_radtime(:)         => null()  !< RRTMGP surface temperature on radiation timestep
-    real (kind=kind_phys), pointer :: fluxlwUP_radtime(:,:)   => null()  !< RRTMGP upward   longwave  all-sky flux profile
-    real (kind=kind_phys), pointer :: fluxlwDOWN_radtime(:,:) => null()  !< RRTMGP downward  longwave  all-sky flux profile
+    real (kind=kind_phys), allocatable :: fluxlwUP_jac(:,:)        !< RRTMGP Jacobian of upward longwave all-sky flux
+    real (kind=kind_phys), allocatable :: htrlw(:,:)               !< RRTMGP updated LW heating rate
+    real (kind=kind_phys), allocatable :: tsfc_radtime(:)          !< RRTMGP surface temperature on radiation timestep
+    real (kind=kind_phys), allocatable :: fluxlwUP_radtime(:,:)    !< RRTMGP upward   longwave  all-sky flux profile
+    real (kind=kind_phys), allocatable :: fluxlwDOWN_radtime(:,:)  !< RRTMGP downward  longwave  all-sky flux profile
 
     !--- In (physics only)
     real (kind=kind_phys), pointer :: sfcdsw(:)      => null()   !< total sky sfc downward sw flux ( w/m**2 )
@@ -512,16 +512,16 @@ module GFS_typedefs
     real (kind=kind_phys), pointer :: sfculw(:)      => null()   !< total sky sfc upward lw flux ( w/m**2 )
 
 !--- incoming quantities
-    real (kind=kind_phys), pointer :: dusfcin_cpl(:)          => null()   !< aoi_fld%dusfcin(item,lan)
-    real (kind=kind_phys), pointer :: dvsfcin_cpl(:)          => null()   !< aoi_fld%dvsfcin(item,lan)
-    real (kind=kind_phys), pointer :: dtsfcin_cpl(:)          => null()   !< aoi_fld%dtsfcin(item,lan)
-    real (kind=kind_phys), pointer :: dqsfcin_cpl(:)          => null()   !< aoi_fld%dqsfcin(item,lan)
-    real (kind=kind_phys), pointer :: ulwsfcin_cpl(:)         => null()   !< aoi_fld%ulwsfcin(item,lan)
+    real (kind=kind_phys), allocatable :: dusfcin_cpl(:)   !< aoi_fld%dusfcin(item,lan)
+    real (kind=kind_phys), allocatable :: dvsfcin_cpl(:)   !< aoi_fld%dvsfcin(item,lan)
+    real (kind=kind_phys), allocatable :: dtsfcin_cpl(:)   !< aoi_fld%dtsfcin(item,lan)
+    real (kind=kind_phys), allocatable :: dqsfcin_cpl(:)   !< aoi_fld%dqsfcin(item,lan)
+    real (kind=kind_phys), allocatable :: ulwsfcin_cpl(:)  !< aoi_fld%ulwsfcin(item,lan)
 !   real (kind=kind_phys), pointer :: tseain_cpl(:)           => null()   !< aoi_fld%tseain(item,lan)
 !   real (kind=kind_phys), pointer :: tisfcin_cpl(:)          => null()   !< aoi_fld%tisfcin(item,lan)
 !   real (kind=kind_phys), pointer :: ficein_cpl(:)           => null()   !< aoi_fld%ficein(item,lan)
 !   real (kind=kind_phys), pointer :: hicein_cpl(:)           => null()   !< aoi_fld%hicein(item,lan)
-    real (kind=kind_phys), pointer :: hsnoin_cpl(:)           => null()   !< aoi_fld%hsnoin(item,lan)
+    real (kind=kind_phys), allocatable :: hsnoin_cpl(:)    !< aoi_fld%hsnoin(item,lan)
 !   real (kind=kind_phys), pointer :: sfc_alb_nir_dir_cpl(:)  => null()   !< sfc nir albedo for direct rad
 !   real (kind=kind_phys), pointer :: sfc_alb_nir_dif_cpl(:)  => null()   !< sfc nir albedo for diffuse rad
 !   real (kind=kind_phys), pointer :: sfc_alb_vis_dir_cpl(:)  => null()   !< sfc vis albedo for direct rad
@@ -529,115 +529,115 @@ module GFS_typedefs
     !--- only variable needed for cplwav2atm=.TRUE.
 !   real (kind=kind_phys), pointer :: zorlwav_cpl(:)          => null()   !< roughness length from wave model
     !--- also needed for ice/ocn coupling
-    real (kind=kind_phys), pointer :: slimskin_cpl(:)=> null()   !< aoi_fld%slimskin(item,lan)
+    real (kind=kind_phys), allocatable :: slimskin_cpl(:)   !< aoi_fld%slimskin(item,lan)
     !--- variables needed for use_med_flux =.TRUE.
-    real (kind=kind_phys), pointer :: dusfcin_med(:)         => null()   !< sfc u momentum flux over ocean
-    real (kind=kind_phys), pointer :: dvsfcin_med(:)         => null()   !< sfc v momentum flux over ocean
-    real (kind=kind_phys), pointer :: dtsfcin_med(:)         => null()   !< sfc latent heat flux over ocean
-    real (kind=kind_phys), pointer :: dqsfcin_med(:)         => null()   !< sfc sensible heat flux over ocean
-    real (kind=kind_phys), pointer :: ulwsfcin_med(:)        => null()   !< sfc upward lw flux over ocean
+    real (kind=kind_phys), allocatable :: dusfcin_med(:)    !< sfc u momentum flux over ocean
+    real (kind=kind_phys), allocatable :: dvsfcin_med(:)    !< sfc v momentum flux over ocean
+    real (kind=kind_phys), allocatable :: dtsfcin_med(:)    !< sfc latent heat flux over ocean
+    real (kind=kind_phys), allocatable :: dqsfcin_med(:)    !< sfc sensible heat flux over ocean
+    real (kind=kind_phys), allocatable :: ulwsfcin_med(:)   !< sfc upward lw flux over ocean
 
 !--- outgoing accumulated quantities
-    real (kind=kind_phys), pointer :: rain_cpl  (:)  => null()   !< total rain precipitation
-    real (kind=kind_phys), pointer :: rainc_cpl (:)  => null()   !< convective rain precipitation
-    real (kind=kind_phys), pointer :: snow_cpl  (:)  => null()   !< total snow precipitation
-    real (kind=kind_phys), pointer :: dusfc_cpl (:)  => null()   !< sfc u momentum flux
-    real (kind=kind_phys), pointer :: dvsfc_cpl (:)  => null()   !< sfc v momentum flux
-    real (kind=kind_phys), pointer :: dtsfc_cpl (:)  => null()   !< sfc sensible heat flux
-    real (kind=kind_phys), pointer :: dqsfc_cpl (:)  => null()   !< sfc   latent heat flux
-    real (kind=kind_phys), pointer :: dlwsfc_cpl(:)  => null()   !< sfc downward lw flux (w/m**2)
-    real (kind=kind_phys), pointer :: dswsfc_cpl(:)  => null()   !< sfc downward sw flux (w/m**2)
-    real (kind=kind_phys), pointer :: dnirbm_cpl(:)  => null()   !< sfc nir beam downward sw flux (w/m**2)
-    real (kind=kind_phys), pointer :: dnirdf_cpl(:)  => null()   !< sfc nir diff downward sw flux (w/m**2)
-    real (kind=kind_phys), pointer :: dvisbm_cpl(:)  => null()   !< sfc uv+vis beam dnwd sw flux (w/m**2)
-    real (kind=kind_phys), pointer :: dvisdf_cpl(:)  => null()   !< sfc uv+vis diff dnwd sw flux (w/m**2)
-    real (kind=kind_phys), pointer :: nlwsfc_cpl(:)  => null()   !< net downward lw flux (w/m**2)
-    real (kind=kind_phys), pointer :: nswsfc_cpl(:)  => null()   !< net downward sw flux (w/m**2)
-    real (kind=kind_phys), pointer :: nnirbm_cpl(:)  => null()   !< net nir beam downward sw flux (w/m**2)
-    real (kind=kind_phys), pointer :: nnirdf_cpl(:)  => null()   !< net nir diff downward sw flux (w/m**2)
-    real (kind=kind_phys), pointer :: nvisbm_cpl(:)  => null()   !< net uv+vis beam downward sw rad flux (w/m**2)
-    real (kind=kind_phys), pointer :: nvisdf_cpl(:)  => null()   !< net uv+vis diff downward sw rad flux (w/m**2)
+    real (kind=kind_phys), allocatable :: rain_cpl(:)  !< total rain precipitation
+    real (kind=kind_phys), allocatable :: rainc_cpl (:) !< convective rain precipitation
+    real (kind=kind_phys), allocatable :: snow_cpl(:)  !< total snow precipitation
+    real (kind=kind_phys), allocatable :: dusfc_cpl (:)  !< sfc u momentum flux
+    real (kind=kind_phys), allocatable :: dvsfc_cpl (:)  !< sfc v momentum flux
+    real (kind=kind_phys), allocatable :: dtsfc_cpl (:)  !< sfc sensible heat flux
+    real (kind=kind_phys), allocatable :: dqsfc_cpl (:)  !< sfc   latent heat flux
+    real (kind=kind_phys), allocatable :: dlwsfc_cpl(:)  !< sfc downward lw flux (w/m**2)
+    real (kind=kind_phys), allocatable :: dswsfc_cpl(:)  !< sfc downward sw flux (w/m**2)
+    real (kind=kind_phys), allocatable :: dnirbm_cpl(:)  !< sfc nir beam downward sw flux (w/m**2)
+    real (kind=kind_phys), allocatable :: dnirdf_cpl(:)  !< sfc nir diff downward sw flux (w/m**2)
+    real (kind=kind_phys), allocatable :: dvisbm_cpl(:)  !< sfc uv+vis beam dnwd sw flux (w/m**2)
+    real (kind=kind_phys), allocatable :: dvisdf_cpl(:)  !< sfc uv+vis diff dnwd sw flux (w/m**2)
+    real (kind=kind_phys), allocatable :: nlwsfc_cpl(:)  !< net downward lw flux (w/m**2)
+    real (kind=kind_phys), allocatable :: nswsfc_cpl(:)  !< net downward sw flux (w/m**2)
+    real (kind=kind_phys), allocatable :: nnirbm_cpl(:)  !< net nir beam downward sw flux (w/m**2)
+    real (kind=kind_phys), allocatable :: nnirdf_cpl(:)  !< net nir diff downward sw flux (w/m**2)
+    real (kind=kind_phys), allocatable :: nvisbm_cpl(:)  !< net uv+vis beam downward sw rad flux (w/m**2)
+    real (kind=kind_phys), allocatable :: nvisdf_cpl(:)  !< net uv+vis diff downward sw rad flux (w/m**2)
 
 !--- outgoing instantaneous quantities
-    real (kind=kind_phys), pointer :: dusfci_cpl (:) => null()   !< instantaneous sfc u momentum flux
-    real (kind=kind_phys), pointer :: dvsfci_cpl (:) => null()   !< instantaneous sfc v momentum flux
-    real (kind=kind_phys), pointer :: dtsfci_cpl (:) => null()   !< instantaneous sfc sensible heat flux
-    real (kind=kind_phys), pointer :: dqsfci_cpl (:) => null()   !< instantaneous sfc   latent heat flux
-    real (kind=kind_phys), pointer :: dlwsfci_cpl(:) => null()   !< instantaneous sfc downward lw flux
-    real (kind=kind_phys), pointer :: dswsfci_cpl(:) => null()   !< instantaneous sfc downward sw flux
-    real (kind=kind_phys), pointer :: dnirbmi_cpl(:) => null()   !< instantaneous sfc nir beam downward sw flux
-    real (kind=kind_phys), pointer :: dnirdfi_cpl(:) => null()   !< instantaneous sfc nir diff downward sw flux
-    real (kind=kind_phys), pointer :: dvisbmi_cpl(:) => null()   !< instantaneous sfc uv+vis beam downward sw flux
-    real (kind=kind_phys), pointer :: dvisdfi_cpl(:) => null()   !< instantaneous sfc uv+vis diff downward sw flux
-    real (kind=kind_phys), pointer :: nlwsfci_cpl(:) => null()   !< instantaneous net sfc downward lw flux
-    real (kind=kind_phys), pointer :: nswsfci_cpl(:) => null()   !< instantaneous net sfc downward sw flux
-    real (kind=kind_phys), pointer :: nnirbmi_cpl(:) => null()   !< instantaneous net nir beam sfc downward sw flux
-    real (kind=kind_phys), pointer :: nnirdfi_cpl(:) => null()   !< instantaneous net nir diff sfc downward sw flux
-    real (kind=kind_phys), pointer :: nvisbmi_cpl(:) => null()   !< instantaneous net uv+vis beam downward sw flux
-    real (kind=kind_phys), pointer :: nvisdfi_cpl(:) => null()   !< instantaneous net uv+vis diff downward sw flux
-    real (kind=kind_phys), pointer :: t2mi_cpl   (:) => null()   !< instantaneous T2m
-    real (kind=kind_phys), pointer :: q2mi_cpl   (:) => null()   !< instantaneous Q2m
-    real (kind=kind_phys), pointer :: u10mi_cpl  (:) => null()   !< instantaneous U10m
-    real (kind=kind_phys), pointer :: v10mi_cpl  (:) => null()   !< instantaneous V10m
-    real (kind=kind_phys), pointer :: tsfci_cpl  (:) => null()   !< instantaneous sfc temperature
-    real (kind=kind_phys), pointer :: psurfi_cpl (:) => null()   !< instantaneous sfc pressure
+    real (kind=kind_phys), allocatable :: dusfci_cpl (:)   !< instantaneous sfc u momentum flux
+    real (kind=kind_phys), allocatable :: dvsfci_cpl (:)   !< instantaneous sfc v momentum flux
+    real (kind=kind_phys), allocatable :: dtsfci_cpl (:)   !< instantaneous sfc sensible heat flux
+    real (kind=kind_phys), allocatable :: dqsfci_cpl (:)   !< instantaneous sfc   latent heat flux
+    real (kind=kind_phys), allocatable :: dlwsfci_cpl(:)   !< instantaneous sfc downward lw flux
+    real (kind=kind_phys), allocatable :: dswsfci_cpl(:)   !< instantaneous sfc downward sw flux
+    real (kind=kind_phys), allocatable :: dnirbmi_cpl(:)   !< instantaneous sfc nir beam downward sw flux
+    real (kind=kind_phys), allocatable :: dnirdfi_cpl(:)   !< instantaneous sfc nir diff downward sw flux
+    real (kind=kind_phys), allocatable :: dvisbmi_cpl(:)   !< instantaneous sfc uv+vis beam downward sw flux
+    real (kind=kind_phys), allocatable :: dvisdfi_cpl(:)   !< instantaneous sfc uv+vis diff downward sw flux
+    real (kind=kind_phys), allocatable :: nlwsfci_cpl(:)   !< instantaneous net sfc downward lw flux
+    real (kind=kind_phys), allocatable :: nswsfci_cpl(:)   !< instantaneous net sfc downward sw flux
+    real (kind=kind_phys), allocatable :: nnirbmi_cpl(:)   !< instantaneous net nir beam sfc downward sw flux
+    real (kind=kind_phys), allocatable :: nnirdfi_cpl(:)   !< instantaneous net nir diff sfc downward sw flux
+    real (kind=kind_phys), allocatable :: nvisbmi_cpl(:)   !< instantaneous net uv+vis beam downward sw flux
+    real (kind=kind_phys), allocatable :: nvisdfi_cpl(:)   !< instantaneous net uv+vis diff downward sw flux
+    real (kind=kind_phys), allocatable :: t2mi_cpl(:)    !< instantaneous T2m
+    real (kind=kind_phys), allocatable :: q2mi_cpl(:)    !< instantaneous Q2m
+    real (kind=kind_phys), allocatable :: u10mi_cpl(:)   !< instantaneous U10m
+    real (kind=kind_phys), allocatable :: v10mi_cpl(:)   !< instantaneous V10m
+    real (kind=kind_phys), allocatable :: tsfci_cpl(:)   !< instantaneous sfc temperature
+    real (kind=kind_phys), allocatable :: psurfi_cpl(:)  !< instantaneous sfc pressure
 
     !--- topography-based information for the coupling system
-    real (kind=kind_phys), pointer :: oro_cpl    (:) => null()   !< orography          (  oro from GFS_sfcprop_type)
-    real (kind=kind_phys), pointer :: slmsk_cpl  (:) => null()   !< Land/Sea/Ice mask  (slmsk from GFS_sfcprop_type)
+    real (kind=kind_phys), allocatable :: oro_cpl  (:)   !< orography          (  oro from GFS_sfcprop_type)
+    real (kind=kind_phys), allocatable :: slmsk_cpl(:)   !< Land/Sea/Ice mask  (slmsk from GFS_sfcprop_type)
 
     !--- cellular automata
-    real (kind=kind_phys), pointer :: ca1      (:)   => null() !
-    real (kind=kind_phys), pointer :: ca2      (:)   => null() !
-    real (kind=kind_phys), pointer :: ca3      (:)   => null() !
-    real (kind=kind_phys), pointer :: ca_deep  (:)   => null() !
-    real (kind=kind_phys), pointer :: ca_turb  (:)   => null() !
-    real (kind=kind_phys), pointer :: ca_shal  (:)   => null() !
-    real (kind=kind_phys), pointer :: ca_rad   (:)   => null() !
-    real (kind=kind_phys), pointer :: ca_micro (:)   => null() !
+    real (kind=kind_phys), allocatable :: ca1      (:) !
+    real (kind=kind_phys), allocatable :: ca2      (:) !
+    real (kind=kind_phys), allocatable :: ca3      (:) !
+    real (kind=kind_phys), allocatable :: ca_deep  (:) !
+    real (kind=kind_phys), allocatable :: ca_turb  (:) !
+    real (kind=kind_phys), allocatable :: ca_shal  (:) !
+    real (kind=kind_phys), allocatable :: ca_rad   (:) !
+    real (kind=kind_phys), allocatable :: ca_micro (:) !
     real (kind=kind_phys), pointer :: condition(:)   => null() !
     !--- stochastic physics
-    real (kind=kind_phys), pointer :: shum_wts  (:,:) => null()  !
-    real (kind=kind_phys), pointer :: sppt_wts  (:,:) => null()  !
-    real (kind=kind_phys), pointer :: skebu_wts (:,:) => null()  !
-    real (kind=kind_phys), pointer :: skebv_wts (:,:) => null()  !
-    real (kind=kind_phys), pointer :: sfc_wts   (:,:) => null()  ! mg, sfc-perts
-    real (kind=kind_phys), pointer :: spp_wts_pbl   (:,:) => null()  ! spp-pbl-perts
-    real (kind=kind_phys), pointer :: spp_wts_sfc   (:,:) => null()  ! spp-sfc-perts
-    real (kind=kind_phys), pointer :: spp_wts_mp    (:,:) => null()  ! spp-mp-perts
-    real (kind=kind_phys), pointer :: spp_wts_gwd   (:,:) => null()  ! spp-gwd-perts
-    real (kind=kind_phys), pointer :: spp_wts_rad   (:,:) => null()  ! spp-rad-perts
-    real (kind=kind_phys), pointer :: spp_wts_cu_deep (:,:) => null()  ! spp-cu-deep-perts
+    real (kind=kind_phys), allocatable :: shum_wts  (:,:)  !
+    real (kind=kind_phys), allocatable :: sppt_wts  (:,:)  !
+    real (kind=kind_phys), allocatable :: skebu_wts (:,:)  !
+    real (kind=kind_phys), allocatable :: skebv_wts (:,:)  !
+    real (kind=kind_phys), allocatable :: sfc_wts   (:,:)  ! mg, sfc-perts
+    real (kind=kind_phys), allocatable :: spp_wts_pbl   (:,:)  ! spp-pbl-perts
+    real (kind=kind_phys), allocatable :: spp_wts_sfc   (:,:)  ! spp-sfc-perts
+    real (kind=kind_phys), allocatable :: spp_wts_mp    (:,:)  ! spp-mp-perts
+    real (kind=kind_phys), allocatable :: spp_wts_gwd   (:,:)  ! spp-gwd-perts
+    real (kind=kind_phys), allocatable :: spp_wts_rad   (:,:)  ! spp-rad-perts
+    real (kind=kind_phys), allocatable :: spp_wts_cu_deep (:,:)  ! spp-cu-deep-perts
 
     !--- aerosol surface emissions for Thompson microphysics
-    real (kind=kind_phys), pointer :: nwfa2d  (:)     => null()  !< instantaneous water-friendly sfc aerosol source
-    real (kind=kind_phys), pointer :: nifa2d  (:)     => null()  !< instantaneous ice-friendly sfc aerosol source
+    real (kind=kind_phys), allocatable :: nwfa2d  (:)  !< instantaneous water-friendly sfc aerosol source
+    real (kind=kind_phys), allocatable :: nifa2d  (:)  !< instantaneous ice-friendly sfc aerosol source
 
     !--- For fire diurnal cycle
-    real (kind=kind_phys), pointer :: ebu_smoke (:,:)   => null()  !< 3D ebu array
+    real (kind=kind_phys), allocatable :: ebu_smoke (:,:)   !< 3D ebu array
 
     !--- For smoke and dust optical extinction
-    real (kind=kind_phys), pointer :: smoke_ext (:,:)   => null()  !< 3D aod array
-    real (kind=kind_phys), pointer :: dust_ext  (:,:)   => null()  !< 3D aod array
+    real (kind=kind_phys), allocatable :: smoke_ext (:,:)   !< 3D aod array
+    real (kind=kind_phys), allocatable :: dust_ext  (:,:)   !< 3D aod array
 
     !--- For MYNN PBL transport of  smoke and dust
-    real (kind=kind_phys), pointer :: chem3d  (:,:,:)   => null()  !< 3D aod array
-    real (kind=kind_phys), pointer :: ddvel   (:,:  )   => null()  !< 2D dry deposition velocity
+    real (kind=kind_phys), allocatable :: chem3d  (:,:,:)   !< 3D aod array
+    real (kind=kind_phys), allocatable :: ddvel   (:,:  )   !< 2D dry deposition velocity
 
     !--- Fire plume rise diagnostics
-    real (kind=kind_phys), pointer :: min_fplume (:)   => null()  !< minimum plume rise level
-    real (kind=kind_phys), pointer :: max_fplume (:)   => null()  !< maximum plume rise level
+    real (kind=kind_phys), allocatable :: min_fplume (:)    !< minimum plume rise level
+    real (kind=kind_phys), allocatable :: max_fplume (:)    !< maximum plume rise level
     !--- hourly fire potential index
-    real (kind=kind_phys), pointer :: rrfs_hwp   (:)   => null()  !< hourly fire potential index
+    real (kind=kind_phys), allocatable :: rrfs_hwp   (:)    !< hourly fire potential index
 
     !--- instantaneous quantities for chemistry coupling
-    real (kind=kind_phys), pointer :: ushfsfci(:)     => null()  !< instantaneous upward sensible heat flux (w/m**2)
-    real (kind=kind_phys), pointer :: qci_conv(:,:)   => null()  !< convective cloud condesate after rainout
-    real (kind=kind_phys), pointer :: pfi_lsan(:,:)   => null()  !< instantaneous 3D flux of ice    nonconvective precipitation (kg m-2 s-1)
-    real (kind=kind_phys), pointer :: pfl_lsan(:,:)   => null()  !< instantaneous 3D flux of liquid nonconvective precipitation (kg m-2 s-1)
+    real (kind=kind_phys), allocatable :: ushfsfci(:)  !< instantaneous upward sensible heat flux (w/m**2)
+    real (kind=kind_phys), allocatable :: qci_conv(:,:)  !< convective cloud condesate after rainout
+    real (kind=kind_phys), allocatable :: pfi_lsan(:,:)  !< instantaneous 3D flux of ice    nonconvective precipitation (kg m-2 s-1)
+    real (kind=kind_phys), allocatable :: pfl_lsan(:,:)  !< instantaneous 3D flux of liquid nonconvective precipitation (kg m-2 s-1)
 
     !-- prognostic updraft area fraction coupling in convection
-    real (kind=kind_phys), pointer :: dqdt_qmicro(:,:) => null()  !< instantanious microphysics tendency to be passed from MP to convection
+    real (kind=kind_phys), allocatable :: dqdt_qmicro(:,:)  !< instantanious microphysics tendency to be passed from MP to convection
 
     contains
       procedure :: create  => coupling_create  !<   allocate array data
@@ -1616,36 +1616,36 @@ module GFS_typedefs
     real (kind=kind_phys), pointer :: dx     (:)    => null()   !< relative dx for the grid cell
 
 !--- grid-related interpolation data for prognostic ozone
-    real (kind=kind_phys), pointer :: ddy_o3    (:) => null()   !< interpolation     weight for ozone
-    integer,               pointer :: jindx1_o3 (:) => null()   !< interpolation  low index for ozone
-    integer,               pointer :: jindx2_o3 (:) => null()   !< interpolation high index for ozone
+    real (kind=kind_phys), allocatable :: ddy_o3    (:)    !< interpolation     weight for ozone
+    integer,               allocatable :: jindx1_o3 (:)    !< interpolation  low index for ozone
+    integer,               allocatable :: jindx2_o3 (:)    !< interpolation high index for ozone
 
 !--- grid-related interpolation data for stratosphere water
-    real (kind=kind_phys), pointer :: ddy_h     (:) => null()   !< interpolation     weight for h2o
-    integer,               pointer :: jindx1_h  (:) => null()   !< interpolation  low index for h2o
-    integer,               pointer :: jindx2_h  (:) => null()   !< interpolation high index for h2o
+    real (kind=kind_phys), allocatable :: ddy_h     (:)    !< interpolation     weight for h2o
+    integer,               allocatable :: jindx1_h  (:)    !< interpolation  low index for h2o
+    integer,               allocatable :: jindx2_h  (:)    !< interpolation high index for h2o
 
 !--- grid-related interpolation data for prognostic iccn
-    real (kind=kind_phys), pointer :: ddy_ci    (:) => null()   !< interpolation     weight for iccn
-    integer,               pointer :: jindx1_ci (:) => null()   !< interpolation  low index for iccn
-    integer,               pointer :: jindx2_ci (:) => null()   !< interpolation high index for iccn
-    real (kind=kind_phys), pointer :: ddx_ci    (:) => null()   !< interpolation     weight for iccn
-    integer,               pointer :: iindx1_ci (:) => null()   !< interpolation  low index for iccn
-    integer,               pointer :: iindx2_ci (:) => null()   !< interpolation high index for iccn
+    real (kind=kind_phys), allocatable :: ddy_ci    (:)   !< interpolation     weight for iccn
+    integer,               allocatable :: jindx1_ci (:)   !< interpolation  low index for iccn
+    integer,               allocatable :: jindx2_ci (:)   !< interpolation high index for iccn
+    real (kind=kind_phys), allocatable :: ddx_ci    (:)   !< interpolation     weight for iccn
+    integer,               allocatable :: iindx1_ci (:)   !< interpolation  low index for iccn
+    integer,               allocatable :: iindx2_ci (:)   !< interpolation high index for iccn
 
 !--- grid-related interpolation data for prescribed aerosols
-    real (kind=kind_phys), pointer :: ddy_aer    (:) => null()   !< interpolation     weight for iaerclm
-    integer,               pointer :: jindx1_aer (:) => null()   !< interpolation  low index for iaerclm
-    integer,               pointer :: jindx2_aer (:) => null()   !< interpolation high index for iaerclm
-    real (kind=kind_phys), pointer :: ddx_aer    (:) => null()   !< interpolation     weight for iaerclm
-    integer,               pointer :: iindx1_aer (:) => null()   !< interpolation  low index for iaerclm
-    integer,               pointer :: iindx2_aer (:) => null()   !< interpolation high index for iaerclm
+    real (kind=kind_phys), allocatable :: ddy_aer    (:)   !< interpolation     weight for iaerclm
+    integer,               allocatable :: jindx1_aer (:)   !< interpolation  low index for iaerclm
+    integer,               allocatable :: jindx2_aer (:)   !< interpolation high index for iaerclm
+    real (kind=kind_phys), allocatable :: ddx_aer    (:)   !< interpolation     weight for iaerclm
+    integer,               allocatable :: iindx1_aer (:)   !< interpolation  low index for iaerclm
+    integer,               allocatable :: iindx2_aer (:)   !< interpolation high index for iaerclm
 
 !--- grid-related interpolation data for cires_ugwp_v1
-    real (kind=kind_phys), pointer :: ddy_j1tau  (:) => null()   !< interpolation     weight for  tau_ugwp
-    real (kind=kind_phys), pointer :: ddy_j2tau  (:) => null()   !< interpolation     weight for  tau_ugwp
-    integer,               pointer :: jindx1_tau (:) => null()   !< interpolation  low index for tau_ugwp
-    integer,               pointer :: jindx2_tau (:) => null()   !< interpolation high index for tau_ugwp
+    real (kind=kind_phys), allocatable :: ddy_j1tau  (:)  !< interpolation     weight for  tau_ugwp
+    real (kind=kind_phys), allocatable :: ddy_j2tau  (:)  !< interpolation     weight for  tau_ugwp
+    integer,               allocatable :: jindx1_tau (:)  !< interpolation  low index for tau_ugwp
+    integer,               allocatable :: jindx2_tau (:)  !< interpolation high index for tau_ugwp
 
     contains
       procedure :: create   => grid_create   !<   allocate array data
@@ -1662,11 +1662,11 @@ module GFS_typedefs
   type GFS_tbd_type
 
 !--- radiation random seeds
-    integer,               pointer :: icsdsw   (:)     => null()  !< (rad. only) auxiliary cloud control arrays passed to main
-    integer,               pointer :: icsdlw   (:)     => null()  !< (rad. only) radiations. if isubcsw/isubclw (input to init)
+    integer,               allocatable :: icsdsw   (:)  !< (rad. only) auxiliary cloud control arrays passed to main
+    integer,               allocatable :: icsdlw   (:)  !< (rad. only) radiations. if isubcsw/isubclw (input to init)
                                                                   !< (rad. only) are set to 2, the arrays contains provided
                                                                   !< (rad. only) random seeds for sub-column clouds generators
-    integer,               pointer :: rseeds   (:,:)   => null()  !< (rad. only) random seeds provided by host
+    integer,               allocatable :: rseeds   (:,:)  !< (rad. only) random seeds provided by host
 
 !--- In
     real (kind=kind_phys), pointer :: ozpl     (:,:,:) => null()  !< ozone forcing data
@@ -1688,59 +1688,59 @@ module GFS_typedefs
     real (kind=kind_phys), pointer :: acvt     (:)     => null()  !< arrays used by cnvc90 top (cnvc90.f)
 
 !--- Stochastic physics properties calculated in physics_driver
-    real (kind=kind_phys), pointer :: dtdtnp    (:,:)  => null()  !< temperature change from physics that should not be perturbed with SPPT (k)
-    real (kind=kind_phys), pointer :: dtotprcp  (:)    => null()  !< change in totprcp  (diag_type)
-    real (kind=kind_phys), pointer :: dcnvprcp  (:)    => null()  !< change in cnvprcp  (diag_type)
-    real (kind=kind_phys), pointer :: drain_cpl (:)    => null()  !< change in rain_cpl (coupling_type)
-    real (kind=kind_phys), pointer :: dsnow_cpl (:)    => null()  !< change in show_cpl (coupling_type)
+    real (kind=kind_phys), allocatable :: dtdtnp    (:,:) !< temperature change from physics that should not be perturbed with SPPT (k)
+    real (kind=kind_phys), allocatable :: dtotprcp  (:)   !< change in totprcp  (diag_type)
+    real (kind=kind_phys), allocatable :: dcnvprcp  (:)   !< change in cnvprcp  (diag_type)
+    real (kind=kind_phys), allocatable :: drain_cpl (:)   !< change in rain_cpl (coupling_type)
+    real (kind=kind_phys), allocatable :: dsnow_cpl (:)   !< change in show_cpl (coupling_type)
 
 !--- phy_f*d variables needed for seamless restarts and moving data between grrad and gbphys
-    real (kind=kind_phys), pointer :: phy_fctd (:,:)   => null()  !< cloud base mass flux for CS convection
+    real (kind=kind_phys), allocatable :: phy_fctd (:,:)  !< cloud base mass flux for CS convection
     real (kind=kind_phys), pointer :: phy_f2d  (:,:)   => null()  !< 2d arrays saved for restart
     real (kind=kind_phys), pointer :: phy_f3d  (:,:,:) => null()  !< 3d arrays saved for restart
 
 !--- Diagnostic that needs to be carried over to the next time step (removed from diag_type)
     real (kind=kind_phys), pointer :: hpbl     (:)     => null()  !< Planetary boundary layer height
-    real (kind=kind_phys), pointer :: ud_mf  (:,:)     => null()  !< updraft mass flux
+    real (kind=kind_phys), allocatable :: ud_mf  (:,:)  !< updraft mass flux
 
     !--- dynamical forcing variables for Grell-Freitas convection
-    real (kind=kind_phys), pointer :: forcet (:,:)     => null()  !<
-    real (kind=kind_phys), pointer :: forceq (:,:)     => null()  !<
-    real (kind=kind_phys), pointer :: prevst (:,:)     => null()  !<
-    real (kind=kind_phys), pointer :: prevsq (:,:)     => null()  !<
-    integer,               pointer :: cactiv   (:)     => null()  !< convective activity memory contour
-    integer,               pointer :: cactiv_m (:)     => null()  !< mid-level convective activity memory contour
-    real (kind=kind_phys), pointer :: aod_gf   (:)     => null()
+    real (kind=kind_phys), allocatable :: forcet (:,:)  !<
+    real (kind=kind_phys), allocatable :: forceq (:,:)  !<
+    real (kind=kind_phys), allocatable :: prevst (:,:)  !<
+    real (kind=kind_phys), allocatable :: prevsq (:,:)  !<
+    integer,               allocatable :: cactiv   (:)  !< convective activity memory contour
+    integer,               allocatable :: cactiv_m (:)  !< mid-level convective activity memory contour
+    real (kind=kind_phys), allocatable :: aod_gf   (:)
 
     !--- MYNN prognostic variables that can't be in the Intdiag or Interstitial DDTs
-    real (kind=kind_phys), pointer :: CLDFRA_BL  (:,:)   => null()  !
-    real (kind=kind_phys), pointer :: QC_BL      (:,:)   => null()  !
-    real (kind=kind_phys), pointer :: QI_BL      (:,:)   => null()  !
-    real (kind=kind_phys), pointer :: el_pbl     (:,:)   => null()  !
-    real (kind=kind_phys), pointer :: Sh3D       (:,:)   => null()  !
-    real (kind=kind_phys), pointer :: Sm3D       (:,:)   => null()  !
-    real (kind=kind_phys), pointer :: qke        (:,:)   => null()  !
-    real (kind=kind_phys), pointer :: tsq        (:,:)   => null()  !
-    real (kind=kind_phys), pointer :: qsq        (:,:)   => null()  !
-    real (kind=kind_phys), pointer :: cov        (:,:)   => null()  !
+    real (kind=kind_phys), allocatable :: CLDFRA_BL  (:,:)  !
+    real (kind=kind_phys), allocatable :: QC_BL      (:,:)  !
+    real (kind=kind_phys), allocatable :: QI_BL      (:,:)  !
+    real (kind=kind_phys), allocatable :: el_pbl     (:,:)  !
+    real (kind=kind_phys), allocatable :: Sh3D       (:,:)  !
+    real (kind=kind_phys), allocatable :: Sm3D       (:,:)  !
+    real (kind=kind_phys), allocatable :: qke        (:,:)  !
+    real (kind=kind_phys), allocatable :: tsq        (:,:)  !
+    real (kind=kind_phys), allocatable :: qsq        (:,:)  !
+    real (kind=kind_phys), allocatable :: cov        (:,:)  !
 
     !--- MYJ schemes saved variables (from previous time step)
-    real (kind=kind_phys), pointer :: phy_myj_qsfc(:)    => null()  !
-    real (kind=kind_phys), pointer :: phy_myj_thz0(:)    => null()  !
-    real (kind=kind_phys), pointer :: phy_myj_qz0(:)     => null()  !
-    real (kind=kind_phys), pointer :: phy_myj_uz0(:)     => null()  !
-    real (kind=kind_phys), pointer :: phy_myj_vz0(:)     => null()  !
-    real (kind=kind_phys), pointer :: phy_myj_akhs(:)    => null()  !
-    real (kind=kind_phys), pointer :: phy_myj_akms(:)    => null()  !
-    real (kind=kind_phys), pointer :: phy_myj_chkqlm(:)  => null()  !
-    real (kind=kind_phys), pointer :: phy_myj_elflx(:)   => null()  !
-    real (kind=kind_phys), pointer :: phy_myj_a1u(:)     => null()  !
-    real (kind=kind_phys), pointer :: phy_myj_a1t(:)     => null()  !
-    real (kind=kind_phys), pointer :: phy_myj_a1q(:)     => null()  !
+    real (kind=kind_phys), allocatable :: phy_myj_qsfc(:)    !
+    real (kind=kind_phys), allocatable :: phy_myj_thz0(:)    !
+    real (kind=kind_phys), allocatable :: phy_myj_qz0(:)     !
+    real (kind=kind_phys), allocatable :: phy_myj_uz0(:)     !
+    real (kind=kind_phys), allocatable :: phy_myj_vz0(:)     !
+    real (kind=kind_phys), allocatable :: phy_myj_akhs(:)    !
+    real (kind=kind_phys), allocatable :: phy_myj_akms(:)    !
+    real (kind=kind_phys), allocatable :: phy_myj_chkqlm(:)  !
+    real (kind=kind_phys), allocatable :: phy_myj_elflx(:)   !
+    real (kind=kind_phys), allocatable :: phy_myj_a1u(:)     !
+    real (kind=kind_phys), allocatable :: phy_myj_a1t(:)     !
+    real (kind=kind_phys), allocatable :: phy_myj_a1q(:)     !
 
     !--- DFI Radar
-    real (kind=kind_phys), pointer :: dfi_radar_tten(:,:,:) => null() !
-    real (kind=kind_phys), pointer :: cap_suppress(:,:) => null() !
+    real (kind=kind_phys), allocatable :: dfi_radar_tten(:,:,:) !
+    real (kind=kind_phys), allocatable :: cap_suppress(:,:) !
 
     contains
       procedure :: create  => tbd_create  !<   allocate array data
@@ -2204,6 +2204,8 @@ module GFS_typedefs
     allocate (Statein%vgrs   (IM,Model%levs))
     if(Model%lightning_threat) then
       allocate (Statein%wgrs   (IM,Model%levs))
+    else
+      allocate (Statein%wgrs   (0,0))
     endif
     allocate (Statein%qgrs   (IM,Model%levs,Model%ntrac))
 
@@ -2277,7 +2279,10 @@ module GFS_typedefs
     if(Model%lkm > 0) then
       if(Model%iopt_lake==Model%iopt_lake_clm) then
         allocate (Sfcprop%clm_lakedepth(IM))
-      else if(Model%iopt_lake==Model%iopt_lake_flake) then
+      else
+        allocate (Sfcprop%clm_lakedepth(0))
+      endif
+      if(Model%iopt_lake==Model%iopt_lake_flake) then
         allocate (Sfcprop%h_ML     (IM))
         allocate (Sfcprop%t_ML     (IM))
         allocate (Sfcprop%t_mnw    (IM))
@@ -2286,9 +2291,30 @@ module GFS_typedefs
         allocate (Sfcprop%t_bot1   (IM))
         allocate (Sfcprop%t_bot2   (IM))
         allocate (Sfcprop%c_t      (IM))
+      else
+        allocate (Sfcprop%h_ML     (0))
+        allocate (Sfcprop%t_ML     (0))
+        allocate (Sfcprop%t_mnw    (0))
+        allocate (Sfcprop%h_talb   (0))
+        allocate (Sfcprop%t_talb   (0))
+        allocate (Sfcprop%t_bot1   (0))
+        allocate (Sfcprop%t_bot2   (0))
+        allocate (Sfcprop%c_t      (0))
       endif
       allocate (Sfcprop%T_snow   (IM))
       allocate (Sfcprop%T_ice    (IM))
+    else
+      allocate (Sfcprop%clm_lakedepth(0))
+      allocate (Sfcprop%h_ML     (0))
+      allocate (Sfcprop%t_ML     (0))
+      allocate (Sfcprop%t_mnw    (0))
+      allocate (Sfcprop%h_talb   (0))
+      allocate (Sfcprop%t_talb   (0))
+      allocate (Sfcprop%t_bot1   (0))
+      allocate (Sfcprop%t_bot2   (0))
+      allocate (Sfcprop%c_t      (0))
+      allocate (Sfcprop%T_snow   (0))
+      allocate (Sfcprop%T_ice    (0))
     endif
 
     allocate (Sfcprop%tsfc     (IM))
@@ -2447,11 +2473,20 @@ module GFS_typedefs
       allocate (Sfcprop%albdifvis_ice (IM))
       allocate (Sfcprop%albdirnir_ice (IM))
       allocate (Sfcprop%albdifnir_ice (IM))
+    else
+      allocate (Sfcprop%albdirvis_ice (0))
+      allocate (Sfcprop%albdifvis_ice (0))
+      allocate (Sfcprop%albdirnir_ice (0))
+      allocate (Sfcprop%albdifnir_ice (0))
     endif
     if (Model%lsm == Model%lsm_ruc) then
       allocate (Sfcprop%sfalb_lnd (IM))
       allocate (Sfcprop%sfalb_ice (IM))
       allocate (Sfcprop%sfalb_lnd_bck (IM))
+    else
+      allocate (Sfcprop%sfalb_lnd (0))
+      allocate (Sfcprop%sfalb_ice (0))
+      allocate (Sfcprop%sfalb_lnd_bck (0))
     endif
     allocate (Sfcprop%canopy (IM))
     allocate (Sfcprop%ffmm   (IM))
@@ -2535,13 +2570,39 @@ module GFS_typedefs
       Sfcprop%ifd     = zero
       Sfcprop%dt_cool = zero
       Sfcprop%qrain   = zero
+    else
+      allocate (Sfcprop%tref   (0))
+      allocate (Sfcprop%z_c    (0))
+      allocate (Sfcprop%c_0    (0))
+      allocate (Sfcprop%c_d    (0))
+      allocate (Sfcprop%w_0    (0))
+      allocate (Sfcprop%w_d    (0))
+      allocate (Sfcprop%xt     (0))
+      allocate (Sfcprop%xs     (0))
+      allocate (Sfcprop%xu     (0))
+      allocate (Sfcprop%xv     (0))
+      allocate (Sfcprop%xz     (0))
+      allocate (Sfcprop%zm     (0))
+      allocate (Sfcprop%xtts   (0))
+      allocate (Sfcprop%xzts   (0))
+      allocate (Sfcprop%d_conv (0))
+      allocate (Sfcprop%ifd    (0))
+      allocate (Sfcprop%dt_cool(0))
+      allocate (Sfcprop%qrain  (0))
     endif
-    if (Model%lsm == Model%lsm_noah) then
+    if (Model%lsm == Model%lsm_noah .or. Model%lsm == Model%lsm_noahmp .or. Model%lsm == Model%lsm_ruc) then
       allocate (Sfcprop%xlaixy   (IM))
-      allocate (Sfcprop%rca      (IM))
       Sfcprop%xlaixy     = clear_val
-      Sfcprop%rca        = clear_val
+    else
+      allocate (Sfcprop%xlaixy   (0))
     end if
+    if (Model%lsm == Model%lsm_noah) then
+      allocate (Sfcprop%rca      (IM))
+      Sfcprop%rca        = clear_val
+    else
+      allocate (Sfcprop%rca      (0))
+    end if
+    
     if (Model%lsm == Model%lsm_ruc .or. Model%lsm == Model%lsm_noahmp .or. &
          (Model%lkm>0 .and. Model%iopt_lake==Model%iopt_lake_clm)) then
      allocate(Sfcprop%raincprv  (IM))
@@ -2555,7 +2616,17 @@ module GFS_typedefs
       Sfcprop%iceprv     = clear_val
       Sfcprop%snowprv    = clear_val
       Sfcprop%graupelprv = clear_val
+     else
+       allocate(Sfcprop%iceprv    (0))
+       allocate(Sfcprop%snowprv   (0))
+       allocate(Sfcprop%graupelprv(0))
      end if
+    else
+      allocate(Sfcprop%raincprv  (0))
+      allocate(Sfcprop%rainncprv (0))
+      allocate(Sfcprop%iceprv    (0))
+      allocate(Sfcprop%snowprv   (0))
+      allocate(Sfcprop%graupelprv(0))
     end if
 ! Noah MP allocate and init when used
 !
@@ -2585,7 +2656,6 @@ module GFS_typedefs
       allocate (Sfcprop%stblcpxy (IM))
       allocate (Sfcprop%fastcpxy (IM))
       allocate (Sfcprop%xsaixy   (IM))
-      allocate (Sfcprop%xlaixy   (IM))
       allocate (Sfcprop%taussxy  (IM))
       allocate (Sfcprop%smcwtdxy (IM))
       allocate (Sfcprop%deeprechxy (IM))
@@ -2620,7 +2690,6 @@ module GFS_typedefs
       Sfcprop%stblcpxy   = clear_val
       Sfcprop%fastcpxy   = clear_val
       Sfcprop%xsaixy     = clear_val
-      Sfcprop%xlaixy     = clear_val
       Sfcprop%taussxy    = clear_val
       Sfcprop%smcwtdxy   = clear_val
       Sfcprop%deeprechxy = clear_val
@@ -2644,11 +2713,53 @@ module GFS_typedefs
       Sfcprop%dsnowprv    = clear_val
       Sfcprop%dgraupelprv = clear_val
 
+    else
+      allocate (Sfcprop%snowxy   (0))
+      allocate (Sfcprop%tvxy     (0))
+      allocate (Sfcprop%tgxy     (0))
+      allocate (Sfcprop%canicexy (0))
+      allocate (Sfcprop%canliqxy (0))
+      allocate (Sfcprop%eahxy    (0))
+      allocate (Sfcprop%tahxy    (0))
+      allocate (Sfcprop%cmxy     (0))
+      allocate (Sfcprop%chxy     (0))
+      allocate (Sfcprop%fwetxy   (0))
+      allocate (Sfcprop%sneqvoxy (0))
+      allocate (Sfcprop%alboldxy (0))
+      allocate (Sfcprop%qsnowxy  (0))
+      allocate (Sfcprop%wslakexy (0))
+      allocate (Sfcprop%zwtxy    (0))
+      allocate (Sfcprop%waxy     (0))
+      allocate (Sfcprop%wtxy     (0))
+      allocate (Sfcprop%lfmassxy (0))
+      allocate (Sfcprop%rtmassxy (0))
+      allocate (Sfcprop%stmassxy (0))
+      allocate (Sfcprop%woodxy   (0))
+      allocate (Sfcprop%stblcpxy (0))
+      allocate (Sfcprop%fastcpxy (0))
+      allocate (Sfcprop%xsaixy   (0))
+      allocate (Sfcprop%taussxy  (0))
+      allocate (Sfcprop%smcwtdxy (0))
+      allocate (Sfcprop%deeprechxy (0))
+      allocate (Sfcprop%rechxy     (0))
+      allocate (Sfcprop%snicexy    (0, 0))
+      allocate (Sfcprop%snliqxy    (0, 0))
+      allocate (Sfcprop%tsnoxy     (0, 0))
+      allocate (Sfcprop%smoiseq    (0, 0))
+      allocate (Sfcprop%zsnsoxy    (0, 0))
+      
+      allocate(Sfcprop%draincprv  (0))
+      allocate(Sfcprop%drainncprv (0))
+      allocate(Sfcprop%diceprv    (0))
+      allocate(Sfcprop%dsnowprv   (0))
+      allocate(Sfcprop%dgraupelprv(0))
     endif
 
     if (Model%do_myjsfc .or. Model%do_myjpbl) then
       allocate(Sfcprop%z0base(IM))
       Sfcprop%z0base = clear_val
+    else
+      allocate(Sfcprop%z0base(0))
     end if
 
     allocate(Sfcprop%semisbase(IM))
@@ -2673,7 +2784,6 @@ module GFS_typedefs
        allocate (Sfcprop%snowfallac_ice  (IM))
        allocate (Sfcprop%acsnow_land     (IM))
        allocate (Sfcprop%acsnow_ice      (IM))
-       allocate (Sfcprop%xlaixy   (IM))
        allocate (Sfcprop%fire_heat_flux_out (IM))
        allocate (Sfcprop%frac_grid_burned_out (IM))
 
@@ -2695,18 +2805,38 @@ module GFS_typedefs
        Sfcprop%snowfallac_ice  = clear_val
        Sfcprop%acsnow_land     = clear_val
        Sfcprop%acsnow_ice      = clear_val
-       Sfcprop%xlaixy          = clear_val
        Sfcprop%fire_heat_flux_out = clear_val
        Sfcprop%frac_grid_burned_out = clear_val
        !
+    else
+       allocate (Sfcprop%wetness         (0))
+       allocate (Sfcprop%sh2o            (0,0))
+       allocate (Sfcprop%keepsmfr        (0,0))
+       allocate (Sfcprop%smois           (0,0))
+       allocate (Sfcprop%tslb            (0,0))
+       allocate (Sfcprop%flag_frsoil     (0,0))
+       allocate (Sfcprop%clw_surf_land   (0))
+       allocate (Sfcprop%clw_surf_ice    (0))
+       allocate (Sfcprop%qwv_surf_land   (0))
+       allocate (Sfcprop%qwv_surf_ice    (0))
+       allocate (Sfcprop%rhofr           (0))
+       allocate (Sfcprop%tsnow_land      (0))
+       allocate (Sfcprop%tsnow_ice       (0))
+       allocate (Sfcprop%snowfallac_land (0))
+       allocate (Sfcprop%snowfallac_ice  (0))
+       allocate (Sfcprop%acsnow_land     (0))
+       allocate (Sfcprop%acsnow_ice      (0))
+       allocate (Sfcprop%fire_heat_flux_out (0))
+       allocate (Sfcprop%frac_grid_burned_out (0))
     end if
 
-       allocate (Sfcprop%rmol   (IM ))
-       allocate (Sfcprop%flhc   (IM ))
-       allocate (Sfcprop%flqc   (IM ))
-       Sfcprop%rmol        = clear_val
-       Sfcprop%flhc        = clear_val
-       Sfcprop%flqc        = clear_val
+    allocate (Sfcprop%rmol   (IM ))
+    allocate (Sfcprop%flhc   (IM ))
+    allocate (Sfcprop%flqc   (IM ))
+    Sfcprop%rmol        = clear_val
+    Sfcprop%flhc        = clear_val
+    Sfcprop%flqc        = clear_val
+    
     if (Model%do_mynnsfclay) then
     ! For MYNN surface layer scheme
        !print*,"Allocating all MYNN-sfclay variables"
@@ -2724,6 +2854,13 @@ module GFS_typedefs
        Sfcprop%chs2        = clear_val
        Sfcprop%cqs2        = clear_val
        Sfcprop%lh          = clear_val
+    else
+       allocate (Sfcprop%ustm   (0))
+       allocate (Sfcprop%zol    (0))
+       allocate (Sfcprop%mol    (0))
+       allocate (Sfcprop%chs2   (0))
+       allocate (Sfcprop%cqs2   (0))
+       allocate (Sfcprop%lh     (0))
     end if
     if (Model%imfdeepcnv == Model%imfdeepcnv_gf .or. Model%imfdeepcnv == Model%imfdeepcnv_c3) then
         allocate (Sfcprop%maxupmf(IM))
@@ -2732,6 +2869,10 @@ module GFS_typedefs
         Sfcprop%maxupmf = zero
         Sfcprop%conv_act = zero
         Sfcprop%conv_act_m = zero
+    else
+        allocate (Sfcprop%maxupmf(0))
+        allocate (Sfcprop%conv_act(0))
+        allocate (Sfcprop%conv_act_m(0))
     end if
 
     ! CLM Lake Model variables
@@ -2783,6 +2924,30 @@ module GFS_typedefs
        Sfcprop%lake_is_salty = zero
        Sfcprop%lake_cannot_freeze = zero
        Sfcprop%clm_lake_initialized = zero
+    else
+       allocate(Sfcprop%lake_t2m(0))
+       allocate(Sfcprop%lake_q2m(0))
+       allocate(Sfcprop%lake_albedo(0))
+       allocate(Sfcprop%input_lakedepth(0))
+       allocate(Sfcprop%lake_h2osno2d(0))
+       allocate(Sfcprop%lake_sndpth2d(0))
+       allocate(Sfcprop%lake_snl2d(0))
+       allocate(Sfcprop%lake_snow_z3d(0,0))
+       allocate(Sfcprop%lake_snow_dz3d(0,0))
+       allocate(Sfcprop%lake_snow_zi3d(0,0))
+       allocate(Sfcprop%lake_h2osoi_vol3d(0,0))
+       allocate(Sfcprop%lake_h2osoi_liq3d(0,0))
+       allocate(Sfcprop%lake_h2osoi_ice3d(0,0))
+       allocate(Sfcprop%lake_tsfc(0))
+       allocate(Sfcprop%lake_t_soisno3d(0,0))
+       allocate(Sfcprop%lake_t_lake3d(0,0))
+       allocate(Sfcprop%lake_savedtke12d(0))
+       allocate(Sfcprop%lake_icefrac3d(0,0))
+       allocate(Sfcprop%lake_rho0(0))
+       allocate(Sfcprop%lake_ht(0))
+       allocate(Sfcprop%lake_is_salty(0))
+       allocate(Sfcprop%lake_cannot_freeze(0))
+       allocate(Sfcprop%clm_lake_initialized(0))
     endif
 
     if(Model%rrfs_sd) then
@@ -2807,6 +2972,16 @@ module GFS_typedefs
       Sfcprop%fhist      = 1.
       Sfcprop%coef_bb_dc = clear_val
       Sfcprop%fire_in    = clear_val
+    else
+      allocate (Sfcprop%emdust    (0))
+      allocate (Sfcprop%emseas    (0))
+      allocate (Sfcprop%emanoc    (0))
+      allocate (Sfcprop%ebb_smoke_hr (0))
+      allocate (Sfcprop%frp_hr    (0))
+      allocate (Sfcprop%frp_std_hr(0))
+      allocate (Sfcprop%fhist     (0))
+      allocate (Sfcprop%coef_bb_dc(0))
+      allocate (Sfcprop%fire_in   (0,0))
     endif
 
   end subroutine sfcprop_create
@@ -2864,6 +3039,12 @@ module GFS_typedefs
        Coupling%fluxlwUP_jac       = clear_val
        Coupling%htrlw              = clear_val
        Coupling%tsfc_radtime       = clear_val
+    else
+       allocate (Coupling%fluxlwUP_radtime   (0, 0))
+       allocate (Coupling%fluxlwDOWN_radtime (0, 0))
+       allocate (Coupling%fluxlwUP_jac       (0, 0))
+       allocate (Coupling%htrlw              (0, 0))
+       allocate (Coupling%tsfc_radtime       (0))
     endif
 
     if (Model%cplflx .or. Model%do_sppt .or. Model%cplchm .or. Model%ca_global .or. Model%cpllnd) then
@@ -2871,6 +3052,9 @@ module GFS_typedefs
       allocate (Coupling%snow_cpl (IM))
       Coupling%rain_cpl = clear_val
       Coupling%snow_cpl = clear_val
+    else
+      allocate (Coupling%rain_cpl (0))
+      allocate (Coupling%snow_cpl (0))
     endif
 
     if (Model%cplflx .or. Model%cplchm .or. Model%cplwav) then
@@ -2880,12 +3064,17 @@ module GFS_typedefs
 
       Coupling%u10mi_cpl = clear_val
       Coupling%v10mi_cpl = clear_val
+    else
+      allocate (Coupling%u10mi_cpl (0))
+      allocate (Coupling%v10mi_cpl (0))
     endif
 
     if (Model%cplflx .or. Model%cplchm .or. Model%cpllnd) then
       !--- instantaneous quantities
       allocate (Coupling%tsfci_cpl (IM))
       Coupling%tsfci_cpl = clear_val
+    else
+      allocate (Coupling%tsfci_cpl (0))
     endif
 
 !   if (Model%cplwav2atm) then
@@ -2895,14 +3084,39 @@ module GFS_typedefs
 !     Coupling%zorlwav_cpl  = clear_val
 !   endif
 
+    ! -- additional coupling options for air quality
+    if (Model%cplflx .or. Model%cpllnd .or. (Model%cplaqm .and. .not.Model%cplflx)) then
+      allocate (Coupling%psurfi_cpl  (IM))
+      allocate (Coupling%nswsfci_cpl (IM))
+      Coupling%psurfi_cpl  = clear_val
+      Coupling%nswsfci_cpl = clear_val
+    else
+      allocate (Coupling%psurfi_cpl  (0))
+      allocate (Coupling%nswsfci_cpl (0))
+    endif
+     
+    if (Model%cplflx .or. (Model%cplaqm .and. .not.Model%cplflx)) then
+      allocate (Coupling%dtsfci_cpl  (IM))
+      allocate (Coupling%dqsfci_cpl  (IM))
+      allocate (Coupling%t2mi_cpl    (IM))
+      allocate (Coupling%q2mi_cpl    (IM))
+      Coupling%dtsfci_cpl  = clear_val
+      Coupling%dqsfci_cpl  = clear_val
+      Coupling%t2mi_cpl    = clear_val
+      Coupling%q2mi_cpl    = clear_val
+    else
+      allocate (Coupling%dtsfci_cpl  (0))
+      allocate (Coupling%dqsfci_cpl  (0))
+      allocate (Coupling%t2mi_cpl    (0))
+      allocate (Coupling%q2mi_cpl    (0))
+    endif
+    
     if (Model%cplflx .or. Model%cpllnd) then
       allocate (Coupling%dlwsfci_cpl (IM))
       allocate (Coupling%dswsfci_cpl (IM))
       allocate (Coupling%dlwsfc_cpl  (IM))
       allocate (Coupling%dswsfc_cpl  (IM))
-      allocate (Coupling%psurfi_cpl  (IM))
       allocate (Coupling%nswsfc_cpl  (IM))
-      allocate (Coupling%nswsfci_cpl (IM))
       allocate (Coupling%nnirbmi_cpl (IM))
       allocate (Coupling%nnirdfi_cpl (IM))
       allocate (Coupling%nvisbmi_cpl (IM))
@@ -2916,9 +3130,7 @@ module GFS_typedefs
       Coupling%dswsfci_cpl  = clear_val
       Coupling%dlwsfc_cpl  = clear_val
       Coupling%dswsfc_cpl  = clear_val
-      Coupling%psurfi_cpl  = clear_val
       Coupling%nswsfc_cpl  = clear_val
-      Coupling%nswsfci_cpl = clear_val
       Coupling%nnirbmi_cpl = clear_val
       Coupling%nnirdfi_cpl = clear_val
       Coupling%nvisbmi_cpl = clear_val
@@ -2927,6 +3139,20 @@ module GFS_typedefs
       Coupling%nnirdf_cpl  = clear_val
       Coupling%nvisbm_cpl  = clear_val
       Coupling%nvisdf_cpl  = clear_val
+    else
+      allocate (Coupling%dlwsfci_cpl (0))
+      allocate (Coupling%dswsfci_cpl (0))
+      allocate (Coupling%dlwsfc_cpl  (0))
+      allocate (Coupling%dswsfc_cpl  (0))
+      allocate (Coupling%nswsfc_cpl  (0))
+      allocate (Coupling%nnirbmi_cpl (0))
+      allocate (Coupling%nnirdfi_cpl (0))
+      allocate (Coupling%nvisbmi_cpl (0))
+      allocate (Coupling%nvisdfi_cpl (0))
+      allocate (Coupling%nnirbm_cpl  (0))
+      allocate (Coupling%nnirdf_cpl  (0))
+      allocate (Coupling%nvisbm_cpl  (0))
+      allocate (Coupling%nvisdf_cpl  (0))
     end if
 
     if (Model%cplflx) then
@@ -2976,6 +3202,12 @@ module GFS_typedefs
         Coupling%dtsfcin_med  = clear_val
         Coupling%dqsfcin_med  = clear_val
         Coupling%ulwsfcin_med = clear_val
+      else
+        allocate (Coupling%dusfcin_med (0))
+        allocate (Coupling%dvsfcin_med (0))
+        allocate (Coupling%dtsfcin_med (0))
+        allocate (Coupling%dqsfcin_med (0))
+        allocate (Coupling%ulwsfcin_med(0))
       end if
 
       !--- accumulated quantities
@@ -3002,35 +3234,62 @@ module GFS_typedefs
       !--- instantaneous quantities
       allocate (Coupling%dusfci_cpl  (IM))
       allocate (Coupling%dvsfci_cpl  (IM))
-      allocate (Coupling%dtsfci_cpl  (IM))
-      allocate (Coupling%dqsfci_cpl  (IM))
       allocate (Coupling%dnirbmi_cpl (IM))
       allocate (Coupling%dnirdfi_cpl (IM))
       allocate (Coupling%dvisbmi_cpl (IM))
       allocate (Coupling%dvisdfi_cpl (IM))
       allocate (Coupling%nlwsfci_cpl (IM))
-      allocate (Coupling%t2mi_cpl    (IM))
-      allocate (Coupling%q2mi_cpl    (IM))
       allocate (Coupling%oro_cpl     (IM))
       allocate (Coupling%slmsk_cpl   (IM))
 
       Coupling%dusfci_cpl  = clear_val
       Coupling%dvsfci_cpl  = clear_val
-      Coupling%dtsfci_cpl  = clear_val
-      Coupling%dqsfci_cpl  = clear_val
       Coupling%dnirbmi_cpl = clear_val
       Coupling%dnirdfi_cpl = clear_val
       Coupling%dvisbmi_cpl = clear_val
       Coupling%dvisdfi_cpl = clear_val
       Coupling%nlwsfci_cpl = clear_val
-      Coupling%t2mi_cpl    = clear_val
-      Coupling%q2mi_cpl    = clear_val
-      Coupling%oro_cpl     = clear_val  !< pointer to sfcprop%oro
-      Coupling%slmsk_cpl   = clear_val  !< pointer to sfcprop%slmsk
+      Coupling%oro_cpl     = clear_val
+      Coupling%slmsk_cpl   = clear_val
+    else
+      allocate (Coupling%slimskin_cpl        (0))
+      allocate (Coupling%dusfcin_cpl         (0))
+      allocate (Coupling%dvsfcin_cpl         (0))
+      allocate (Coupling%dtsfcin_cpl         (0))
+      allocate (Coupling%dqsfcin_cpl         (0))
+      allocate (Coupling%ulwsfcin_cpl        (0))
+      allocate (Coupling%hsnoin_cpl          (0))
+      
+      allocate (Coupling%dusfcin_med (0))
+      allocate (Coupling%dvsfcin_med (0))
+      allocate (Coupling%dtsfcin_med (0))
+      allocate (Coupling%dqsfcin_med (0))
+      allocate (Coupling%ulwsfcin_med(0))
+      
+      allocate (Coupling%dusfc_cpl  (0))
+      allocate (Coupling%dvsfc_cpl  (0))
+      allocate (Coupling%dtsfc_cpl  (0))
+      allocate (Coupling%dqsfc_cpl  (0))
+      allocate (Coupling%dnirbm_cpl (0))
+      allocate (Coupling%dnirdf_cpl (0))
+      allocate (Coupling%dvisbm_cpl (0))
+      allocate (Coupling%dvisdf_cpl (0))
+      allocate (Coupling%nlwsfc_cpl (0))
+      
+      allocate (Coupling%dusfci_cpl  (0))
+      allocate (Coupling%dvsfci_cpl  (0))
+      allocate (Coupling%dnirbmi_cpl (0))
+      allocate (Coupling%dnirdfi_cpl (0))
+      allocate (Coupling%dvisbmi_cpl (0))
+      allocate (Coupling%dvisdfi_cpl (0))
+      allocate (Coupling%nlwsfci_cpl (0))
+      allocate (Coupling%oro_cpl     (0))
+      allocate (Coupling%slmsk_cpl   (0))
     endif
 
    !-- cellular automata
     allocate (Coupling%condition(IM))
+    Coupling%condition = clear_val
     if (Model%do_ca) then
       allocate (Coupling%ca1      (IM))
       allocate (Coupling%ca2      (IM))
@@ -3048,7 +3307,15 @@ module GFS_typedefs
       Coupling%ca_shal   = clear_val
       Coupling%ca_rad    = clear_val
       Coupling%ca_micro  = clear_val
-      Coupling%condition = clear_val
+    else
+      allocate (Coupling%ca1      (0))
+      allocate (Coupling%ca2      (0))
+      allocate (Coupling%ca3      (0))
+      allocate (Coupling%ca_deep  (0))
+      allocate (Coupling%ca_turb  (0))
+      allocate (Coupling%ca_shal  (0))
+      allocate (Coupling%ca_rad   (0))
+      allocate (Coupling%ca_micro (0))
     endif
 
     ! -- Aerosols coupling options
@@ -3061,46 +3328,41 @@ module GFS_typedefs
       Coupling%ushfsfci  = clear_val
       Coupling%pfi_lsan  = clear_val
       Coupling%pfl_lsan  = clear_val
+    else
+      allocate (Coupling%ushfsfci  (0))
+      allocate (Coupling%pfi_lsan  (0,0))
+      allocate (Coupling%pfl_lsan  (0,0))
     endif
 
     if (Model%cplchm .or. Model%cplflx .or. Model%cpllnd) then
       !--- accumulated convective rainfall
       allocate (Coupling%rainc_cpl (IM))
       Coupling%rainc_cpl = clear_val
+    else
+      allocate (Coupling%rainc_cpl (0))
     end if
-
-    ! -- additional coupling options for air quality
-    if (Model%cplaqm .and. .not.Model%cplflx) then
-      !--- outgoing instantaneous quantities
-      allocate (Coupling%dtsfci_cpl  (IM))
-      allocate (Coupling%dqsfci_cpl  (IM))
-      allocate (Coupling%nswsfci_cpl (IM))
-      allocate (Coupling%t2mi_cpl    (IM))
-      allocate (Coupling%q2mi_cpl    (IM))
-      allocate (Coupling%psurfi_cpl  (IM))
-      Coupling%dtsfci_cpl  = clear_val
-      Coupling%dqsfci_cpl  = clear_val
-      Coupling%nswsfci_cpl = clear_val
-      Coupling%t2mi_cpl    = clear_val
-      Coupling%q2mi_cpl    = clear_val
-      Coupling%psurfi_cpl  = clear_val
-    endif
 
     if(Model%progsigma)then
        allocate(Coupling%dqdt_qmicro (IM,Model%levs))
        Coupling%dqdt_qmicro = clear_val
+    else
+       allocate(Coupling%dqdt_qmicro (0,0))
     endif
 
     !--- stochastic physics option
     if (Model%do_sppt .or. Model%ca_global) then
       allocate (Coupling%sppt_wts  (IM,Model%levs))
       Coupling%sppt_wts = clear_val
+    else
+      allocate (Coupling%sppt_wts  (0,0))
     endif
 
     !--- stochastic shum option
     if (Model%do_shum) then
       allocate (Coupling%shum_wts  (IM,Model%levs))
       Coupling%shum_wts = clear_val
+    else
+      allocate (Coupling%shum_wts  (0,0))
     endif
 
     !--- stochastic skeb option
@@ -3110,12 +3372,17 @@ module GFS_typedefs
 
       Coupling%skebu_wts = clear_val
       Coupling%skebv_wts = clear_val
+    else
+      allocate (Coupling%skebu_wts (0,0))
+      allocate (Coupling%skebv_wts (0,0))
     endif
 
     !--- stochastic land perturbation option
     if (Model%lndp_type /= 0) then
       allocate (Coupling%sfc_wts  (IM,Model%n_var_lndp))
       Coupling%sfc_wts = clear_val
+    else
+      allocate (Coupling%sfc_wts  (0,0))
     endif
 
     !--- stochastic spp perturbation option
@@ -3132,6 +3399,13 @@ module GFS_typedefs
       Coupling%spp_wts_rad = clear_val
       allocate (Coupling%spp_wts_cu_deep   (IM,Model%levs))
       Coupling%spp_wts_cu_deep = clear_val
+    else
+      allocate (Coupling%spp_wts_pbl     (0,0))
+      allocate (Coupling%spp_wts_sfc     (0,0))
+      allocate (Coupling%spp_wts_mp      (0,0))
+      allocate (Coupling%spp_wts_gwd     (0,0))
+      allocate (Coupling%spp_wts_rad     (0,0))
+      allocate (Coupling%spp_wts_cu_deep (0,0))
     endif
 
     !--- needed for Thompson's aerosol option
@@ -3140,6 +3414,9 @@ module GFS_typedefs
       allocate (Coupling%nifa2d (IM))
       Coupling%nwfa2d   = clear_val
       Coupling%nifa2d   = clear_val
+    else
+      allocate (Coupling%nwfa2d (0))
+      allocate (Coupling%nifa2d (0))
     endif
 
     if(Model%rrfs_sd) then
@@ -3160,11 +3437,22 @@ module GFS_typedefs
       Coupling%min_fplume = clear_val
       Coupling%max_fplume = clear_val
       Coupling%rrfs_hwp   = clear_val
+    else
+      allocate (Coupling%ebu_smoke (0,0))
+      allocate (Coupling%smoke_ext (0,0))
+      allocate (Coupling%dust_ext  (0,0))
+      allocate (Coupling%chem3d    (0,0,0))
+      allocate (Coupling%ddvel     (0,0))
+      allocate (Coupling%min_fplume(0))
+      allocate (Coupling%max_fplume(0))
+      allocate (Coupling%rrfs_hwp  (0))
     endif
 
     if (Model%imfdeepcnv == Model%imfdeepcnv_gf .or. Model%imfdeepcnv == Model%imfdeepcnv_c3) then
       allocate (Coupling%qci_conv (IM,Model%levs))
       Coupling%qci_conv   = clear_val
+    else
+      allocate (Coupling%qci_conv (0,0))
     endif
 
   end subroutine coupling_create
@@ -6917,6 +7205,10 @@ module GFS_typedefs
       Grid%ddy_o3      = clear_val
       Grid%jindx1_o3   = clear_val
       Grid%jindx2_o3   = clear_val
+    else
+      allocate (Grid%ddy_o3    (0))
+      allocate (Grid%jindx1_o3 (0))
+      allocate (Grid%jindx2_o3 (0))
     endif
 
 !--- stratosphere h2o active
@@ -6928,6 +7220,10 @@ module GFS_typedefs
       Grid%ddy_h       = clear_val
       Grid%jindx1_h    = clear_val
       Grid%jindx2_h    = clear_val
+    else
+      allocate (Grid%ddy_h    (0))
+      allocate (Grid%jindx1_h (0))
+      allocate (Grid%jindx2_h (0))
     endif
 
 !--- iccn active
@@ -6945,6 +7241,13 @@ module GFS_typedefs
       Grid%ddx_ci      = clear_val
       Grid%iindx1_ci   = clear_val
       Grid%iindx2_ci   = clear_val
+    else
+      allocate (Grid%ddy_ci    (0))
+      allocate (Grid%jindx1_ci (0))
+      allocate (Grid%jindx2_ci (0))
+      allocate (Grid%ddx_ci    (0))
+      allocate (Grid%iindx1_ci (0))
+      allocate (Grid%iindx2_ci (0))
     endif
 
 !--- iaerclm active
@@ -6962,6 +7265,13 @@ module GFS_typedefs
       Grid%ddx_aer     = clear_val
       Grid%iindx1_aer  = clear_val
       Grid%iindx2_aer  = clear_val
+    else
+      allocate (Grid%ddy_aer   (0))
+      allocate (Grid%jindx1_aer(0))
+      allocate (Grid%jindx2_aer(0))
+      allocate (Grid%ddx_aer   (0))
+      allocate (Grid%iindx1_aer(0))
+      allocate (Grid%iindx2_aer(0))
     endif
 
 !---  Model%do_ugwpv1
@@ -6975,6 +7285,11 @@ module GFS_typedefs
       Grid%ddy_j2tau   = clear_val
       Grid%jindx1_tau  = clear_val
       Grid%jindx2_tau  = clear_val
+   else
+      allocate (Grid%ddy_j1tau  (0))
+      allocate (Grid%ddy_j2tau  (0))
+      allocate (Grid%jindx1_tau (0))
+      allocate (Grid%jindx2_tau (0))
    endif
 
  end subroutine grid_create
@@ -7001,12 +7316,16 @@ module GFS_typedefs
       if (Model%lrseeds) then
         allocate (Tbd%rseeds(IM,Model%nrstreams))
         Tbd%rseeds = zero
+      else
+        allocate (Tbd%rseeds(0,0))
       endif
+    else
+      allocate (Tbd%icsdsw (0))
+      allocate (Tbd%icsdlw (0))
+      allocate (Tbd%rseeds(0,0))
     endif
 
 !--- DFI radar forcing
-    nullify(Tbd%dfi_radar_tten)
-    nullify(Tbd%cap_suppress)
     if(Model%num_dfi_radar>0) then
        allocate(Tbd%dfi_radar_tten(IM,Model%levs,Model%num_dfi_radar))
        Tbd%dfi_radar_tten = -20.0
@@ -7014,7 +7333,12 @@ module GFS_typedefs
        if(Model%do_cap_suppress) then
          allocate(Tbd%cap_suppress(IM,Model%num_dfi_radar))
          Tbd%cap_suppress(:,:) = zero
+       else
+         allocate(Tbd%cap_suppress(0,0))
        endif
+    else
+       allocate(Tbd%dfi_radar_tten(0,0,0))
+       allocate(Tbd%cap_suppress(0,0))
     endif
 
 !--- ozone and stratosphere h2o needs
@@ -7063,6 +7387,9 @@ module GFS_typedefs
       allocate (Tbd%dsnow_cpl (IM))
       Tbd%drain_cpl = clear_val
       Tbd%dsnow_cpl = clear_val
+    else
+      allocate (Tbd%drain_cpl (0))
+      allocate (Tbd%dsnow_cpl (0))
     endif
 
     if (Model%do_sppt .or. Model%ca_global) then
@@ -7072,6 +7399,10 @@ module GFS_typedefs
       Tbd%dtdtnp    = clear_val
       Tbd%dtotprcp  = clear_val
       Tbd%dcnvprcp  = clear_val
+    else
+      allocate (Tbd%dtdtnp    (0,0))
+      allocate (Tbd%dtotprcp  (0))
+      allocate (Tbd%dcnvprcp  (0))
     endif
 
     allocate (Tbd%phy_f2d  (IM,Model%ntot2d))
@@ -7082,6 +7413,8 @@ module GFS_typedefs
     if (Model%nctp > 0 .and. Model%cscnv) then
       allocate (Tbd%phy_fctd (IM,Model%nctp))
       Tbd%phy_fctd = clear_val
+    else
+      allocate (Tbd%phy_fctd (0,0))
     endif
 
 !   if (Model%do_shoc) Tbd%phy_f3d(:,1,Model%ntot3d-1) = 3.0
@@ -7093,21 +7426,28 @@ module GFS_typedefs
     if (Model%imfdeepcnv == Model%imfdeepcnv_gf .or. Model%imfdeepcnv == Model%imfdeepcnv_ntiedtke .or. Model%imfdeepcnv == Model%imfdeepcnv_samf .or. Model%imfshalcnv == Model%imfshalcnv_samf .or. Model%imfdeepcnv == Model%imfdeepcnv_c3 .or. Model%imfshalcnv == Model%imfshalcnv_c3) then
        allocate(Tbd%prevsq(IM, Model%levs))
        Tbd%prevsq = clear_val
+    else
+       allocate(Tbd%prevsq(0, 0))
     endif
 
     if (Model%imfdeepcnv .ge. 0 .or. Model%imfshalcnv .ge. 0) then
        allocate(Tbd%ud_mf(IM, Model%levs))
        Tbd%ud_mf = zero
+    else
+       allocate(Tbd%ud_mf(0, 0))
     endif
 
     if (Model%imfdeepcnv == Model%imfdeepcnv_gf .or. Model%imfdeepcnv == Model%imfdeepcnv_ntiedtke .or.  Model%imfdeepcnv == Model%imfdeepcnv_c3) then
        allocate(Tbd%forcet(IM, Model%levs))
        allocate(Tbd%forceq(IM, Model%levs))
-       allocate(Tbd%forcet(IM, Model%levs))
        allocate(Tbd%prevst(IM, Model%levs))
        Tbd%forcet = clear_val
        Tbd%forceq = clear_val
        Tbd%prevst = clear_val
+    else
+       allocate(Tbd%forcet(0, 0))
+       allocate(Tbd%forceq(0, 0))
+       allocate(Tbd%prevst(0, 0))
     end if
 
     if (Model%imfdeepcnv == Model%imfdeepcnv_gf .or.  Model%imfdeepcnv == Model%imfdeepcnv_c3) then
@@ -7117,6 +7457,10 @@ module GFS_typedefs
        Tbd%cactiv = zero
        Tbd%cactiv_m = zero
        Tbd%aod_gf = zero
+    else
+       allocate(Tbd%cactiv(0))
+       allocate(Tbd%cactiv_m(0))
+       allocate(Tbd%aod_gf(0))
     end if
 
     !--- MYNN variables:
@@ -7143,6 +7487,17 @@ module GFS_typedefs
        Tbd%tsq           = clear_val
        Tbd%qsq           = clear_val
        Tbd%cov           = clear_val
+    else
+       allocate (Tbd%cldfra_bl (0,0))
+       allocate (Tbd%qc_bl     (0,0))
+       allocate (Tbd%qi_bl     (0,0))
+       allocate (Tbd%el_pbl    (0,0))
+       allocate (Tbd%sh3d      (0,0))
+       allocate (Tbd%sm3d      (0,0))
+       allocate (Tbd%qke       (0,0))
+       allocate (Tbd%tsq       (0,0))
+       allocate (Tbd%qsq       (0,0))
+       allocate (Tbd%cov       (0,0))
     end if
 
     ! MYJ variables
@@ -7173,6 +7528,19 @@ module GFS_typedefs
        Tbd%phy_myj_a1u    = clear_val
        Tbd%phy_myj_a1t    = clear_val
        Tbd%phy_myj_a1q    = clear_val
+    else
+       allocate (Tbd%phy_myj_qsfc   (0))
+       allocate (Tbd%phy_myj_thz0   (0))
+       allocate (Tbd%phy_myj_qz0    (0))
+       allocate (Tbd%phy_myj_uz0    (0))
+       allocate (Tbd%phy_myj_vz0    (0))
+       allocate (Tbd%phy_myj_akhs   (0))
+       allocate (Tbd%phy_myj_akms   (0))
+       allocate (Tbd%phy_myj_chkqlm (0))
+       allocate (Tbd%phy_myj_elflx  (0))
+       allocate (Tbd%phy_myj_a1u    (0))
+       allocate (Tbd%phy_myj_a1t    (0))
+       allocate (Tbd%phy_myj_a1q    (0))
     end if
 
   end subroutine tbd_create
