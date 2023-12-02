@@ -431,13 +431,7 @@ module GFS_typedefs
 
     ! CLM Lake model internal variables:
     real (kind=kind_phys), pointer :: lake_albedo(:)     => null()  !
-    real (kind=kind_phys), pointer :: lake_z3d(:,:)     => null()  !
-    real (kind=kind_phys), pointer :: lake_dz3d(:,:)    => null()  !
-    real (kind=kind_phys), pointer :: lake_soil_watsat3d(:,:) => null()  !
-    real (kind=kind_phys), pointer :: lake_csol3d(:,:)   => null()  !
-    real (kind=kind_phys), pointer :: lake_soil_tkmg3d(:,:)   => null()  !
-    real (kind=kind_phys), pointer :: lake_soil_tkdry3d(:,:)  => null()  !
-    real (kind=kind_phys), pointer :: lake_soil_tksatu3d(:,:) => null()  !
+    real (kind=kind_phys), pointer :: input_lakedepth(:) => null()  !
     real (kind=kind_phys), pointer :: lake_h2osno2d(:)   => null()  !
     real (kind=kind_phys), pointer :: lake_sndpth2d(:)   => null()  !
     real (kind=kind_phys), pointer :: lake_snl2d(:)      => null()  !
@@ -454,8 +448,6 @@ module GFS_typedefs
     real (kind=kind_phys), pointer :: lake_icefrac3d(:,:)=> null()
     real (kind=kind_phys), pointer :: lake_rho0(:)=> null()
     real (kind=kind_phys), pointer :: lake_ht(:)=> null()
-    real (kind=kind_phys), pointer :: lake_clay3d(:,:) => null()
-    real (kind=kind_phys), pointer :: lake_sand3d(:,:) => null()
     integer, pointer :: lake_is_salty(:) => null()
     integer, pointer :: lake_cannot_freeze(:) => null()
     real (kind=kind_phys), pointer :: clm_lake_initialized(:) => null() !< lakeini was called
@@ -612,6 +604,7 @@ module GFS_typedefs
     real (kind=kind_phys), pointer :: spp_wts_mp    (:,:) => null()  ! spp-mp-perts
     real (kind=kind_phys), pointer :: spp_wts_gwd   (:,:) => null()  ! spp-gwd-perts
     real (kind=kind_phys), pointer :: spp_wts_rad   (:,:) => null()  ! spp-rad-perts
+    real (kind=kind_phys), pointer :: spp_wts_cu_deep (:,:) => null()  ! spp-cu-deep-perts                        
 
     !--- aerosol surface emissions for Thompson microphysics
     real (kind=kind_phys), pointer :: nwfa2d  (:)     => null()  !< instantaneous water-friendly sfc aerosol source
@@ -1082,6 +1075,7 @@ module GFS_typedefs
     real(kind_phys)      :: clm_lake_depth_default !< minimum lake elevation in clm lake model
     logical              :: clm_lake_use_lakedepth !< initialize lake from lakedepth
     logical              :: clm_lake_debug !< verbose debugging in clm_lake
+    logical              :: clm_debug_print !< enables prints in clm_lakedebugging in clm_laki
 
 !--- tuning parameters for physical parameterizations
     logical              :: ras             !< flag for ras convection scheme
@@ -1327,6 +1321,7 @@ module GFS_typedefs
     integer              :: nseed           !< cellular automata seed frequency
     integer              :: nseed_g         !< cellular automata seed frequency
     logical              :: do_ca           !< cellular automata main switch
+    logical              :: ca_advect       !< Advection of cellular automata
     logical              :: ca_sgs          !< switch for sgs ca
     logical              :: ca_global       !< switch for global ca
     logical              :: ca_smooth       !< switch for gaussian spatial filter
@@ -1368,8 +1363,9 @@ module GFS_typedefs
     integer              :: spp_mp
     integer              :: spp_rad
     integer              :: spp_gwd
+    integer              :: spp_cu_deep
     integer              :: n_var_spp
-    character(len=3)    , pointer :: spp_var_list(:) 
+    character(len=10)    , pointer :: spp_var_list(:) 
     real(kind=kind_phys), pointer :: spp_prt_list(:)
     real(kind=kind_phys), pointer :: spp_stddev_cutoff(:)
 
@@ -1497,6 +1493,9 @@ module GFS_typedefs
     integer              :: ncnvwind        !< the index of surface wind enhancement due to convection for MYNN SFC and RAS CNV in phy f2d
 
 !-- nml variables for RRFS-SD
+    real(kind=kind_phys) :: dust_drylimit_factor  !< factor for drylimit parameterization in fengsha
+    real(kind=kind_phys) :: dust_moist_correction !< factor to tune volumetric soil moisture
+    integer              :: dust_moist_opt        !< dust moisture option 1:fecan 2:shao
     real(kind=kind_phys) :: dust_alpha        !< alpha parameter for fengsha dust scheme
     real(kind=kind_phys) :: dust_gamma        !< gamma parameter for fengsha dust scheme
     real(kind=kind_phys) :: wetdep_ls_alpha   !< alpha parameter for wet deposition
@@ -2711,13 +2710,7 @@ module GFS_typedefs
        allocate(Sfcprop%lake_t2m(IM))
        allocate(Sfcprop%lake_q2m(IM))
        allocate(Sfcprop%lake_albedo(IM))
-       allocate(Sfcprop%lake_z3d(IM,Model%nlevlake_clm_lake))
-       allocate(Sfcprop%lake_dz3d(IM,Model%nlevlake_clm_lake))
-       allocate(Sfcprop%lake_soil_watsat3d(IM,Model%nlevlake_clm_lake))
-       allocate(Sfcprop%lake_csol3d(IM,Model%nlevlake_clm_lake))
-       allocate(Sfcprop%lake_soil_tkmg3d(IM,Model%nlevlake_clm_lake))
-       allocate(Sfcprop%lake_soil_tkdry3d(IM,Model%nlevlake_clm_lake))
-       allocate(Sfcprop%lake_soil_tksatu3d(IM,Model%nlevlake_clm_lake))
+       allocate(Sfcprop%input_lakedepth(IM))
        allocate(Sfcprop%lake_h2osno2d(IM))
        allocate(Sfcprop%lake_sndpth2d(IM))
        allocate(Sfcprop%lake_snl2d(IM))
@@ -2734,8 +2727,6 @@ module GFS_typedefs
        allocate(Sfcprop%lake_icefrac3d(IM,Model%nlevlake_clm_lake))
        allocate(Sfcprop%lake_rho0(IM))
        allocate(Sfcprop%lake_ht(IM))
-       allocate(Sfcprop%lake_clay3d(IM,Model%nlevsoil_clm_lake))
-       allocate(Sfcprop%lake_sand3d(IM,Model%nlevsoil_clm_lake))
        allocate(Sfcprop%lake_is_salty(IM))
        allocate(Sfcprop%lake_cannot_freeze(IM))
        allocate(Sfcprop%clm_lake_initialized(IM))
@@ -2743,13 +2734,7 @@ module GFS_typedefs
        Sfcprop%lake_t2m = clear_val
        Sfcprop%lake_q2m = clear_val
        Sfcprop%lake_albedo = clear_val
-       Sfcprop%lake_z3d = clear_val
-       Sfcprop%lake_dz3d = clear_val
-       Sfcprop%lake_soil_watsat3d = clear_val
-       Sfcprop%lake_csol3d = clear_val
-       Sfcprop%lake_soil_tkmg3d = clear_val
-       Sfcprop%lake_soil_tkdry3d = clear_val
-       Sfcprop%lake_soil_tksatu3d = clear_val
+       Sfcprop%input_lakedepth = clear_val
        Sfcprop%lake_h2osno2d = clear_val
        Sfcprop%lake_sndpth2d = clear_val
        Sfcprop%lake_snl2d = clear_val
@@ -2766,8 +2751,6 @@ module GFS_typedefs
        Sfcprop%lake_icefrac3d = clear_val
        Sfcprop%lake_rho0 = -111
        Sfcprop%lake_ht = -111
-       Sfcprop%lake_clay3d = clear_val
-       Sfcprop%lake_sand3d = clear_val
        Sfcprop%lake_is_salty = zero
        Sfcprop%lake_cannot_freeze = zero
        Sfcprop%clm_lake_initialized = zero
@@ -3119,6 +3102,8 @@ module GFS_typedefs
       Coupling%spp_wts_gwd = clear_val
       allocate (Coupling%spp_wts_rad   (IM,Model%levs))
       Coupling%spp_wts_rad = clear_val
+      allocate (Coupling%spp_wts_cu_deep   (IM,Model%levs))
+      Coupling%spp_wts_cu_deep = clear_val
     endif
 
     !--- needed for Thompson's aerosol option
@@ -3461,6 +3446,7 @@ module GFS_typedefs
     real(kind_phys)      :: clm_lake_depth_default = 50         !< default lake depth in clm lake model
     logical              :: clm_lake_use_lakedepth = .true.     !< initialize depth from lakedepth
     logical              :: clm_lake_debug = .false.            !< verbose debugging in clm_lake
+    logical              :: clm_debug_print = .false.           !< enables prints in clm_lake
 
     !--- land/surface model parameters
     integer              :: lsm            =  1              !< flag for land surface model to use =0  for osu lsm; =1  for noah lsm; =2  for noah mp lsm; =3  for RUC lsm
@@ -3706,7 +3692,7 @@ module GFS_typedefs
                                                              !< nstf_name(5) : zsea2 in mm
 !--- fractional grid
     logical              :: frac_grid       = .false.         !< flag for fractional grid
-    logical              :: frac_ice        = .false.         !< flag for fractional ice when fractional grid is not in use
+    logical              :: frac_ice        = .true.          !< flag for lake fractional ice when fractional grid is not in use
     logical              :: ignore_lake     = .true.          !< flag for ignoring lakes
     real(kind=kind_phys) :: min_lakeice     = 0.15d0          !< minimum lake ice value
     real(kind=kind_phys) :: min_seaice      = 1.0d-11         !< minimum sea  ice value
@@ -3763,6 +3749,7 @@ module GFS_typedefs
     integer              :: iseed_ca       = 1
     integer              :: nspinup        = 1
     logical              :: do_ca          = .false.
+    logical              :: ca_advect      = .false.
     logical              :: ca_sgs         = .false.
     logical              :: ca_global      = .false.
     logical              :: ca_smooth      = .false.
@@ -3813,6 +3800,7 @@ module GFS_typedefs
     integer :: spp_mp       =  0
     integer :: spp_rad      =  0
     integer :: spp_gwd      =  0
+    integer :: spp_cu_deep  =  0
     logical :: do_spp       = .false.
 
     integer              :: ichoice         = 0 !< flag for closure of C3/GF deep convection
@@ -3820,9 +3808,12 @@ module GFS_typedefs
     integer              :: ichoice_s       = 3 !< flag for closure of C3/GF shallow convection
 
 !-- chem nml variables for RRFS-SD
+    real(kind=kind_phys) :: dust_drylimit_factor  = 1.0
+    real(kind=kind_phys) :: dust_moist_correction = 1.0
     real(kind=kind_phys) :: dust_alpha = 0.
     real(kind=kind_phys) :: dust_gamma = 0.
     real(kind=kind_phys) :: wetdep_ls_alpha = 0.
+    integer :: dust_moist_opt = 1         ! fecan :1  else shao
     integer :: seas_opt = 2
     integer :: dust_opt = 5
     integer :: drydep_opt  = 1
@@ -3915,7 +3906,7 @@ module GFS_typedefs
                           !--- lake model control
                                lkm, iopt_lake, lakedepth_threshold, lakefrac_threshold,     &
                                clm_lake_depth_default, clm_lake_use_lakedepth,              &
-                               clm_lake_debug, use_lake2m,                                  &
+                               clm_lake_debug, clm_debug_print, use_lake2m,                 &
                           !--- physical parameterizations
                                ras, trans_trac, old_monin, cnvgwd, mstrat, moist_adj,       &
                                cscnv, cal_pre, do_aw, do_shoc, shocaftcnv, shoc_cld,        &
@@ -3972,7 +3963,7 @@ module GFS_typedefs
                                h0facu, h0facs,                                              &
                           !--- cellular automata
                                nca, ncells, nlives, nca_g, ncells_g, nlives_g, nfracseed,   &
-                               nseed,  nseed_g,  nthresh, do_ca,                              &
+                               nseed,  nseed_g,  nthresh, do_ca, ca_advect,                 &
                                ca_sgs, ca_global,iseed_ca,ca_smooth,                        &
                                nspinup,ca_amplitude,nsmooth,ca_closure,ca_entr,ca_trigger,  &
                           !--- IAU
@@ -3986,6 +3977,7 @@ module GFS_typedefs
                           !--- aerosol scavenging factors ('name:value' string array)
                                fscav_aero,                                                  &
                           !--- RRFS-SD namelist
+                               dust_drylimit_factor, dust_moist_correction, dust_moist_opt, &
                                dust_alpha, dust_gamma, wetdep_ls_alpha,                     &
                                seas_opt, dust_opt, drydep_opt, coarsepm_settling,           &
                                wetdep_ls_opt, smoke_forecast, aero_ind_fdb, aero_dir_fdb,   &
@@ -4205,6 +4197,9 @@ module GFS_typedefs
 
 !--- RRFS-SD
     Model%rrfs_sd           = rrfs_sd
+    Model%dust_drylimit_factor = dust_drylimit_factor
+    Model%dust_moist_correction = dust_moist_correction
+    Model%dust_moist_opt    = dust_moist_opt
     Model%dust_alpha        = dust_alpha
     Model%dust_gamma        = dust_gamma
     Model%wetdep_ls_alpha   = wetdep_ls_alpha
@@ -4649,6 +4644,7 @@ module GFS_typedefs
     Model%clm_lake_depth_default = clm_lake_depth_default
     Model%clm_lake_use_lakedepth = clm_lake_use_lakedepth
     Model%clm_lake_debug = clm_lake_debug
+    Model%clm_debug_print = clm_debug_print
 
 ! Noah MP options from namelist
 !
@@ -4940,6 +4936,7 @@ module GFS_typedefs
     Model%nseed_g          = nseed_g
     Model%ca_global        = ca_global
     Model%do_ca            = do_ca
+    Model%ca_advect        = ca_advect
     Model%ca_sgs           = ca_sgs
     Model%iseed_ca         = iseed_ca
     Model%ca_smooth        = ca_smooth
@@ -5640,6 +5637,7 @@ module GFS_typedefs
           print *,'   clm_lake_use_lakedepth = ',Model%clm_lake_use_lakedepth
           print *,'   clm_lake_depth_default = ',Model%clm_lake_depth_default
           print *,'   clm_lake_debug         = ',Model%clm_lake_debug
+          print *,'   clm_debug_print        = ',Model%clm_debug_print
           print *,'   nlevlake_clm_lake      = ',Model%nlevlake_clm_lake
           print *,'   nlevsoil_clm_lake      = ',Model%nlevsoil_clm_lake
           print *,'   nlevsnow_clm_lake      = ',Model%nlevsnow_clm_lake
@@ -6302,6 +6300,9 @@ module GFS_typedefs
       if(model%rrfs_sd) then
         print *, ' '
         print *, 'smoke parameters'
+        print *, 'dust_drylimit_factor: ',Model%dust_drylimit_factor
+        print *, 'dust_moist_correction: ',Model%dust_moist_correction
+        print *, 'dust_moist_opt   : ',Model%dust_moist_opt
         print *, 'dust_alpha       : ',Model%dust_alpha
         print *, 'dust_gamma       : ',Model%dust_gamma
         print *, 'wetdep_ls_alpha  : ',Model%wetdep_ls_alpha
@@ -6701,6 +6702,7 @@ module GFS_typedefs
       print *, ' ca_global         : ', Model%ca_global
       print *, ' ca_sgs            : ', Model%ca_sgs
       print *, ' do_ca             : ', Model%do_ca
+      print *, ' ca_advect         : ', Model%ca_advect
       print *, ' iseed_ca          : ', Model%iseed_ca
       print *, ' ca_smooth         : ', Model%ca_smooth
       print *, ' nspinup           : ', Model%nspinup
