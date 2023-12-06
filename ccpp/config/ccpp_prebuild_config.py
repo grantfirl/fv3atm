@@ -22,6 +22,8 @@ VARIABLE_DEFINITION_FILES = [
     'physics/physics/h2o_def.f',
     'physics/physics/radiation_surface.f',
     'physics/physics/module_ozphys.F90',
+    'physics/physics/module_samf.F90',
+    'physics/physics/module_satmedmf.F90',
     'data/CCPP_typedefs.F90',
     'data/GFS_typedefs.F90',
     'data/CCPP_data.F90',
@@ -44,6 +46,16 @@ TYPEDEFS_NEW_METADATA = {
     'module_ozphys' : {
         'module_ozphys' : '',
         'ty_ozphys'     : '',
+        },
+    'module_samf' : {
+        'module_samf'      : '',
+        'ty_cfg_samf_shal' : '',
+        'ty_cfg_samf_deep' : '',
+        },
+    'module_satmedmf' : {
+        'module_satmedmf'  : '',
+        'ty_cfg_satmedmf'  : '',
+        'ty_cfg_satmedmfq' : '',
         },
     'CCPP_typedefs' : {
         'GFS_interstitial_type' : 'GFS_Interstitial(cdata%thrd_no)',
