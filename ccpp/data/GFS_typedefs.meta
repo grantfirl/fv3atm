@@ -5213,6 +5213,12 @@
   units = flag
   dimensions = ()
   type = logical
+[cfg_samf_shal]
+  standard_name = parameters_for_scale_aware_mass_flux_shallow_convection
+  long_name = parameters for SAMF shallow convection scheme
+  units = mixed
+  dimensions = ()
+  type = ty_cfg_samf_shal
 [imfshalcnv]
   standard_name = control_for_shallow_convection_scheme
   long_name = flag for mass-flux shallow convection scheme
@@ -5342,6 +5348,18 @@
   dimensions = ()
   type = real
   kind = kind_phys
+[cfg_satmedmf]
+  standard_name = parameters_for_scale_aware_TKE_moist_EDMF_PBL_2018
+  long_name = parameters for scale-aware TKE moist EDMF PBL scheme
+  units = mixed
+  dimensions = ()
+  type = ty_cfg_satmedmf
+[cfg_satmedmfq]
+  standard_name = parameters_for_scale_aware_TKE_moist_EDMF_PBL_2019
+  long_name = parameters for scale-aware TKE moist EDMF PBL scheme
+  units = mixed
+  dimensions = ()
+  type = ty_cfg_satmedmfq
 [isatmedmf]
   standard_name = choice_of_scale_aware_TKE_moist_EDMF_PBL
   long_name = choice of scale-aware TKE moist EDMF PBL scheme
@@ -9798,6 +9816,7 @@
   relative_path = ../physics/physics
   dependencies = machine.F,physcons.F90,radlw_param.f,radsw_param.f
   dependencies = GFDL_parse_tracers.F90,h2o_def.f,module_ozphys.F90
+  dependencies = module_samf.F90,module_satmedmf.F90
 
 [ccpp-arg-table]
   name = GFS_typedefs

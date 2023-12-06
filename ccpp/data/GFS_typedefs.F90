@@ -15,6 +15,8 @@ module GFS_typedefs
    use module_radlw_parameters,  only: topflw_type, sfcflw_type
    use h2o_def,                  only: levh2o, h2o_coeff
    use module_ozphys,            only: ty_ozphys
+   use module_samf,              only: ty_cfg_samf_shal,ty_cfg_samf_deep
+   use module_satmedmf,          only: ty_cfg_satmedmf,ty_cfg_satmedmfq
 
    implicit none
 
@@ -1127,6 +1129,10 @@ module GFS_typedefs
     logical              :: hybedmf         !< flag for hybrid edmf pbl scheme
     logical              :: satmedmf        !< flag for scale-aware TKE-based moist edmf
                                             !< vertical turbulent mixing scheme
+    type(ty_cfg_satmedmf)  :: cfg_satmedmf  !< DDT containing tunable parameters for scale-aware TKE-based moist edmf scheme (Nov. 2018).
+    type(ty_cfg_satmedmfq) :: cfg_satmedmfq !< DDT containing tunable parameters for scale-aware TKE-based moist edmf scheme (as of May 2019).
+    type(ty_cfg_samf_shal) :: cfg_samf_shal !< DDT containing tunable parameters for SAMF scale-&aerosol-aware mass-flux shallow convection scheme
+    type(ty_cfg_samf_deep) :: cfg_samf_deep !< DDT containing tunable parameters for SAMF scale-&aerosol-aware mass-flux deep convection scheme
     logical              :: shinhong        !< flag for scale-aware Shinhong vertical turbulent mixing scheme
     logical              :: do_ysu          !< flag for YSU turbulent mixing scheme
     logical              :: dspheat         !< flag for tke dissipative heating
@@ -5483,6 +5489,41 @@ module GFS_typedefs
        !--- Climatological ozone
        err_message = Model%ozphys%load_o3clim('global_o3prdlos.f77',kozc)
     end if
+
+    !
+    ! Setup parameters used by scale-aware TKE-based moist edmf PBL scheme.
+    !
+    if (Model%satmedmf) then
+       if (Model%isatmedmf == Model%isatmedmf_vdif) then
+          call Model%cfg_satmedmf%setup()
+       endif
+       if (Model%isatmedmf == Model%isatmedmf_vdifq) then
+          if (Model%tc_pbl) then
+             call Model%cfg_satmedmfq%setup(xkinv1=0., ck0 = 0.55, ch0 = 0.55, ce0 = 0.12)
+          else
+             call Model%cfg_satmedmfq%setup(xkinv1=0.)
+          endif
+       endif
+    endif
+
+    !
+    ! Setup parameters used by SAMF scale-&aerosol-aware mass-flux shallow convection scheme.
+    !
+    if(Model%imfshalcnv == Model%imfshalcnv_samf) then
+       if (.not. Model%hwrf_samfshal) then
+          call Model%cfg_samf_shal%setup(cmxfac=10., cinacrmn=-80.)
+       else
+          call Model%cfg_samf_shal%setup(cmxfac=10.)
+       endif
+    endif
+
+    !
+    ! Setup parameters used by SAMF scale-&aerosol-aware mass-flux deep convection scheme.
+    !
+    if(Model%imfdeepcnv == Model%imfdeepcnv_samf) then
+       call Model%cfg_samf_deep%setup()
+    endif
+
 
 !--- quantities to be used to derive phy_f*d totals
     Model%nshoc_2d         = nshoc_2d
