@@ -8973,7 +8973,7 @@
   dimensions = (horizontal_loop_extent,vertical_layer_dimension)
   type = real
   kind = kind_phys
-  active = (flag_for_tracer_diagnostics_3D)
+  active = (flag_for_diagnostics_3D .and. flag_for_tracer_diagnostics_3D)
 [dwn_mf]
   standard_name = cumulative_atmosphere_downdraft_convective_mass_flux
   long_name = cumulative downdraft mass flux
@@ -8981,7 +8981,7 @@
   dimensions = (horizontal_loop_extent,vertical_layer_dimension)
   type = real
   kind = kind_phys
-  active = (flag_for_tracer_diagnostics_3D)
+  active = (flag_for_diagnostics_3D .and. flag_for_tracer_diagnostics_3D)
 [det_mf]
   standard_name = cumulative_atmosphere_detrainment_convective_mass_flux
   long_name = cumulative detrainment mass flux
@@ -8989,7 +8989,7 @@
   dimensions = (horizontal_loop_extent,vertical_layer_dimension)
   type = real
   kind = kind_phys
-  active = (flag_for_tracer_diagnostics_3D)
+  active = (flag_for_diagnostics_3D .and. flag_for_tracer_diagnostics_3D)
 [do3_dt_prd]
   standard_name = ozone_tendency_due_to_production_and_loss_rate
   long_name = ozone tendency due to production and loss rate
@@ -8997,7 +8997,7 @@
   dimensions = (horizontal_loop_extent,vertical_layer_dimension)
   type = real
   kind = kind_phys
-  active = (flag_for_tracer_diagnostics_3D .and. flag_for_nrl_2015_ozone_scheme)
+  active = (flag_for_diagnostics_3D .and. flag_for_nrl_2015_ozone_scheme)
 [do3_dt_ozmx]
   standard_name = ozone_tendency_due_to_ozone_mixing_ratio
   long_name = ozone tendency due to ozone mixing ratio
@@ -9005,7 +9005,7 @@
   dimensions = (horizontal_loop_extent,vertical_layer_dimension)
   type = real
   kind = kind_phys
-  active = (flag_for_tracer_diagnostics_3D .and. flag_for_nrl_2015_ozone_scheme)
+  active = (flag_for_diagnostics_3D .and. flag_for_nrl_2015_ozone_scheme)
 [do3_dt_temp]
   standard_name = ozone_tendency_due_to_temperature
   long_name = ozone tendency due to temperature
@@ -9013,7 +9013,7 @@
   dimensions = (horizontal_loop_extent,vertical_layer_dimension)
   type = real
   kind = kind_phys
-  active = (flag_for_tracer_diagnostics_3D .and. flag_for_nrl_2015_ozone_scheme)
+  active = (flag_for_diagnostics_3D .and. flag_for_nrl_2015_ozone_scheme)
 [do3_dt_ohoz]
   standard_name = ozone_tendency_due_to_overhead_ozone_column
   long_name = ozone tendency due to overhead ozone column
@@ -9021,7 +9021,7 @@
   dimensions = (horizontal_loop_extent,vertical_layer_dimension)
   type = real
   kind = kind_phys
-  active = (flag_for_tracer_diagnostics_3D .and. flag_for_nrl_2015_ozone_scheme)
+  active = (flag_for_diagnostics_3D .and. flag_for_nrl_2015_ozone_scheme)
 [refl_10cm]
   standard_name = radar_reflectivity_10cm
   long_name = instantaneous refl_10cm
@@ -9186,7 +9186,7 @@
   dimensions = (horizontal_loop_extent,vertical_layer_dimension)
   type = real
   kind = kind_phys
-  active = (flag_for_mellor_yamada_nakanishi_niino_pbl_scheme .and. control_for_tke_budget_output == 1)
+  active = (flag_for_mellor_yamada_nakanishi_niino_pbl_scheme .and. control_for_tke_budget_output > 0)
 [qwt]
   standard_name = tke_tendency_due_to_vertical_transport
   long_name = tke tendency due to vertical transport and diffusion
@@ -9194,7 +9194,7 @@
   dimensions = (horizontal_loop_extent,vertical_layer_dimension)
   type = real
   kind = kind_phys
-  active = (flag_for_mellor_yamada_nakanishi_niino_pbl_scheme .and. control_for_tke_budget_output == 1)
+  active = (flag_for_mellor_yamada_nakanishi_niino_pbl_scheme .and. control_for_tke_budget_output > 0)
 [qshear]
   standard_name = tke_tendency_due_to_shear
   long_name = tke tendency due to shear
@@ -9202,7 +9202,7 @@
   dimensions = (horizontal_loop_extent,vertical_layer_dimension)
   type = real
   kind = kind_phys
-  active = (flag_for_mellor_yamada_nakanishi_niino_pbl_scheme .and. control_for_tke_budget_output == 1)
+  active = (flag_for_mellor_yamada_nakanishi_niino_pbl_scheme .and. control_for_tke_budget_output > 0)
 [qbuoy]
   standard_name = tke_tendency_due_to_buoyancy
   long_name = tke tendency due to buoyancy production or consumption
@@ -9210,7 +9210,7 @@
   dimensions = (horizontal_loop_extent,vertical_layer_dimension)
   type = real
   kind = kind_phys
-  active = (flag_for_mellor_yamada_nakanishi_niino_pbl_scheme .and. control_for_tke_budget_output == 1)
+  active = (flag_for_mellor_yamada_nakanishi_niino_pbl_scheme .and. control_for_tke_budget_output > 0)
 [qdiss]
   standard_name = tke_tendency_due_to_dissipation
   long_name = tke tendency due to the dissipation of tke
@@ -9218,7 +9218,7 @@
   dimensions = (horizontal_loop_extent,vertical_layer_dimension)
   type = real
   kind = kind_phys
-  active = (flag_for_mellor_yamada_nakanishi_niino_pbl_scheme .and. control_for_tke_budget_output == 1)
+  active = (flag_for_mellor_yamada_nakanishi_niino_pbl_scheme .and. control_for_tke_budget_output > 0)
 [maxwidth]
   standard_name = maximum_width_of_plumes
   long_name = maximum width of plumes per grid column
@@ -9243,12 +9243,6 @@
   type = real
   kind = kind_phys
   active = (flag_for_mellor_yamada_nakanishi_niino_pbl_scheme)
-[ktop_shallow]
-  standard_name = k_level_of_highest_reaching_plume
-  long_name = k-level of highest reaching plume
-  units = count
-  dimensions = (horizontal_loop_extent)
-  type = integer
 [ktop_plume]
   standard_name = k_level_of_highest_plume
   long_name = k-level of highest plume
@@ -9476,7 +9470,6 @@
   dimensions = (horizontal_loop_extent,vertical_layer_dimension)
   type = real
   kind = kind_phys
-  active = (flag_for_ugwp_version_1 .or. flag_for_unified_gravity_wave_physics_diagnostics)
 [dvdt_ogw]
   standard_name = tendency_of_y_wind_due_to_mesoscale_orographic_gravity_wave_drag
   long_name = y wind tendency from meso scale ogw
@@ -9700,6 +9693,7 @@
   dimensions = (horizontal_loop_extent)
   type = real
   kind = kind_phys
+  active = (flag_to_print_pgr_differences_every_timestep)
 [ltg1_max]
   standard_name = lightning_threat_index_1
   long_name = lightning threat index 1

@@ -1850,7 +1850,7 @@ module GFS_typedefs
     real (kind=kind_phys), pointer :: snowmt_land(:) => null()   !< ruc lsm diagnostics over land
     real (kind=kind_phys), pointer :: snowmt_ice(:)  => null()   !< ruc lsm diagnostics over ice
     real (kind=kind_phys), pointer :: soilm  (:)     => null()   !< integrated soil moisture
-    real (kind=kind_phys), pointer :: paha   (:)     => null()   !< noah lsm diagnostics
+    real (kind=kind_phys), allocatable :: paha   (:)   !< noah lsm diagnostics
     real (kind=kind_phys), pointer :: tmpmin (:)     => null()   !< min temperature at 2m height (k)
     real (kind=kind_phys), pointer :: tmpmax (:)     => null()   !< max temperature at 2m height (k)
     real (kind=kind_phys), pointer :: dusfc  (:)     => null()   !< u component of surface stress
@@ -1868,7 +1868,7 @@ module GFS_typedefs
     real (kind=kind_phys), pointer :: tecan  (:)     => null()   !< total evaporation of intercepted water
     real (kind=kind_phys), pointer :: tetran (:)     => null()   !< total transpiration rate
     real (kind=kind_phys), pointer :: tedir  (:)     => null()   !< total soil surface evaporation rate
-    real (kind=kind_phys), pointer :: twa    (:)     => null()   !< total water storage in aquifer
+    real (kind=kind_phys), allocatable :: twa    (:)   !< total water storage in aquifer
     real (kind=kind_phys), pointer :: cldwrk (:)     => null()   !< cloud workfunction (valid only with sas)
     real (kind=kind_phys), pointer :: dugwd  (:)     => null()   !< vertically integrated u change by OGWD
     real (kind=kind_phys), pointer :: dvgwd  (:)     => null()   !< vertically integrated v change by OGWD
@@ -1903,27 +1903,27 @@ module GFS_typedefs
     real (kind=kind_phys), pointer :: rhonewsn1(:)   => null()   !< precipitation ice density outside RUC LSM (kg/m3)
 
     !--- MYNN variables
-    real (kind=kind_phys), pointer :: edmf_a     (:,:)   => null()  !
-    real (kind=kind_phys), pointer :: edmf_w     (:,:)   => null()  !
-    real (kind=kind_phys), pointer :: edmf_qt    (:,:)   => null()  !
-    real (kind=kind_phys), pointer :: edmf_thl   (:,:)   => null()  !
-    real (kind=kind_phys), pointer :: edmf_ent   (:,:)   => null()  !
-    real (kind=kind_phys), pointer :: edmf_qc    (:,:)   => null()  !
-    real (kind=kind_phys), pointer :: sub_thl    (:,:)   => null()  !
-    real (kind=kind_phys), pointer :: sub_sqv    (:,:)   => null()  !
-    real (kind=kind_phys), pointer :: det_thl    (:,:)   => null()  !
-    real (kind=kind_phys), pointer :: det_sqv    (:,:)   => null()  !
-    real (kind=kind_phys), pointer :: maxMF       (:)    => null()  !
-    real (kind=kind_phys), pointer :: maxwidth    (:)    => null()  !
-    real (kind=kind_phys), pointer :: ztop_plume  (:)    => null()  !
-    integer, pointer               :: ktop_plume  (:)    => null()  !
-    real (kind=kind_phys), pointer :: exch_h     (:,:)   => null()  !
-    real (kind=kind_phys), pointer :: exch_m     (:,:)   => null()  !
-    real (kind=kind_phys), pointer :: dqke       (:,:)   => null()  !< timestep change of tke
-    real (kind=kind_phys), pointer :: qwt        (:,:)   => null()  !< vertical transport of tke
-    real (kind=kind_phys), pointer :: qshear     (:,:)   => null()  !< shear production of tke
-    real (kind=kind_phys), pointer :: qbuoy      (:,:)   => null()  !< buoyancy production of tke
-    real (kind=kind_phys), pointer :: qdiss      (:,:)   => null()  !< dissipation of tke
+    real (kind=kind_phys), allocatable :: edmf_a     (:,:)  !
+    real (kind=kind_phys), allocatable :: edmf_w     (:,:)  !
+    real (kind=kind_phys), allocatable :: edmf_qt    (:,:)  !
+    real (kind=kind_phys), allocatable :: edmf_thl   (:,:)  !
+    real (kind=kind_phys), allocatable :: edmf_ent   (:,:)  !
+    real (kind=kind_phys), allocatable :: edmf_qc    (:,:)  !
+    real (kind=kind_phys), allocatable :: sub_thl    (:,:)  !
+    real (kind=kind_phys), allocatable :: sub_sqv    (:,:)  !
+    real (kind=kind_phys), allocatable :: det_thl    (:,:)  !
+    real (kind=kind_phys), allocatable :: det_sqv    (:,:)  !
+    real (kind=kind_phys), allocatable :: maxMF       (:)   !
+    real (kind=kind_phys), allocatable :: maxwidth    (:)   !
+    real (kind=kind_phys), allocatable :: ztop_plume  (:)   !
+    integer, allocatable               :: ktop_plume  (:)   !
+    real (kind=kind_phys), allocatable :: exch_h     (:,:)  !
+    real (kind=kind_phys), allocatable :: exch_m     (:,:)  !
+    real (kind=kind_phys), allocatable :: dqke       (:,:)  !< timestep change of tke
+    real (kind=kind_phys), allocatable :: qwt        (:,:)  !< vertical transport of tke
+    real (kind=kind_phys), allocatable :: qshear     (:,:)  !< shear production of tke
+    real (kind=kind_phys), allocatable :: qbuoy      (:,:)  !< buoyancy production of tke
+    real (kind=kind_phys), allocatable :: qdiss      (:,:)  !< dissipation of tke
 
 ! Output - only in physics
     real (kind=kind_phys), pointer :: u10m   (:)     => null()   !< 10 meter u/v wind speed
@@ -1948,11 +1948,11 @@ module GFS_typedefs
     real (kind=kind_phys), pointer :: dtsfci (:)     => null()   !< instantaneous sfc sensible heat flux
     real (kind=kind_phys), pointer :: dqsfci (:)     => null()   !< instantaneous sfc latent heat flux
     real (kind=kind_phys), pointer :: gfluxi (:)     => null()   !< instantaneous sfc ground heat flux
-    real (kind=kind_phys), pointer :: pahi   (:)     => null()   !< instantaneous precipitation advected heat flux
+    real (kind=kind_phys), allocatable :: pahi   (:)   !< instantaneous precipitation advected heat flux
     real (kind=kind_phys), pointer :: epi    (:)     => null()   !< instantaneous sfc potential evaporation
     real (kind=kind_phys), pointer :: smcwlt2(:)     => null()   !< wilting point (volumetric)
     real (kind=kind_phys), pointer :: smcref2(:)     => null()   !< soil moisture threshold (volumetric)
-    real (kind=kind_phys), pointer :: wet1   (:)     => null()   !< normalized soil wetness
+    real (kind=kind_phys), allocatable :: wet1   (:)  !< normalized soil wetness
     real (kind=kind_phys), pointer :: sr     (:)     => null()   !< snow ratio : ratio of snow to total precipitation
     real (kind=kind_phys), pointer :: tdomr  (:)     => null()   !< dominant accumulated rain type
     real (kind=kind_phys), pointer :: tdomzr (:)     => null()   !< dominant accumulated freezing rain type
@@ -1963,7 +1963,7 @@ module GFS_typedefs
     ! dtend/dtidxt: Multitudinous 3d tendencies in a 4D array: (i,k,1:100+ntrac,nprocess)
     ! Sparse in outermost two dimensions. dtidx(1:100+ntrac,nprocess) maps to dtend
     ! outer dimension index.
-    real (kind=kind_phys), pointer :: dtend (:,:,:)  => null()   !< tracer changes due to physics
+    real (kind=kind_phys), allocatable :: dtend (:,:,:)  !< tracer changes due to physics
 
     real (kind=kind_phys), pointer :: refdmax (:)    => null()   !< max hourly 1-km agl reflectivity
     real (kind=kind_phys), pointer :: refdmax263k(:) => null()   !< max hourly -10C reflectivity
@@ -1977,7 +1977,7 @@ module GFS_typedefs
     real (kind=kind_phys), pointer :: dwn_mf (:,:)   => null()  !< instantaneous convective downdraft mass flux
     real (kind=kind_phys), pointer :: det_mf (:,:)   => null()  !< instantaneous convective detrainment mass flux
 !--- F-A MP scheme
-    real (kind=kind_phys), pointer :: train  (:,:)   => null()  !< accumulated stratiform T tendency (K s-1)
+    real (kind=kind_phys), allocatable :: train  (:,:) !< accumulated stratiform T tendency (K s-1)
     real (kind=kind_phys), pointer :: cldfra (:,:)   => null()  !< instantaneous 3D cloud fraction
     !--- MP quantities for 3D diagnositics
     real (kind=kind_phys), pointer :: refl_10cm(:,:) => null()  !< instantaneous refl_10cm
@@ -2002,64 +2002,56 @@ module GFS_typedefs
     real (kind=kind_phys), pointer :: dtdt_gw(:,:)   => null()  !<
     real (kind=kind_phys), pointer :: kdis_gw(:,:)   => null()  !<
 !oro-GWs
-    real (kind=kind_phys), pointer :: dudt_ogw(:,:)  => null()  !<
-    real (kind=kind_phys), pointer :: dvdt_ogw(:,:)  => null()  !<
-    real (kind=kind_phys), pointer :: dudt_obl(:,:)  => null()  !<
-    real (kind=kind_phys), pointer :: dvdt_obl(:,:)  => null()  !<
-    real (kind=kind_phys), pointer :: dudt_oss(:,:)  => null()  !<
-    real (kind=kind_phys), pointer :: dvdt_oss(:,:)  => null()  !<
-    real (kind=kind_phys), pointer :: dudt_ofd(:,:)  => null()  !<
-    real (kind=kind_phys), pointer :: dvdt_ofd(:,:)  => null()  !<
+    real (kind=kind_phys), allocatable :: dudt_ogw(:,:)  !<
+    real (kind=kind_phys), allocatable :: dvdt_ogw(:,:)  !<
+    real (kind=kind_phys), allocatable :: dudt_obl(:,:)  !<
+    real (kind=kind_phys), allocatable :: dvdt_obl(:,:)  !<
+    real (kind=kind_phys), allocatable :: dudt_oss(:,:)  !<
+    real (kind=kind_phys), allocatable :: dvdt_oss(:,:)  !<
+    real (kind=kind_phys), allocatable :: dudt_ofd(:,:)  !<
+    real (kind=kind_phys), allocatable :: dvdt_ofd(:,:)  !<
 
-    real (kind=kind_phys), pointer :: du_ogwcol(:)   => null()  !< instantaneous sfc u-momentum flux from OGW
-    real (kind=kind_phys), pointer :: dv_ogwcol(:)   => null()  !< instantaneous sfc v-momentum flux from OGW
-    real (kind=kind_phys), pointer :: du_oblcol(:)   => null()  !< instantaneous sfc u-momentum flux from blocking
-    real (kind=kind_phys), pointer :: dv_oblcol(:)   => null()  !< instantaneous sfc v-momentum flux from blocking
-    real (kind=kind_phys), pointer :: du_osscol(:)   => null()  !< instantaneous sfc u-momentum flux from SSGWD
-    real (kind=kind_phys), pointer :: dv_osscol(:)   => null()  !< instantaneous sfc v-momentum flux from SSGWD
-    real (kind=kind_phys), pointer :: du_ofdcol(:)   => null()  !< instantaneous sfc u-momentum flux from TOFD
-    real (kind=kind_phys), pointer :: dv_ofdcol(:)   => null()  !< instantaneous sfc v-momentum flux from TOFD
-    real (kind=kind_phys), pointer :: du3_ogwcol(:)  => null()  !< time-averaged sfc u-momentum flux from OGW
-    real (kind=kind_phys), pointer :: dv3_ogwcol(:)  => null()  !< time-averaged sfc v-momentum flux from OGW
-    real (kind=kind_phys), pointer :: du3_oblcol(:)  => null()  !< time-averaged sfc u-momentum flux from blocking
-    real (kind=kind_phys), pointer :: dv3_oblcol(:)  => null()  !< time-averaged sfc v-momentum flux from blocking
-    real (kind=kind_phys), pointer :: du3_osscol(:)  => null()  !< time-averaged sfc u-momentum flux from SSGWD
-    real (kind=kind_phys), pointer :: dv3_osscol(:)  => null()  !< time-averaged sfc v-momentum flux from SSGWD
-    real (kind=kind_phys), pointer :: du3_ofdcol(:)  => null()  !< time-averaged sfc u-momentum flux from TOFD
-    real (kind=kind_phys), pointer :: dv3_ofdcol(:)  => null()  !< time-averaged sfc v-momentum flux from TOFD
+    real (kind=kind_phys), allocatable :: du_ogwcol(:)   !< instantaneous sfc u-momentum flux from OGW
+    real (kind=kind_phys), allocatable :: dv_ogwcol(:)   !< instantaneous sfc v-momentum flux from OGW
+    real (kind=kind_phys), allocatable :: du_oblcol(:)   !< instantaneous sfc u-momentum flux from blocking
+    real (kind=kind_phys), allocatable :: dv_oblcol(:)   !< instantaneous sfc v-momentum flux from blocking
+    real (kind=kind_phys), allocatable :: du_osscol(:)   !< instantaneous sfc u-momentum flux from SSGWD
+    real (kind=kind_phys), allocatable :: dv_osscol(:)   !< instantaneous sfc v-momentum flux from SSGWD
+    real (kind=kind_phys), allocatable :: du_ofdcol(:)   !< instantaneous sfc u-momentum flux from TOFD
+    real (kind=kind_phys), allocatable :: dv_ofdcol(:)   !< instantaneous sfc v-momentum flux from TOFD
+    real (kind=kind_phys), allocatable :: du3_ogwcol(:)  !< time-averaged sfc u-momentum flux from OGW
+    real (kind=kind_phys), allocatable :: dv3_ogwcol(:)  !< time-averaged sfc v-momentum flux from OGW
+    real (kind=kind_phys), allocatable :: du3_oblcol(:)  !< time-averaged sfc u-momentum flux from blocking
+    real (kind=kind_phys), allocatable :: dv3_oblcol(:)  !< time-averaged sfc v-momentum flux from blocking
+    real (kind=kind_phys), allocatable :: du3_osscol(:)  !< time-averaged sfc u-momentum flux from SSGWD
+    real (kind=kind_phys), allocatable :: dv3_osscol(:)  !< time-averaged sfc v-momentum flux from SSGWD
+    real (kind=kind_phys), allocatable :: du3_ofdcol(:)  !< time-averaged sfc u-momentum flux from TOFD
+    real (kind=kind_phys), allocatable :: dv3_ofdcol(:)  !< time-averaged sfc v-momentum flux from TOFD
 !
 !---vay-2018 UGWP-diagnostics daily mean
 !
-    real (kind=kind_phys), pointer :: dudt_tot (:,:) => null()  !< daily aver GFS_phys tend for WE-U
-    real (kind=kind_phys), pointer :: dvdt_tot (:,:) => null()  !< daily aver GFS_phys tend for SN-V
-    real (kind=kind_phys), pointer :: dtdt_tot (:,:) => null()  !< daily aver GFS_phys tend for Temp-re
+    real (kind=kind_phys), allocatable :: du3dt_ogw(:,:)  !< daily aver GFS_phys tend for WE-U OGW
 !
-    real (kind=kind_phys), pointer :: du3dt_pbl(:,:) => null()  !< daily aver GFS_phys tend for WE-U pbl
-    real (kind=kind_phys), pointer :: dv3dt_pbl(:,:) => null()  !< daily aver GFS_phys tend for SN-V pbl
-    real (kind=kind_phys), pointer :: dt3dt_pbl(:,:) => null()  !< daily aver GFS_phys tend for Temp pbl
+    real (kind=kind_phys), allocatable :: ldu3dt_ogw(:,:)  !< time aver GFS_phys tend for WE-U OGW
+    real (kind=kind_phys), allocatable :: ldu3dt_obl(:,:)  !< time aver GFS_phys tend for WE-U OBL
+    real (kind=kind_phys), allocatable :: ldu3dt_oss(:,:)  !< time aver GFS_phys tend for WE-U OSS
+    real (kind=kind_phys), allocatable :: ldu3dt_ofd(:,:)  !< time aver GFS_phys tend for WE-U OFD
 !
-    real (kind=kind_phys), pointer :: du3dt_ogw(:,:) => null()  !< daily aver GFS_phys tend for WE-U OGW
-!
-    real (kind=kind_phys), pointer :: ldu3dt_ogw(:,:) => null()  !< time aver GFS_phys tend for WE-U OGW
-    real (kind=kind_phys), pointer :: ldu3dt_obl(:,:) => null()  !< time aver GFS_phys tend for WE-U OBL
-    real (kind=kind_phys), pointer :: ldu3dt_oss(:,:) => null()  !< time aver GFS_phys tend for WE-U OSS
-    real (kind=kind_phys), pointer :: ldu3dt_ofd(:,:) => null()  !< time aver GFS_phys tend for WE-U OFD
-!
-    real (kind=kind_phys), pointer :: du3dt_mtb(:,:) => null()  !< daily aver GFS_phys tend for WE-U MTB
+    real (kind=kind_phys), allocatable :: du3dt_mtb(:,:)  !< daily aver GFS_phys tend for WE-U MTB
 !
     real (kind=kind_phys), pointer :: du3dt_tms(:,:) => null()  !< daily aver GFS_phys tend for WE-U TMS
 !
-    real (kind=kind_phys), pointer :: du3dt_ngw(:,:) => null()  !< daily aver GFS_phys tend for WE-U NGW
-    real (kind=kind_phys), pointer :: dv3dt_ngw(:,:) => null()  !< daily aver GFS_phys tend for SN-V NGW
+    real (kind=kind_phys), allocatable :: du3dt_ngw(:,:)  !< daily aver GFS_phys tend for WE-U NGW
+    real (kind=kind_phys), allocatable :: dv3dt_ngw(:,:)  !< daily aver GFS_phys tend for SN-V NGW
 !
-    real (kind=kind_phys), pointer :: dws3dt_ogw(:,:) => null()  !< time aver GFS_phys tend for windspeed OGW
-    real (kind=kind_phys), pointer :: dws3dt_obl(:,:) => null()  !< time aver GFS_phys tend for windspeed OBL
-    real (kind=kind_phys), pointer :: dws3dt_oss(:,:) => null()  !< time aver GFS_phys tend for windspeed OSS
-    real (kind=kind_phys), pointer :: dws3dt_ofd(:,:) => null()  !< time aver GFS_phys tend for windspeed OFD
+    real (kind=kind_phys), allocatable :: dws3dt_ogw(:,:) !< time aver GFS_phys tend for windspeed OGW
+    real (kind=kind_phys), allocatable :: dws3dt_obl(:,:) !< time aver GFS_phys tend for windspeed OBL
+    real (kind=kind_phys), allocatable :: dws3dt_oss(:,:) !< time aver GFS_phys tend for windspeed OSS
+    real (kind=kind_phys), allocatable :: dws3dt_ofd(:,:) !< time aver GFS_phys tend for windspeed OFD
 !
-    real (kind=kind_phys), pointer :: ldu3dt_ngw(:,:) => null()  !< time aver GFS_phys tend for u wind NGW
-    real (kind=kind_phys), pointer :: ldv3dt_ngw(:,:) => null()  !< time aver GFS_phys tend for v wind NGW
-    real (kind=kind_phys), pointer :: ldt3dt_ngw(:,:) => null()  !< time aver GFS_phys tend for temperature NGW
+    real (kind=kind_phys), allocatable :: ldu3dt_ngw(:,:) !< time aver GFS_phys tend for u wind NGW
+    real (kind=kind_phys), allocatable :: ldv3dt_ngw(:,:) !< time aver GFS_phys tend for v wind NGW
+    real (kind=kind_phys), allocatable :: ldt3dt_ngw(:,:) !< time aver GFS_phys tend for temperature NGW
 !
 !--- Instantaneous UGWP-diagnostics  16-variables
 !       Diag%gwp_ax, Diag%gwp_axo, Diag%gwp_axc, Diag%gwp_axf,       &
@@ -2085,11 +2077,7 @@ module GFS_typedefs
     real (kind=kind_phys), pointer :: gwp_ayo(:,:)   => null()   ! instant oro-UGWP tend m/s/s NS
     real (kind=kind_phys), pointer :: gwp_axf(:,:)   => null()   ! instant jet-UGWP tend m/s/s EW
     real (kind=kind_phys), pointer :: gwp_ayf(:,:)   => null()   ! instant jet-UGWP tend m/s/s NS
-
-    real (kind=kind_phys), pointer :: uav_ugwp(:,:)  => null()   ! aver  wind UAV from physics
-    real (kind=kind_phys), pointer :: tav_ugwp(:,:)  => null()   ! aver  temp UAV from physics
-    real (kind=kind_phys), pointer :: du3dt_dyn(:,:) => null()   ! U Tend-dynamics "In"-"PhysOut"
-
+    
 !--- COODRE ORO diagnostics
     real (kind=kind_phys), pointer :: zmtb(:)        => null()   !
     real (kind=kind_phys), pointer :: zogw(:)        => null()   !
@@ -2101,28 +2089,28 @@ module GFS_typedefs
 !---vay-2018 UGWP-diagnostics
 
     ! Diagnostic arrays for per-timestep diagnostics
-    real (kind=kind_phys), pointer :: old_pgr(:) => null()     !< pgr at last timestep
+    real (kind=kind_phys), allocatable :: old_pgr(:)  !< pgr at last timestep
 
     ! Extended output diagnostics for Thompson MP
-    real (kind=kind_phys), pointer :: thompson_ext_diag3d (:,:,:) => null() ! extended diagnostic 3d output arrays from Thompson MP
+    real (kind=kind_phys), allocatable :: thompson_ext_diag3d (:,:,:) ! extended diagnostic 3d output arrays from Thompson MP
 
     ! Diagnostics for coupled air quality model
-    real (kind=kind_phys), pointer :: aod   (:)   => null()    !< instantaneous aerosol optical depth ( n/a )
+    real (kind=kind_phys), allocatable :: aod   (:)    !< instantaneous aerosol optical depth ( n/a ); no CCPP metadata for this variable and it is not used in the physics
 
     ! Auxiliary output arrays for debugging
-    real (kind=kind_phys), pointer :: aux2d(:,:)  => null()    !< auxiliary 2d arrays in output (for debugging)
-    real (kind=kind_phys), pointer :: aux3d(:,:,:)=> null()    !< auxiliary 2d arrays in output (for debugging)
+    real (kind=kind_phys), allocatable :: aux2d(:,:)     !< auxiliary 2d arrays in output (for debugging)
+    real (kind=kind_phys), allocatable :: aux3d(:,:,:)   !< auxiliary 2d arrays in output (for debugging)
 
     !--- Lightning threat indices
-    real (kind=kind_phys), pointer :: ltg1_max(:)        => null()  !
-    real (kind=kind_phys), pointer :: ltg2_max(:)        => null()  !
-    real (kind=kind_phys), pointer :: ltg3_max(:)        => null()  !
+    real (kind=kind_phys), allocatable :: ltg1_max(:)  !
+    real (kind=kind_phys), allocatable :: ltg2_max(:)  !
+    real (kind=kind_phys), allocatable :: ltg3_max(:)  !
 
     !--- NRL Ozone physics diagnostics
-    real (kind=kind_phys), pointer :: do3_dt_prd(:,:)  => null()
-    real (kind=kind_phys), pointer :: do3_dt_ozmx(:,:) => null()
-    real (kind=kind_phys), pointer :: do3_dt_temp(:,:) => null()
-    real (kind=kind_phys), pointer :: do3_dt_ohoz(:,:) => null()
+    real (kind=kind_phys), allocatable :: do3_dt_prd(:,:) 
+    real (kind=kind_phys), allocatable :: do3_dt_ozmx(:,:)
+    real (kind=kind_phys), allocatable :: do3_dt_temp(:,:)
+    real (kind=kind_phys), allocatable :: do3_dt_ohoz(:,:)
 
     contains
       procedure :: create    => diag_create
@@ -7862,6 +7850,8 @@ module GFS_typedefs
     if(Model%print_diff_pgr) then
       allocate(Diag%old_pgr(IM))
       Diag%old_pgr = clear_val
+    else
+      allocate(Diag%old_pgr(0))
     endif
 
     if(Model%lightning_threat) then
@@ -7871,6 +7861,10 @@ module GFS_typedefs
        Diag%ltg1_max = zero
        Diag%ltg2_max = zero
        Diag%ltg3_max = zero
+    else
+       allocate (Diag%ltg1_max(0))
+       allocate (Diag%ltg2_max(0))
+       allocate (Diag%ltg3_max(0))
     endif
 
     !--- Radiation
@@ -7969,6 +7963,8 @@ module GFS_typedefs
     allocate (Diag%tsnowpb (IM))
     if (.not. Model%lsm == Model%lsm_ruc) then
       allocate (Diag%wet1    (IM))
+    else
+      allocate (Diag%wet1    (0))
     end if
     allocate (Diag%sr       (IM))
     allocate (Diag%tdomr    (IM))
@@ -7981,11 +7977,17 @@ module GFS_typedefs
       allocate (Diag%paha    (IM))
       allocate (Diag%twa     (IM))
       allocate (Diag%pahi    (IM))
+    else
+      allocate (Diag%paha    (0))
+      allocate (Diag%twa     (0))
+      allocate (Diag%pahi    (0))
     endif
 
     ! F-A MP scheme
     if (Model%imp_physics == Model%imp_physics_fer_hires) then
      allocate (Diag%train     (IM,Model%levs))
+    else
+     allocate (Diag%train     (0,0))  
     end if
     allocate (Diag%cldfra     (IM,Model%levr+LTP))
     allocate (Diag%cldfra2d   (IM))
@@ -8003,13 +8005,31 @@ module GFS_typedefs
         allocate (Diag%upd_mf (IM,Model%levs))
         allocate (Diag%dwn_mf (IM,Model%levs))
         allocate (Diag%det_mf (IM,Model%levs))
+      else
+        allocate (Diag%upd_mf (0,0))
+        allocate (Diag%dwn_mf (0,0))
+        allocate (Diag%det_mf (0,0))
       endif
       if (Model%oz_phys_2015) then
          allocate(Diag%do3_dt_prd( IM, Model%levs))
          allocate(Diag%do3_dt_ozmx(IM, Model%levs))
          allocate(Diag%do3_dt_temp(IM, Model%levs))
          allocate(Diag%do3_dt_ohoz(IM, Model%levs))
+      else
+         allocate(Diag%do3_dt_prd( 0,0))
+         allocate(Diag%do3_dt_ozmx(0,0))
+         allocate(Diag%do3_dt_temp(0,0))
+         allocate(Diag%do3_dt_ohoz(0,0))
       endif
+    else
+      allocate(Diag%dtend(0,0,0))
+      allocate(Diag%upd_mf (0,0))
+      allocate(Diag%dwn_mf (0,0))
+      allocate(Diag%det_mf (0,0))
+      allocate(Diag%do3_dt_prd( 0,0))
+      allocate(Diag%do3_dt_ozmx(0,0))
+      allocate(Diag%do3_dt_temp(0,0))
+      allocate(Diag%do3_dt_ohoz(0,0))
     endif
 
 ! UGWP
@@ -8026,20 +8046,11 @@ module GFS_typedefs
     allocate (Diag%kdis_gw   (IM,Model%levs))
 
     if (Model%ldiag_ugwp) then
-      allocate (Diag%du3dt_dyn  (IM,Model%levs) )
-      allocate (Diag%du3dt_pbl  (IM,Model%levs) )
-      allocate (Diag%dv3dt_pbl  (IM,Model%levs) )
-      allocate (Diag%dt3dt_pbl  (IM,Model%levs) )
       allocate (Diag%du3dt_ogw  (IM,Model%levs) )
       allocate (Diag%du3dt_mtb  (IM,Model%levs) )
       allocate (Diag%du3dt_tms  (IM,Model%levs) )
       allocate (Diag%du3dt_ngw  (IM,Model%levs) )
       allocate (Diag%dv3dt_ngw  (IM,Model%levs) )
-      allocate (Diag%dudt_tot  (IM,Model%levs) )
-      allocate (Diag%dvdt_tot  (IM,Model%levs) )
-      allocate (Diag%dtdt_tot  (IM,Model%levs) )
-      allocate (Diag%uav_ugwp  (IM,Model%levs) )
-      allocate (Diag%tav_ugwp  (IM,Model%levs) )
       allocate (Diag%dws3dt_ogw (IM,Model%levs) )
       allocate (Diag%dws3dt_obl (IM,Model%levs) )
       allocate (Diag%dws3dt_oss (IM,Model%levs) )
@@ -8051,10 +8062,27 @@ module GFS_typedefs
       allocate (Diag%ldu3dt_ngw (IM,Model%levs) )
       allocate (Diag%ldv3dt_ngw (IM,Model%levs) )
       allocate (Diag%ldt3dt_ngw (IM,Model%levs) )
+    else
+      allocate (Diag%du3dt_ogw  (0,0) )
+      allocate (Diag%du3dt_mtb  (0,0) )
+      allocate (Diag%du3dt_tms  (0,0) )
+      allocate (Diag%du3dt_ngw  (0,0) )
+      allocate (Diag%dv3dt_ngw  (0,0) )
+      allocate (Diag%dws3dt_ogw (0,0) )
+      allocate (Diag%dws3dt_obl (0,0) )
+      allocate (Diag%dws3dt_oss (0,0) )
+      allocate (Diag%dws3dt_ofd (0,0) )
+      allocate (Diag%ldu3dt_ogw (0,0) )
+      allocate (Diag%ldu3dt_obl (0,0) )
+      allocate (Diag%ldu3dt_oss (0,0) )
+      allocate (Diag%ldu3dt_ofd (0,0) )
+      allocate (Diag%ldu3dt_ngw (0,0) )
+      allocate (Diag%ldv3dt_ngw (0,0) )
+      allocate (Diag%ldt3dt_ngw (0,0) )
     endif
-
+    
+    allocate (Diag%dudt_ogw  (IM,Model%levs))
     if (Model%do_ugwp_v1 .or. Model%ldiag_ugwp) then
-      allocate (Diag%dudt_ogw  (IM,Model%levs))
       allocate (Diag%dvdt_ogw  (IM,Model%levs))
       allocate (Diag%dudt_obl  (IM,Model%levs))
       allocate (Diag%dvdt_obl  (IM,Model%levs))
@@ -8079,7 +8107,29 @@ module GFS_typedefs
       allocate (Diag%du3_ofdcol (IM)          )
       allocate (Diag%dv3_ofdcol (IM)          )
     else
-      allocate (Diag%dudt_ogw  (IM,Model%levs))
+      allocate (Diag%dvdt_ogw  (0,0))
+      allocate (Diag%dudt_obl  (0,0))
+      allocate (Diag%dvdt_obl  (0,0))
+      allocate (Diag%dudt_oss  (0,0))
+      allocate (Diag%dvdt_oss  (0,0))
+      allocate (Diag%dudt_ofd  (0,0))
+      allocate (Diag%dvdt_ofd  (0,0))
+      allocate (Diag%du_ogwcol  (0))
+      allocate (Diag%dv_ogwcol  (0))
+      allocate (Diag%du_oblcol  (0))
+      allocate (Diag%dv_oblcol  (0))
+      allocate (Diag%du_osscol  (0))
+      allocate (Diag%dv_osscol  (0))
+      allocate (Diag%du_ofdcol  (0))
+      allocate (Diag%dv_ofdcol  (0))
+      allocate (Diag%du3_ogwcol (0))
+      allocate (Diag%dv3_ogwcol (0))
+      allocate (Diag%du3_oblcol (0))
+      allocate (Diag%dv3_oblcol (0))
+      allocate (Diag%du3_osscol (0))
+      allocate (Diag%dv3_osscol (0))
+      allocate (Diag%du3_ofdcol (0))
+      allocate (Diag%dv3_ofdcol (0))
     endif
 
     !--- 3D diagnostics for Thompson MP / GFDL MP
@@ -8112,6 +8162,17 @@ module GFS_typedefs
         allocate (Diag%sub_sqv   (IM,Model%levs))
         allocate (Diag%det_thl   (IM,Model%levs))
         allocate (Diag%det_sqv   (IM,Model%levs))
+      else
+        allocate (Diag%edmf_a    (0,0))
+        allocate (Diag%edmf_w    (0,0))
+        allocate (Diag%edmf_qt   (0,0))
+        allocate (Diag%edmf_thl  (0,0))
+        allocate (Diag%edmf_ent  (0,0))
+        allocate (Diag%edmf_qc   (0,0))
+        allocate (Diag%sub_thl   (0,0))
+        allocate (Diag%sub_sqv   (0,0))
+        allocate (Diag%det_thl   (0,0))
+        allocate (Diag%det_sqv   (0,0))
       endif
       if (Model%tke_budget .gt. 0) then
         allocate (Diag%dqke      (IM,Model%levs))
@@ -8119,6 +8180,12 @@ module GFS_typedefs
         allocate (Diag%qshear    (IM,Model%levs))
         allocate (Diag%qbuoy     (IM,Model%levs))
         allocate (Diag%qdiss     (IM,Model%levs))
+      else
+        allocate (Diag%dqke      (0,0))
+        allocate (Diag%qwt       (0,0))
+        allocate (Diag%qshear    (0,0))
+        allocate (Diag%qbuoy     (0,0))
+        allocate (Diag%qdiss     (0,0))
       endif
       allocate (Diag%maxwidth  (IM))
       allocate (Diag%maxmf     (IM))
@@ -8151,12 +8218,36 @@ module GFS_typedefs
       Diag%ktop_plume    = 0
       Diag%exch_h        = clear_val
       Diag%exch_m        = clear_val
+    else
+      allocate (Diag%edmf_a    (0,0))
+      allocate (Diag%edmf_w    (0,0))
+      allocate (Diag%edmf_qt   (0,0))
+      allocate (Diag%edmf_thl  (0,0))
+      allocate (Diag%edmf_ent  (0,0))
+      allocate (Diag%edmf_qc   (0,0))
+      allocate (Diag%sub_thl   (0,0))
+      allocate (Diag%sub_sqv   (0,0))
+      allocate (Diag%det_thl   (0,0))
+      allocate (Diag%det_sqv   (0,0))
+      allocate (Diag%dqke      (0,0))
+      allocate (Diag%qwt       (0,0))
+      allocate (Diag%qshear    (0,0))
+      allocate (Diag%qbuoy     (0,0))
+      allocate (Diag%qdiss     (0,0))
+      allocate (Diag%maxwidth  (0))
+      allocate (Diag%maxmf     (0))
+      allocate (Diag%ztop_plume(0))
+      allocate (Diag%ktop_plume(0))
+      allocate (Diag%exch_h    (0,0))
+      allocate (Diag%exch_m    (0,0))
     endif
 
     ! Extended diagnostics for Thompson MP
     if (Model%ext_diag_thompson) then
       allocate (Diag%thompson_ext_diag3d(IM,Model%levs,Model%thompson_ext_ndiag3d))
       Diag%thompson_ext_diag3d = clear_val
+    else
+      allocate (Diag%thompson_ext_diag3d(0,0,0))
     endif
 
     ! Air quality diagnostics
@@ -8164,16 +8255,22 @@ module GFS_typedefs
     if (Model%cplaqm) then
       allocate (Diag%aod(IM))
       Diag%aod = zero
+    else
+      allocate (Diag%aod(0))
     end if
 
     ! Auxiliary arrays in output for debugging
     if (Model%naux2d>0) then
       allocate (Diag%aux2d(IM,Model%naux2d))
       Diag%aux2d = clear_val
+    else
+      allocate (Diag%aux2d(0,0))
     endif
     if (Model%naux3d>0) then
       allocate (Diag%aux3d(IM,Model%levs,Model%naux3d))
       Diag%aux3d = clear_val
+    else
+      allocate (Diag%aux3d(0,0,0))
     endif
 
     call Diag%rad_zero  (Model)
@@ -8374,8 +8471,8 @@ module GFS_typedefs
     Diag%dtdt_gw     = zero
     Diag%kdis_gw     = zero
 
+    Diag%dudt_ogw    = zero
     if (Model%do_ugwp_v1 .or. Model%ldiag_ugwp) then
-      Diag%dudt_ogw    = zero
       Diag%dvdt_ogw    = zero
       Diag%dudt_obl    = zero
       Diag%dvdt_obl    = zero
@@ -8399,24 +8496,14 @@ module GFS_typedefs
       Diag%dv3_osscol  = zero
       Diag%du3_ofdcol  = zero
       Diag%dv3_ofdcol  = zero
-    else
-      Diag%dudt_ogw    = zero
     end if
 
     if (Model%ldiag_ugwp) then
-      Diag%du3dt_pbl   = zero
-      Diag%dv3dt_pbl   = zero
-      Diag%dt3dt_pbl   = zero
       Diag%du3dt_ogw   = zero
       Diag%du3dt_mtb   = zero
       Diag%du3dt_tms   = zero
       Diag%du3dt_ngw   = zero
       Diag%dv3dt_ngw   = zero
-      Diag%dudt_tot    = zero
-      Diag%dvdt_tot    = zero
-      Diag%dtdt_tot    = zero
-      Diag%uav_ugwp    = zero
-      Diag%tav_ugwp    = zero
       Diag%dws3dt_ogw  = zero
       Diag%dws3dt_obl  = zero
       Diag%dws3dt_oss  = zero
@@ -8429,7 +8516,6 @@ module GFS_typedefs
       Diag%ldv3dt_ngw  = zero
       Diag%ldt3dt_ngw  = zero
 !COORDE
-      Diag%du3dt_dyn   = zero
     endif
 
 !
