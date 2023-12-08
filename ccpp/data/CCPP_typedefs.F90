@@ -57,7 +57,7 @@ module CCPP_typedefs
     real (kind=kind_phys), pointer      :: adjvisdfd(:)       => null()  !<
     real (kind=kind_phys), pointer      :: aerodp(:,:)        => null()  !<
     real (kind=kind_phys), pointer      :: alb1d(:)           => null()  !<
-    real (kind=kind_phys), pointer      :: alpha(:,:)         => null()  !<
+    real (kind=kind_phys), allocatable  :: alpha(:,:)           !<
     real (kind=kind_phys), pointer      :: bexp1d(:)          => null()  !<
     real (kind=kind_phys), pointer      :: cd(:)              => null()  !<
     real (kind=kind_phys), pointer      :: cd_ice(:)          => null()  !<
@@ -67,11 +67,11 @@ module CCPP_typedefs
     real (kind=kind_phys), pointer      :: cdq_ice(:)         => null()  !<
     real (kind=kind_phys), pointer      :: cdq_land(:)        => null()  !<
     real (kind=kind_phys), pointer      :: cdq_water(:)       => null()  !<
-    real (kind=kind_phys), pointer      :: cf_upi(:,:)        => null()  !<
+    real (kind=kind_phys), allocatable  :: cf_upi(:,:)          !<
     real (kind=kind_phys), pointer      :: chh_ice(:)         => null()  !<
     real (kind=kind_phys), pointer      :: chh_land(:)        => null()  !<
     real (kind=kind_phys), pointer      :: chh_water(:)       => null()  !<
-    real (kind=kind_phys), pointer      :: clcn(:,:)          => null()  !<
+    real (kind=kind_phys), allocatable  :: clcn(:,:)            !<
     real (kind=kind_phys), pointer      :: cldf(:)            => null()  !<
     real (kind=kind_phys), pointer      :: cldsa(:,:)         => null()  !<
     real (kind=kind_phys), pointer      :: cldtaulw(:,:)      => null()  !<
@@ -83,11 +83,11 @@ module CCPP_typedefs
     real (kind=kind_phys), pointer      :: cmm_ice(:)         => null()  !<
     real (kind=kind_phys), pointer      :: cmm_land(:)        => null()  !<
     real (kind=kind_phys), pointer      :: cmm_water(:)       => null()  !<
-    real (kind=kind_phys), pointer      :: cnv_dqldt(:,:)     => null()  !<
-    real (kind=kind_phys), pointer      :: cnv_fice(:,:)      => null()  !<
-    real (kind=kind_phys), pointer      :: cnv_mfd(:,:)       => null()  !<
-    real (kind=kind_phys), pointer      :: cnv_ndrop(:,:)     => null()  !<
-    real (kind=kind_phys), pointer      :: cnv_nice(:,:)      => null()  !<
+    real (kind=kind_phys), allocatable  :: cnv_dqldt(:,:)      !<
+    real (kind=kind_phys), allocatable  :: cnv_fice(:,:)       !<
+    real (kind=kind_phys), allocatable  :: cnv_mfd(:,:)        !<
+    real (kind=kind_phys), allocatable  :: cnv_ndrop(:,:)      !<
+    real (kind=kind_phys), allocatable  :: cnv_nice(:,:)       !<
     real (kind=kind_phys), pointer      :: cnvc(:,:)          => null()  !<
     real (kind=kind_phys), pointer      :: cnvw(:,:)          => null()  !<
     real (kind=kind_phys), pointer      :: ctei_r(:)          => null()  !<
@@ -163,7 +163,7 @@ module CCPP_typedefs
     real (kind=kind_phys), pointer      :: gflx_ice(:)        => null()  !<
     real (kind=kind_phys), pointer      :: gflx_land(:)       => null()  !<
     real (kind=kind_phys), pointer      :: gflx_water(:)      => null()  !<
-    real (kind=kind_phys), pointer      :: graupelmp(:)       => null()  !<
+    real (kind=kind_phys), allocatable  :: graupelmp(:)         !<
     real (kind=kind_phys), pointer      :: gwdcu(:,:)         => null()  !<
     real (kind=kind_phys), pointer      :: gwdcv(:,:)         => null()  !<
     real (kind=kind_phys), pointer      :: zvfun(:)           => null()  !<
@@ -178,7 +178,7 @@ module CCPP_typedefs
     real (kind=kind_phys), pointer      :: htswc(:,:)         => null()  !<
     real (kind=kind_phys), pointer      :: htsw0(:,:)         => null()  !<
     !
-    real (kind=kind_phys), pointer      :: icemp(:)           => null()  !<
+    real (kind=kind_phys), allocatable  :: icemp(:)             !<
     logical,               pointer      :: dry(:)             => null()  !<
     integer,               pointer      :: idxday(:)          => null()  !<
     logical,               pointer      :: icy(:)             => null()  !<
@@ -206,11 +206,9 @@ module CCPP_typedefs
     integer,               pointer      :: mtopa(:,:)         => null()  !<
     integer                             :: nbdlw                         !<
     integer                             :: nbdsw                         !<
-    real (kind=kind_phys), pointer      :: ncgl(:,:)          => null()  !<
-    real (kind=kind_phys), pointer      :: ncpi(:,:)          => null()  !<
-    real (kind=kind_phys), pointer      :: ncpl(:,:)          => null()  !<
-    real (kind=kind_phys), pointer      :: ncpr(:,:)          => null()  !<
-    real (kind=kind_phys), pointer      :: ncps(:,:)          => null()  !<
+    real (kind=kind_phys), allocatable  :: ncgl(:,:)          !<
+    real (kind=kind_phys), allocatable  :: ncpr(:,:)          !<
+    real (kind=kind_phys), allocatable  :: ncps(:,:)          !<
     integer                             :: ncstrac                       !<
     integer                             :: nday                          !<
     integer                             :: nf_aelw                       !<
@@ -237,19 +235,19 @@ module CCPP_typedefs
     real (kind=kind_phys), pointer      :: plyr(:,:)          => null()  !<
     real (kind=kind_phys), pointer      :: prcpmp(:)          => null()  !<
     real (kind=kind_phys), pointer      :: prnum(:,:)         => null()  !<
-    real (kind=kind_phys), pointer      :: q2mp(:)            => null()  !<
-    real (kind=kind_phys), pointer      :: qgl(:,:)           => null()  !<
-    real (kind=kind_phys), pointer      :: qicn(:,:)          => null()  !<
-    real (kind=kind_phys), pointer      :: qlcn(:,:)          => null()  !<
+    real (kind=kind_phys), allocatable  :: q2mp(:)             !<
+    real (kind=kind_phys), allocatable  :: qgl(:,:)            !<
+    real (kind=kind_phys), allocatable  :: qicn(:,:)           !<
+    real (kind=kind_phys), allocatable  :: qlcn(:,:)           !<
     real (kind=kind_phys), pointer      :: qlyr(:,:)          => null()  !<
-    real (kind=kind_phys), pointer      :: qrn(:,:)           => null()  !<
-    real (kind=kind_phys), pointer      :: qsnw(:,:)          => null()  !<
+    real (kind=kind_phys), allocatable  :: qrn(:,:)             !<
+    real (kind=kind_phys), allocatable  :: qsnw(:,:)            !<
     real (kind=kind_phys), pointer      :: qss_ice(:)         => null()  !<
     real (kind=kind_phys), pointer      :: qss_land(:)        => null()  !<
     real (kind=kind_phys), pointer      :: qss_water(:)       => null()  !<
     logical                             :: fullradar_diag                !<
     real (kind=kind_phys)               :: raddt                         !<
-    real (kind=kind_phys), pointer      :: rainmp(:)          => null()  !<
+    real (kind=kind_phys), allocatable  :: rainmp(:)          !<
     real (kind=kind_phys), pointer      :: raincd(:)          => null()  !<
     real (kind=kind_phys), pointer      :: raincs(:)          => null()  !<
     real (kind=kind_phys), pointer      :: rainmcadj(:)       => null()  !<
@@ -277,13 +275,13 @@ module CCPP_typedefs
     logical                             :: skip_macro                    !<
     real (kind=kind_phys), pointer      :: snowc(:)           => null()  !<
     real (kind=kind_phys), pointer      :: snohf(:)           => null()  !<
-    real (kind=kind_phys), pointer      :: snowmp(:)          => null()  !<
+    real (kind=kind_phys), allocatable  :: snowmp(:)          !<
     real (kind=kind_phys), pointer      :: snowmt(:)          => null()  !<
     real (kind=kind_phys), pointer      :: stress(:)          => null()  !<
     real (kind=kind_phys), pointer      :: stress_ice(:)      => null()  !<
     real (kind=kind_phys), pointer      :: stress_land(:)     => null()  !<
     real (kind=kind_phys), pointer      :: stress_water(:)    => null()  !<
-    real (kind=kind_phys), pointer      :: t2mmp(:)           => null()  !<
+    real (kind=kind_phys), allocatable  :: t2mmp(:)            !<
     real (kind=kind_phys), pointer      :: theta(:)           => null()  !<
     real (kind=kind_phys), pointer      :: tlvl(:,:)          => null()  !<
     real (kind=kind_phys), pointer      :: tlyr(:,:)          => null()  !<
@@ -310,7 +308,7 @@ module CCPP_typedefs
     real (kind=kind_phys), pointer      :: vegf1d(:)          => null()  !<
     real (kind=kind_phys)               :: lndp_vgf                      !<
 
-    real (kind=kind_phys), pointer      :: w_upi(:,:)         => null()  !<
+    real (kind=kind_phys), allocatable  :: w_upi(:,:)           !<
     real (kind=kind_phys), pointer      :: wcbmax(:)          => null()  !<
     real (kind=kind_phys), pointer      :: wind(:)            => null()  !<
     real (kind=kind_phys), pointer      :: work1(:)           => null()  !<
@@ -329,10 +327,10 @@ module CCPP_typedefs
 ! (oss, ofd, obl, ogw) + ngw = sum( sso + ngw)
 !==================================================================================================
 ! nGWs
-    real (kind=kind_phys), pointer      :: dudt_ngw(:,:)      => null()  !<
-    real (kind=kind_phys), pointer      :: dvdt_ngw(:,:)      => null()  !<
-    real (kind=kind_phys), pointer      :: dtdt_ngw(:,:)      => null()  !<
-    real (kind=kind_phys), pointer      :: kdis_ngw(:,:)      => null()  !<
+    real (kind=kind_phys), allocatable  :: dudt_ngw(:,:)     !<
+    real (kind=kind_phys), allocatable  :: dvdt_ngw(:,:)     !<
+    real (kind=kind_phys), allocatable  :: dtdt_ngw(:,:)     !<
+    real (kind=kind_phys), allocatable  :: kdis_ngw(:,:)     !<
 
     real (kind=kind_phys), pointer      :: tau_oss(: )        => null()  !< instantaneous momentum flux due to OSS
     real (kind=kind_phys), pointer      :: tau_tofd(:)        => null()  !< instantaneous momentum flux due to TOFD
@@ -349,72 +347,63 @@ module CCPP_typedefs
     real (kind=kind_phys), pointer      :: dudt_tms(:,:)      => null()  !< daily aver u-wind tend due to TMS
 
     ! RRTMGP
-    real (kind=kind_phys), pointer      :: p_lay(:,:)                => null()  !<
-    real (kind=kind_phys), pointer      :: p_lev(:,:)                => null()  !<
-    real (kind=kind_phys), pointer      :: t_lev(:,:)                => null()  !<
-    real (kind=kind_phys), pointer      :: t_lay(:,:)                => null()  !<
-    real (kind=kind_phys), pointer      :: relhum(:,:)               => null()  !<
-    real (kind=kind_phys), pointer      :: tv_lay(:,:)               => null()  !<
-    real (kind=kind_phys), pointer      :: qs_lay(:,:)               => null()  !<
-    real (kind=kind_phys), pointer      :: q_lay(:,:)                => null()  !<
-    real (kind=kind_phys), pointer      :: deltaZ(:,:)               => null()  !<
-    real (kind=kind_phys), pointer      :: deltaZc(:,:)              => null()  !< 
-    real (kind=kind_phys), pointer      :: deltaP(:,:)               => null()  !< 
-    real (kind=kind_phys), pointer      :: cloud_overlap_param(:,:)  => null()  !< Cloud overlap parameter
-    real (kind=kind_phys), pointer      :: cnv_cloud_overlap_param(:,:) => null()  !< Convective cloud overlap parameter
-    real (kind=kind_phys), pointer      :: precip_overlap_param(:,:) => null()  !< Precipitation overlap parameter
-    real (kind=kind_phys), pointer      :: tracer(:,:,:)             => null()  !<
-    real (kind=kind_phys), pointer      :: aerosolslw(:,:,:,:)       => null()  !< Aerosol radiative properties in each LW band.
-    real (kind=kind_phys), pointer      :: aerosolssw(:,:,:,:)       => null()  !< Aerosol radiative properties in each SW band.
-    real (kind=kind_phys), pointer      :: cld_frac(:,:)             => null()  !< Total cloud fraction
-    real (kind=kind_phys), pointer      :: cld_lwp(:,:)              => null()  !< Cloud liquid water path
-    real (kind=kind_phys), pointer      :: cld_reliq(:,:)            => null()  !< Cloud liquid effective radius
-    real (kind=kind_phys), pointer      :: cld_iwp(:,:)              => null()  !< Cloud ice water path
-    real (kind=kind_phys), pointer      :: cld_reice(:,:)            => null()  !< Cloud ice effecive radius
-    real (kind=kind_phys), pointer      :: cld_swp(:,:)              => null()  !< Cloud snow water path
-    real (kind=kind_phys), pointer      :: cld_resnow(:,:)           => null()  !< Cloud snow effective radius
-    real (kind=kind_phys), pointer      :: cld_rwp(:,:)              => null()  !< Cloud rain water path
-    real (kind=kind_phys), pointer      :: cld_rerain(:,:)           => null()  !< Cloud rain effective radius
-    real (kind=kind_phys), pointer      :: precip_frac(:,:)          => null()  !< Precipitation fraction
-    real (kind=kind_phys), pointer      :: cld_cnv_frac(:,:)         => null()  !< SGS convective cloud fraction 
-    real (kind=kind_phys), pointer      :: cld_cnv_lwp(:,:)          => null()  !< SGS convective cloud liquid water path
-    real (kind=kind_phys), pointer      :: cld_cnv_reliq(:,:)        => null()  !< SGS convective cloud liquid effective radius
-    real (kind=kind_phys), pointer      :: cld_cnv_iwp(:,:)          => null()  !< SGS convective cloud ice water path
-    real (kind=kind_phys), pointer      :: cld_cnv_reice(:,:)        => null()  !< SGS convective cloud ice effecive radius
-    real (kind=kind_phys), pointer      :: cld_pbl_lwp(:,:)          => null()  !< SGS PBL        cloud liquid water path 
-    real (kind=kind_phys), pointer      :: cld_pbl_reliq(:,:)        => null()  !< SGS PBL        cloud liquid effective radius
-    real (kind=kind_phys), pointer      :: cld_pbl_iwp(:,:)          => null()  !< SGS PBL        cloud ice water path
-    real (kind=kind_phys), pointer      :: cld_pbl_reice(:,:)        => null()  !< SGS PBL        cloud ice effecive radius
-    real (kind=kind_phys), pointer      :: fluxlwUP_allsky(:,:)      => null()  !< RRTMGP upward   longwave  all-sky flux profile
-    real (kind=kind_phys), pointer      :: fluxlwDOWN_allsky(:,:)    => null()  !< RRTMGP downward longwave  all-sky flux profile
-    real (kind=kind_phys), pointer      :: fluxlwUP_clrsky(:,:)      => null()  !< RRTMGP upward   longwave  clr-sky flux profile
-    real (kind=kind_phys), pointer      :: fluxlwDOWN_clrsky(:,:)    => null()  !< RRTMGP downward longwave  clr-sky flux profile
-    real (kind=kind_phys), pointer      :: fluxswUP_allsky(:,:)      => null()  !< RRTMGP upward   shortwave all-sky flux profile
-    real (kind=kind_phys), pointer      :: fluxswDOWN_allsky(:,:)    => null()  !< RRTMGP downward shortwave all-sky flux profile
-    real (kind=kind_phys), pointer      :: fluxswUP_clrsky(:,:)      => null()  !< RRTMGP upward   shortwave clr-sky flux profile
-    real (kind=kind_phys), pointer      :: fluxswDOWN_clrsky(:,:)    => null()  !< RRTMGP downward shortwave clr-sky flux profile
-    real (kind=kind_phys), pointer      :: sfc_emiss_byband(:,:)     => null()  !< 
-    real (kind=kind_phys), pointer      :: sec_diff_byband(:,:)      => null()  !<
-    real (kind=kind_phys), pointer      :: sfc_alb_nir_dir(:,:)      => null()  !<
-    real (kind=kind_phys), pointer      :: sfc_alb_nir_dif(:,:)      => null()  !<
-    real (kind=kind_phys), pointer      :: sfc_alb_uvvis_dir(:,:)    => null()  !<
-    real (kind=kind_phys), pointer      :: sfc_alb_uvvis_dif(:,:)    => null()  !<
-    real (kind=kind_phys), pointer      :: toa_src_lw(:,:)           => null()  !<
-    real (kind=kind_phys), pointer      :: toa_src_sw(:,:)           => null()  !<
-    type(proflw_type), pointer          :: flxprf_lw(:,:)            => null()  !< DDT containing RRTMGP longwave fluxes
-    type(profsw_type), pointer          :: flxprf_sw(:,:)            => null()  !< DDT containing RRTMGP shortwave fluxes
-    real (kind=kind_phys), pointer      :: vmr_o2(:,:)               => null()  !<
-    real (kind=kind_phys), pointer      :: vmr_h2o(:,:)              => null()  !<
-    real (kind=kind_phys), pointer      :: vmr_o3(:,:)               => null()  !<
-    real (kind=kind_phys), pointer      :: vmr_ch4(:,:)              => null()  !<
-    real (kind=kind_phys), pointer      :: vmr_n2o(:,:)              => null()  !<
-    real (kind=kind_phys), pointer      :: vmr_co2(:,:)              => null()  !<
+    real (kind=kind_phys), allocatable  :: p_lay(:,:)                  !<
+    real (kind=kind_phys), allocatable  :: p_lev(:,:)                  !<
+    real (kind=kind_phys), allocatable  :: t_lev(:,:)                  !<
+    real (kind=kind_phys), allocatable  :: t_lay(:,:)                  !<
+    real (kind=kind_phys), allocatable  :: relhum(:,:)                 !<
+    real (kind=kind_phys), allocatable  :: tv_lay(:,:)                 !<
+    real (kind=kind_phys), allocatable  :: qs_lay(:,:)                 !<
+    real (kind=kind_phys), allocatable  :: q_lay(:,:)                  !<
+    real (kind=kind_phys), allocatable  :: deltaZ(:,:)                 !<
+    real (kind=kind_phys), allocatable  :: deltaZc(:,:)                !< 
+    real (kind=kind_phys), allocatable  :: deltaP(:,:)                 !< 
+    real (kind=kind_phys), allocatable  :: cloud_overlap_param(:,:)    !< Cloud overlap parameter
+    real (kind=kind_phys), allocatable  :: cnv_cloud_overlap_param(:,:)!< Convective cloud overlap parameter
+    real (kind=kind_phys), allocatable  :: precip_overlap_param(:,:)   !< Precipitation overlap parameter
+    real (kind=kind_phys), allocatable  :: tracer(:,:,:)               !<
+    real (kind=kind_phys), allocatable  :: aerosolslw(:,:,:,:)         !< Aerosol radiative properties in each LW band.
+    real (kind=kind_phys), allocatable  :: aerosolssw(:,:,:,:)         !< Aerosol radiative properties in each SW band.
+    real (kind=kind_phys), allocatable  :: precip_frac(:,:)            !< Precipitation fraction
+    real (kind=kind_phys), allocatable  :: cld_cnv_frac(:,:)           !< SGS convective cloud fraction 
+    real (kind=kind_phys), allocatable  :: cld_cnv_lwp(:,:)            !< SGS convective cloud liquid water path
+    real (kind=kind_phys), allocatable  :: cld_cnv_reliq(:,:)          !< SGS convective cloud liquid effective radius
+    real (kind=kind_phys), allocatable  :: cld_cnv_iwp(:,:)            !< SGS convective cloud ice water path
+    real (kind=kind_phys), allocatable  :: cld_cnv_reice(:,:)          !< SGS convective cloud ice effecive radius
+    real (kind=kind_phys), allocatable  :: cld_pbl_lwp(:,:)            !< SGS PBL        cloud liquid water path 
+    real (kind=kind_phys), allocatable  :: cld_pbl_reliq(:,:)          !< SGS PBL        cloud liquid effective radius
+    real (kind=kind_phys), allocatable  :: cld_pbl_iwp(:,:)            !< SGS PBL        cloud ice water path
+    real (kind=kind_phys), allocatable  :: cld_pbl_reice(:,:)          !< SGS PBL        cloud ice effecive radius
+    real (kind=kind_phys), allocatable  :: fluxlwUP_allsky(:,:)        !< RRTMGP upward   longwave  all-sky flux profile
+    real (kind=kind_phys), allocatable  :: fluxlwDOWN_allsky(:,:)      !< RRTMGP downward longwave  all-sky flux profile
+    real (kind=kind_phys), allocatable  :: fluxlwUP_clrsky(:,:)        !< RRTMGP upward   longwave  clr-sky flux profile
+    real (kind=kind_phys), allocatable  :: fluxlwDOWN_clrsky(:,:)      !< RRTMGP downward longwave  clr-sky flux profile
+    real (kind=kind_phys), allocatable  :: fluxswUP_allsky(:,:)        !< RRTMGP upward   shortwave all-sky flux profile
+    real (kind=kind_phys), allocatable  :: fluxswDOWN_allsky(:,:)      !< RRTMGP downward shortwave all-sky flux profile
+    real (kind=kind_phys), allocatable  :: fluxswUP_clrsky(:,:)        !< RRTMGP upward   shortwave clr-sky flux profile
+    real (kind=kind_phys), allocatable  :: fluxswDOWN_clrsky(:,:)      !< RRTMGP downward shortwave clr-sky flux profile
+    real (kind=kind_phys), allocatable  :: sfc_emiss_byband(:,:)       !< 
+    real (kind=kind_phys), allocatable  :: sec_diff_byband(:,:)        !<
+    real (kind=kind_phys), allocatable  :: sfc_alb_nir_dir(:,:)        !<
+    real (kind=kind_phys), allocatable  :: sfc_alb_nir_dif(:,:)        !<
+    real (kind=kind_phys), allocatable  :: sfc_alb_uvvis_dir(:,:)      !<
+    real (kind=kind_phys), allocatable  :: sfc_alb_uvvis_dif(:,:)      !<
+    real (kind=kind_phys), allocatable  :: toa_src_lw(:,:)             !<
+    real (kind=kind_phys), allocatable  :: toa_src_sw(:,:)             !<
+    type(proflw_type),     allocatable  :: flxprf_lw(:,:)              !< DDT containing RRTMGP longwave fluxes
+    type(profsw_type),     allocatable  :: flxprf_sw(:,:)              !< DDT containing RRTMGP shortwave fluxes
+    real (kind=kind_phys), allocatable  :: vmr_o2(:,:)                 !<
+    real (kind=kind_phys), allocatable  :: vmr_h2o(:,:)                !<
+    real (kind=kind_phys), allocatable  :: vmr_o3(:,:)                 !<
+    real (kind=kind_phys), allocatable  :: vmr_ch4(:,:)                !<
+    real (kind=kind_phys), allocatable  :: vmr_n2o(:,:)                !<
+    real (kind=kind_phys), allocatable  :: vmr_co2(:,:)                !<
 
     !-- GSL drag suite
-    real (kind=kind_phys), pointer      :: varss(:)           => null()  !<
-    real (kind=kind_phys), pointer      :: ocss(:)            => null()  !<
-    real (kind=kind_phys), pointer      :: oa4ss(:,:)         => null()  !<
-    real (kind=kind_phys), pointer      :: clxss(:,:)         => null()  !<
+    real (kind=kind_phys), allocatable  :: varss(:)      !<
+    real (kind=kind_phys), allocatable  :: ocss(:)       !<
+    real (kind=kind_phys), allocatable  :: oa4ss(:,:)    !<
+    real (kind=kind_phys), allocatable  :: clxss(:,:)    !<
 
     !-- 3D diagnostics
     integer :: rtg_ozone_index, rtg_tke_index
@@ -531,6 +520,8 @@ contains
     if (.not. Model%do_RRTMGP) then
       ! RRTMGP uses its own cloud_overlap_param
       allocate (Interstitial%alpha         (IM,Model%levr+LTP))
+    else
+      allocate (Interstitial%alpha         (0,0))
     end if
     allocate (Interstitial%bexp1d          (IM))
     allocate (Interstitial%cd              (IM))
@@ -756,15 +747,6 @@ contains
        allocate (Interstitial%fluxswDOWN_clrsky    (IM, Model%levs+1))
        allocate (Interstitial%aerosolslw           (IM, Model%levs, Model%rrtmgp_nBandsLW, NF_AELW))
        allocate (Interstitial%aerosolssw           (IM, Model%levs, Model%rrtmgp_nBandsSW, NF_AESW))
-       allocate (Interstitial%cld_frac             (IM, Model%levs))
-       allocate (Interstitial%cld_lwp              (IM, Model%levs))
-       allocate (Interstitial%cld_reliq            (IM, Model%levs))
-       allocate (Interstitial%cld_iwp              (IM, Model%levs))
-       allocate (Interstitial%cld_reice            (IM, Model%levs))
-       allocate (Interstitial%cld_swp              (IM, Model%levs))
-       allocate (Interstitial%cld_resnow           (IM, Model%levs))
-       allocate (Interstitial%cld_rwp              (IM, Model%levs))
-       allocate (Interstitial%cld_rerain           (IM, Model%levs))
        allocate (Interstitial%precip_frac          (IM, Model%levs))
        allocate (Interstitial%cld_cnv_frac         (IM, Model%levs))
        allocate (Interstitial%cnv_cloud_overlap_param(IM, Model%levs))
@@ -792,7 +774,58 @@ contains
        allocate (Interstitial%vmr_ch4              (IM, Model%levs))
        allocate (Interstitial%vmr_n2o              (IM, Model%levs))
        allocate (Interstitial%vmr_co2              (IM, Model%levs))
-
+    else
+       allocate (Interstitial%tracer               (0,0,0))
+       allocate (Interstitial%tv_lay               (0,0))
+       allocate (Interstitial%relhum               (0,0))
+       allocate (Interstitial%qs_lay               (0,0))
+       allocate (Interstitial%q_lay                (0,0))
+       allocate (Interstitial%deltaZ               (0,0))
+       allocate (Interstitial%deltaZc              (0,0))
+       allocate (Interstitial%deltaP               (0,0))
+       allocate (Interstitial%p_lev                (0,0))
+       allocate (Interstitial%p_lay                (0,0))
+       allocate (Interstitial%t_lev                (0,0))
+       allocate (Interstitial%t_lay                (0,0))
+       allocate (Interstitial%cloud_overlap_param  (0,0))
+       allocate (Interstitial%precip_overlap_param (0,0))
+       allocate (Interstitial%fluxlwUP_allsky      (0,0))
+       allocate (Interstitial%fluxlwDOWN_allsky    (0,0))
+       allocate (Interstitial%fluxlwUP_clrsky      (0,0))
+       allocate (Interstitial%fluxlwDOWN_clrsky    (0,0))
+       allocate (Interstitial%fluxswUP_allsky      (0,0))
+       allocate (Interstitial%fluxswDOWN_allsky    (0,0))
+       allocate (Interstitial%fluxswUP_clrsky      (0,0))
+       allocate (Interstitial%fluxswDOWN_clrsky    (0,0))
+       allocate (Interstitial%aerosolslw           (0,0,0,0))
+       allocate (Interstitial%aerosolssw           (0,0,0,0))
+       allocate (Interstitial%precip_frac          (0,0))
+       allocate (Interstitial%cld_cnv_frac         (0,0))
+       allocate (Interstitial%cnv_cloud_overlap_param(0,0))
+       allocate (Interstitial%cld_cnv_lwp          (0,0))
+       allocate (Interstitial%cld_cnv_reliq        (0,0))
+       allocate (Interstitial%cld_cnv_iwp          (0,0))
+       allocate (Interstitial%cld_cnv_reice        (0,0))
+       allocate (Interstitial%cld_pbl_lwp          (0,0))
+       allocate (Interstitial%cld_pbl_reliq        (0,0))
+       allocate (Interstitial%cld_pbl_iwp          (0,0))
+       allocate (Interstitial%cld_pbl_reice        (0,0))
+       allocate (Interstitial%flxprf_lw            (0,0))
+       allocate (Interstitial%flxprf_sw            (0,0))
+       allocate (Interstitial%sfc_emiss_byband     (0,0))
+       allocate (Interstitial%sec_diff_byband      (0,0))
+       allocate (Interstitial%sfc_alb_nir_dir      (0,0))
+       allocate (Interstitial%sfc_alb_nir_dif      (0,0))
+       allocate (Interstitial%sfc_alb_uvvis_dir    (0,0))
+       allocate (Interstitial%sfc_alb_uvvis_dif    (0,0))
+       allocate (Interstitial%toa_src_sw           (0,0))
+       allocate (Interstitial%toa_src_lw           (0,0))
+       allocate (Interstitial%vmr_o2               (0,0))
+       allocate (Interstitial%vmr_h2o              (0,0))
+       allocate (Interstitial%vmr_o3               (0,0))
+       allocate (Interstitial%vmr_ch4              (0,0))
+       allocate (Interstitial%vmr_n2o              (0,0))
+       allocate (Interstitial%vmr_co2              (0,0))
     end if
 
 ! UGWP common
@@ -815,6 +848,11 @@ contains
       allocate (Interstitial%dvdt_ngw        (IM,Model%levs))
       allocate (Interstitial%dtdt_ngw        (IM,Model%levs))
       allocate (Interstitial%kdis_ngw        (IM,Model%levs))
+    else
+      allocate (Interstitial%dudt_ngw        (0,0))
+      allocate (Interstitial%dvdt_ngw        (0,0))
+      allocate (Interstitial%dtdt_ngw        (0,0))
+      allocate (Interstitial%kdis_ngw        (0,0))
     end if
 
 !-- GSL drag suite
@@ -824,6 +862,11 @@ contains
        allocate (Interstitial%ocss            (IM))
        allocate (Interstitial%oa4ss           (IM,4))
        allocate (Interstitial%clxss           (IM,4))
+    else
+       allocate (Interstitial%varss           (0))
+       allocate (Interstitial%ocss            (0))
+       allocate (Interstitial%oa4ss           (0,0))
+       allocate (Interstitial%clxss           (0,0))
     end if
 !
     ! Allocate arrays that are conditional on physics choices
@@ -834,13 +877,19 @@ contains
        allocate (Interstitial%icemp      (IM))
        allocate (Interstitial%rainmp     (IM))
        allocate (Interstitial%snowmp     (IM))
-    else if (Model%imp_physics == Model%imp_physics_mg) then
+    else
+       allocate (Interstitial%graupelmp  (0))
+       allocate (Interstitial%icemp      (0))
+       allocate (Interstitial%rainmp     (0))
+       allocate (Interstitial%snowmp     (0))
+    end if
+    if (Model%imp_physics == Model%imp_physics_mg) then
        allocate (Interstitial%ncgl       (IM,Model%levs))
        allocate (Interstitial%ncpr       (IM,Model%levs))
        allocate (Interstitial%ncps       (IM,Model%levs))
-       allocate (Interstitial%qgl        (IM,Model%levs))
        allocate (Interstitial%qrn        (IM,Model%levs))
        allocate (Interstitial%qsnw       (IM,Model%levs))
+       allocate (Interstitial%qgl        (IM,Model%levs))
        allocate (Interstitial%qlcn       (IM,Model%levs))
        allocate (Interstitial%qicn       (IM,Model%levs))
        allocate (Interstitial%w_upi      (IM,Model%levs))
@@ -851,19 +900,30 @@ contains
        allocate (Interstitial%cnv_fice   (IM,Model%levs))
        allocate (Interstitial%cnv_ndrop  (IM,Model%levs))
        allocate (Interstitial%cnv_nice   (IM,Model%levs))
-    end if
-    if (Model%do_shoc) then
-       if (.not. associated(Interstitial%qrn))  allocate (Interstitial%qrn  (IM,Model%levs))
-       if (.not. associated(Interstitial%qsnw)) allocate (Interstitial%qsnw (IM,Model%levs))
-       ! DH* updated version of shoc from May 22 2019 (not yet in CCPP) doesn't use qgl? remove?
-       if (.not. associated(Interstitial%qgl))  allocate (Interstitial%qgl  (IM,Model%levs))
-       ! *DH
-       allocate (Interstitial%ncpi (IM,Model%levs))
-       allocate (Interstitial%ncpl (IM,Model%levs))
-    end if
+    else
+       allocate (Interstitial%ncgl       (0,0))
+       allocate (Interstitial%ncpr       (0,0))
+       allocate (Interstitial%ncps       (0,0))
+       allocate (Interstitial%qrn        (0,0))
+       allocate (Interstitial%qsnw       (0,0))
+       allocate (Interstitial%qgl        (0,0))
+       allocate (Interstitial%qlcn       (0,0))
+       allocate (Interstitial%qicn       (0,0))
+       allocate (Interstitial%w_upi      (0,0))
+       allocate (Interstitial%cf_upi     (0,0))
+       allocate (Interstitial%cnv_mfd    (0,0))
+       allocate (Interstitial%cnv_dqldt  (0,0))
+       allocate (Interstitial%clcn       (0,0))
+       allocate (Interstitial%cnv_fice   (0,0))
+       allocate (Interstitial%cnv_ndrop  (0,0))
+       allocate (Interstitial%cnv_nice   (0,0))
+    end if  
     if (Model%lsm == Model%lsm_noahmp) then
        allocate (Interstitial%t2mmp (IM))
        allocate (Interstitial%q2mp  (IM))
+    else
+       allocate (Interstitial%t2mmp (0))
+       allocate (Interstitial%q2mp  (0))
     end if
     !
     ! Set components that do not change
@@ -1166,15 +1226,6 @@ contains
       Interstitial%fluxswDOWN_clrsky    = clear_val
       Interstitial%aerosolslw           = clear_val
       Interstitial%aerosolssw           = clear_val
-      Interstitial%cld_frac             = clear_val
-      Interstitial%cld_lwp              = clear_val
-      Interstitial%cld_reliq            = clear_val
-      Interstitial%cld_iwp              = clear_val
-      Interstitial%cld_reice            = clear_val
-      Interstitial%cld_swp              = clear_val
-      Interstitial%cld_resnow           = clear_val
-      Interstitial%cld_rwp              = clear_val
-      Interstitial%cld_rerain           = clear_val
       Interstitial%precip_frac          = clear_val
       Interstitial%cld_cnv_frac         = clear_val
       Interstitial%cnv_cloud_overlap_param  = clear_val
@@ -1459,15 +1510,6 @@ contains
        Interstitial%cnv_fice  = clear_val
        Interstitial%cnv_ndrop = clear_val
        Interstitial%cnv_nice  = clear_val
-    end if
-    if (Model%do_shoc) then
-       Interstitial%qrn       = clear_val
-       Interstitial%qsnw      = clear_val
-       ! DH* updated version of shoc from May 22 2019 doesn't use qgl? remove?
-       Interstitial%qgl       = clear_val
-       ! *DH
-       Interstitial%ncpi      = clear_val
-       Interstitial%ncpl      = clear_val
     end if
     if (Model%lsm == Model%lsm_noahmp) then
        Interstitial%t2mmp     = clear_val
