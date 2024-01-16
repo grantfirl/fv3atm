@@ -1265,7 +1265,7 @@ contains
     implicit none
 
     class(Sfc_io_data_type)             :: sfc
-    type(GFS_sfcprop_type),      intent(in) :: Sfcprop(:)
+    type(GFS_sfcprop_type),      intent(inout) :: Sfcprop(:)
     type(block_control_type),    intent(in) :: Atm_block
     type(GFS_control_type),      intent(in) :: Model
 

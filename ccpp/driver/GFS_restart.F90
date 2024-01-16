@@ -48,13 +48,13 @@ module GFS_restart
     type(GFS_control_type),     intent(in)    :: Model
     type(GFS_statein_type),     intent(in)    :: Statein(:)
     type(GFS_stateout_type),    intent(in)    :: Stateout(:)
-    type(GFS_sfcprop_type),     intent(in)    :: Sfcprop(:)
-    type(GFS_coupling_type),    intent(in)    :: Coupling(:)
-    type(GFS_grid_type),        intent(in)    :: Grid(:)
-    type(GFS_tbd_type),         intent(in)    :: Tbd(:)
+    type(GFS_sfcprop_type), TARGET,    intent(in)    :: Sfcprop(:)
+    type(GFS_coupling_type), TARGET,   intent(in)    :: Coupling(:)
+    type(GFS_grid_type), TARGET,       intent(in)    :: Grid(:)
+    type(GFS_tbd_type), TARGET,        intent(in)    :: Tbd(:)
     type(GFS_cldprop_type),     intent(in)    :: Cldprop(:)
     type(GFS_radtend_type),     intent(in)    :: Radtend(:)
-    type(GFS_diag_type),        intent(in)    :: IntDiag(:)
+    type(GFS_diag_type), TARGET,       intent(in)    :: IntDiag(:)
     type(GFS_init_type),        intent(in)    :: Init_parm
     type(GFS_externaldiag_type),intent(in)    :: ExtDiag(:)
 

@@ -303,7 +303,7 @@ contains
   subroutine rrfs_sd_state_copy_to_grid(data, Model, Atm_block, Sfcprop)
     implicit none
     class(rrfs_sd_state_type) :: data
-    type(GFS_sfcprop_type),   intent(in) :: Sfcprop(:)
+    type(GFS_sfcprop_type),   intent(inout) :: Sfcprop(:)
     type(GFS_control_type),   intent(in) :: Model
     type(block_control_type), intent(in) :: Atm_block
 

@@ -57,7 +57,7 @@ module GFS_diagnostics
     implicit none
     type(GFS_control_type),       intent(in)    :: Model
     type(GFS_externaldiag_type),  intent(inout) :: ExtDiag(:)
-    type(GFS_diag_type),          intent(in)    :: IntDiag(:)
+    type(GFS_diag_type), TARGET,  intent(in)    :: IntDiag(:)
     integer, intent(in) :: nblks, itrac, iprocess
     integer, intent(inout) :: idx
     real(kind=kind_phys), pointer :: dtend(:,:,:) ! Assumption: dtend is null iff all(dtidx <= 1)
@@ -128,13 +128,13 @@ module GFS_diagnostics
     type(GFS_control_type),       intent(in)    :: Model
     type(GFS_statein_type),       intent(in)    :: Statein(:)
     type(GFS_stateout_type),      intent(in)    :: Stateout(:)
-    type(GFS_sfcprop_type),       intent(in)    :: Sfcprop(:)
-    type(GFS_coupling_type),      intent(in)    :: Coupling(:)
-    type(GFS_grid_type),          intent(in)    :: Grid(:)
-    type(GFS_tbd_type),           intent(in)    :: Tbd(:)
+    type(GFS_sfcprop_type), TARGET, intent(in)    :: Sfcprop(:)
+    type(GFS_coupling_type), TARGET, intent(in)    :: Coupling(:)
+    type(GFS_grid_type), TARGET,     intent(in)    :: Grid(:)
+    type(GFS_tbd_type), TARGET,    intent(in)    :: Tbd(:)
     type(GFS_cldprop_type),       intent(in)    :: Cldprop(:)
     type(GFS_radtend_type),       intent(in)    :: Radtend(:)
-    type(GFS_diag_type),          intent(in)    :: IntDiag(:)
+    type(GFS_diag_type), TARGET,  intent(in)    :: IntDiag(:)
     type(GFS_init_type),          intent(in)    :: Init_parm
 
 !--- local variables
@@ -931,7 +931,7 @@ module GFS_diagnostics
 
 !--- air quality diagnostics ---
   if (Model%cplaqm) then
-    if (associated(IntDiag(1)%aod)) then
+    if (size(IntDiag(1)%aod) > 0) then
       idx = idx + 1
       ExtDiag(idx)%axes = 2
       ExtDiag(idx)%name = 'aod'
@@ -1887,7 +1887,7 @@ module GFS_diagnostics
     enddo
     endif
 
-    if(associated(Coupling(1)%htrlw)) then
+    if(size(Coupling(1)%htrlw) > 0) then
     idx = idx + 1
     ExtDiag(idx)%axes = 3
     ExtDiag(idx)%name = 'htrlw'

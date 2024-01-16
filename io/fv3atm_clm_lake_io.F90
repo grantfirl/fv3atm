@@ -278,7 +278,7 @@ CONTAINS
   subroutine clm_lake_copy_to_grid(clm_lake, Model, Atm_block, Sfcprop)
     implicit none
     class(clm_lake_data_type) :: clm_lake
-    type(GFS_sfcprop_type),   intent(in) :: Sfcprop(:)
+    type(GFS_sfcprop_type),   intent(inout) :: Sfcprop(:)
     type(GFS_control_type),   intent(in) :: Model
     type(block_control_type), intent(in) :: Atm_block
 
