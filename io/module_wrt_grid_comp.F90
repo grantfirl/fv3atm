@@ -29,18 +29,20 @@
       use mpi
       use esmf
       use fms
+      use mpp_mod, only : mpp_init   ! needed for fms 2023.02
 
       use write_internal_state
       use module_fv3_io_def,   only : num_pes_fcst,                             &
                                       n_group, num_files,                       &
                                       filename_base, output_grid, output_file,  &
                                       imo,jmo,ichunk2d,jchunk2d,                &
-                                      ichunk3d,jchunk3d,kchunk3d,nbits,         &
+                                      ichunk3d,jchunk3d,kchunk3d,               &
+                                      quantize_mode,quantize_nsd,               &
                                       nsout => nsout_io,                        &
                                       cen_lon, cen_lat,                         &
                                       lon1, lat1, lon2, lat2, dlon, dlat,       &
                                       stdlat1, stdlat2, dx, dy, iau_offset,     &
-                                      ideflate, lflname_fulltime
+                                      ideflate, zstandard_level, lflname_fulltime
       use module_write_netcdf, only : write_netcdf
       use module_write_restart_netcdf
       use physcons,            only : pi => con_pi
@@ -360,7 +362,9 @@
       allocate(jchunk3d(ngrids))
       allocate(kchunk3d(ngrids))
       allocate(ideflate(ngrids))
-      allocate(nbits(ngrids))
+      allocate(quantize_mode(ngrids))
+      allocate(quantize_nsd(ngrids))
+      allocate(zstandard_level(ngrids))
 
       allocate(wrt_int_state%out_grid_info(ngrids))
 
@@ -466,18 +470,37 @@
         call ESMF_ConfigGetAttribute(config=CF,value=jchunk3d(n),default=0,label ='jchunk3d:',rc=rc)
         call ESMF_ConfigGetAttribute(config=CF,value=kchunk3d(n),default=0,label ='kchunk3d:',rc=rc)
 
+        ! zstandard compression flag
+        call ESMF_ConfigGetAttribute(config=CF,value=zstandard_level(n),default=0,label ='zstandard_level:',rc=rc)
+        if (zstandard_level(n) < 0) zstandard_level(n)=0
+
         ! zlib compression flag
         call ESMF_ConfigGetAttribute(config=CF,value=ideflate(n),default=0,label ='ideflate:',rc=rc)
         if (ideflate(n) < 0) ideflate(n)=0
 
-        call ESMF_ConfigGetAttribute(config=CF,value=nbits(n),default=0,label ='nbits:',rc=rc)
-        if (lprnt) then
-            print *,'ideflate=',ideflate(n),' nbits=',nbits(n)
+        if (ideflate(n) > 0 .and. zstandard_level(n) > 0) then
+           write(0,*)"wrt_initialize_p1: zlib and zstd compression cannot be both enabled at the same time"
+           call ESMF_LogWrite("wrt_initialize_p1: zlib and zstd compression cannot be both enabled at the same time",ESMF_LOGMSG_ERROR,rc=RC)
+           call ESMF_Finalize(endflag=ESMF_END_ABORT)
         end if
-        ! nbits quantization level for lossy compression (must be between 1 and 31)
-        ! 1 is most compression, 31 is least. If outside this range, set to zero
-        ! which means use lossless compression.
-        if (nbits(n) < 1 .or. nbits(n) > 31)  nbits(n)=0  ! lossless compression (no quantization)
+
+        ! quantize_mode and quantize_nsd
+        call ESMF_ConfigGetAttribute(config=CF,value=quantize_mode(n),default='quantize_bitgroom',label='quantize_mode:',rc=rc)
+        call ESMF_ConfigGetAttribute(config=CF,value=quantize_nsd(n),default=0,label='quantize_nsd:',rc=rc)
+
+        if (.NOT. (trim(quantize_mode(n))=='quantize_bitgroom' &
+              .OR. trim(quantize_mode(n))=='quantize_granularbr' &
+              .OR. trim(quantize_mode(n))=='quantize_bitround') ) then
+           write(0,*)"wrt_initialize_p1: unknown quantize_mode ", trim(quantize_mode(n))
+           call ESMF_LogWrite("wrt_initialize_p1: wrt_initialize_p1: unknown quantize_mode "//trim(quantize_mode(n)),ESMF_LOGMSG_ERROR,rc=RC)
+           call ESMF_Finalize(endflag=ESMF_END_ABORT)
+        end if
+
+        if (lprnt) then
+            print *,'ideflate=',ideflate(n)
+            print *,'quantize_mode=',trim(quantize_mode(n)),' quantize_nsd=',quantize_nsd(n)
+            print *,'zstandard_level=',zstandard_level(n)
+        end if
 
         if (cf_output_grid /= cf) then
           ! destroy the temporary config object created for nest domains
@@ -2369,11 +2392,6 @@
                 call mask_fields(file_bundle,rc)
                 if (ESMF_LogFoundError(rcToCheck=rc, msg=ESMF_LOGERR_PASSTHRU, line=__LINE__, file=__FILE__)) return
               endif
-
-              if (nbits(grid_id) /= 0) then
-                call ESMF_LogWrite("wrt_run: lossy compression is not supported for regional grids",ESMF_LOGMSG_ERROR,rc=RC)
-                call ESMF_Finalize(endflag=ESMF_END_ABORT)
-              end if
 
               call write_netcdf(wrt_int_state%wrtFB(nbdl),trim(filename), &
                                 use_parallel_netcdf, wrt_mpi_comm,wrt_int_state%mype, &
