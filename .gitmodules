@@ -11,7 +11,7 @@
   #url = https://github.com/NCAR/ccpp-physics
   #branch = main
   url = https://github.com/grantfirl/ccpp-physics
-  branch = ufs-dev-pr110
+  branch = ufs-dev-PR110
 [submodule "upp"]
   path = upp
   url = https://github.com/NOAA-EMC/UPP
