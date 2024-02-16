@@ -3985,6 +3985,12 @@
   units = flag
   dimensions = ()
   type = logical
+[lsgs_clds]
+  standard_name = do_subgrid_scale_clouds_in_radiation
+  long_name = add SGS clouds as background clouds for radiation
+  units = flag
+  dimensions = ()
+  type = logical
 [active_gases]
   standard_name = active_gases_used_by_RRTMGP
   long_name = active gases used by RRTMGP

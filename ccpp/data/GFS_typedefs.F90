@@ -869,6 +869,7 @@ module GFS_typedefs
     logical              :: lrseeds         !< flag to use host-provided random seeds
     integer              :: nrstreams       !< number of random number streams in host-provided random seed array
     logical              :: lextop          !< flag for using an extra top layer for radiation
+    logical              :: lsgs_clds       !< flag for adding SGS clouds (e.g. from MYNN PBL) to clouds seen by radiation
 
     ! RRTMGP
     logical              :: do_RRTMGP               !< Use RRTMGP
@@ -3444,6 +3445,7 @@ module GFS_typedefs
     logical              :: lrseeds           = .false.      !< flag to use host-provided random seeds
     integer              :: nrstreams         = 2            !< number of random number streams in host-provided random seed array
     logical              :: lextop            = .false.      !< flag for using an extra top layer for radiation
+    logical              :: lsgs_clds         = .false.      !< flag for adding SGS clouds (e.g. from MYNN PBL) to clouds seen by radiation
     ! RRTMGP
     logical              :: do_RRTMGP           = .false.    !< Use RRTMGP?
     character(len=128)   :: active_gases        = ''         !< Character list of active gases used in RRTMGP
@@ -3998,7 +4000,7 @@ module GFS_typedefs
                                fhswr, fhlwr, levr, nfxr, iaerclm, iflip, isol, ico2, ialb,  &
                                isot, iems, iaer, icliq_sw, iovr, ictm, isubc_sw,            &
                                isubc_lw, lcrick, lcnorm, lwhtr, swhtr,                      &
-                               nhfrad, idcor, dcorr_con,                                    &
+                               nhfrad, idcor, dcorr_con, lsgs_clds,                         &
                           ! --- RRTMGP
                                do_RRTMGP, active_gases, nGases, rrtmgp_root,                &
                                lw_file_gas, lw_file_clouds, rrtmgp_nBandsLW, rrtmgp_nGptsLW,&
@@ -4500,6 +4502,7 @@ module GFS_typedefs
     Model%lrseeds          = lrseeds
     Model%nrstreams        = nrstreams
     Model%lextop           = (ltp > 0)
+    Model%lsgs_clds        = lsgs_clds
 
     ! RRTMGP
     Model%do_RRTMGP           = do_RRTMGP
@@ -6561,6 +6564,7 @@ module GFS_typedefs
       print *, ' lrseeds           : ', Model%lrseeds
       print *, ' nrstreams         : ', Model%nrstreams
       print *, ' lextop            : ', Model%lextop
+      print *, ' lsgs_clds         : ', Model%lsgs_clds
       if (Model%do_RRTMGP) then
         print *, ' rrtmgp_nrghice     : ', Model%rrtmgp_nrghice
         print *, ' do_GPsw_Glw        : ', Model%do_GPsw_Glw
