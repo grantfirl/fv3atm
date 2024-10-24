@@ -2356,8 +2356,6 @@ module GFS_typedefs
     allocate (Sfcprop%emis_lnd (IM))
     allocate (Sfcprop%emis_ice (IM))
     allocate (Sfcprop%emis_wat (IM))
-    allocate (Sfcprop%acsnow_land (IM))
-    allocate (Sfcprop%acsnow_ice (IM))
 
     Sfcprop%slmsk     = clear_val
     Sfcprop%oceanfrac = clear_val
@@ -2415,9 +2413,6 @@ module GFS_typedefs
     Sfcprop%emis_lnd  = clear_val
     Sfcprop%emis_ice  = clear_val
     Sfcprop%emis_wat  = clear_val
-    Sfcprop%acsnow_land = clear_val
-    Sfcprop%acsnow_ice = clear_val
-
 
 !--- In (radiation only)
     allocate (Sfcprop%snoalb (IM))
