@@ -1061,7 +1061,7 @@ contains
         !physics_sfcprop % ffhh(iCol) = 0.0_RKIND !no input in ICs; intent(inout) in surface layer scheme
         !physics_sfcprop % hice(iCol)  = 0.0_RKIND !no input in ICs; probably from a climatological sea ice dataset?
         physics_sfcprop % fice(iCol)   = xice(iCol) !potentially need to divide by a sea area fraction if necessary?
-        !physics_sfcprop % tisfc(iCol)  = 
+        physics_sfcprop % tisfc(iCol)  = skintemp(iCol)
         !physics_sfcprop % tprcp(iCol) = 
         !physics_sfcprop % srflag(iCol) = 
         !physics_sfcprop % snowd(iCol) = 
