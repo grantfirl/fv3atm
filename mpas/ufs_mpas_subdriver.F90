@@ -39,58 +39,11 @@ module ufs_mpas_subdriver
 
   private
 
-  public :: MPAS_control_type
   public :: ufs_mpas_init
   public :: ufs_mpas_run
 
   logical :: init_lbc    = .true.
   integer :: nRecord_lbc = 1
-  !> #########################################################################################
-  !>
-  !> #########################################################################################
-  type MPAS_control_type
-
-     ! Namelist filename
-     character(len=64) :: fn_nml
-
-     ! Full namelist for use with internal file reads
-     ! This is not needed, but maintains the same interface with GFS_typedefs.F90:control_initialize()
-     character(len=:), pointer, dimension(:) :: input_nml_file => null()
-
-     ! MPI Bookkeeping
-     integer          :: me           !< current MPI-rank
-     integer          :: master       !< master MPI-rank
-     type(MPI_Comm)   :: mpi_comm     !< forecast tasks mpi communicator
-
-     ! ESMF
-     integer          :: fcst_ntasks  !< total number of forecast tasks
-
-     ! Log file identifier
-     integer          :: nlunit       !< fortran unit number for file opens
-     integer          :: logunit      !< fortran unit number for writing logfile
-
-     ! UFS date(s) for model time.
-     integer          :: bdat(8)      !< model begin date in GFS format   (same as idat)
-     integer          :: cdat(8)      !< model current date in GFS format (same as jdat)
-
-     ! Spatial/Temporal parameters for physics/dynamics coupling.
-     real(rkind)      :: dt_dycore    !< dynamics time step in seconds
-     real(rkind)      :: dt_phys      !< physics  time step in seconds
-     integer          :: nblks        !< Number of data (physics) blocks.
-     integer, pointer :: blksz(:)     !< Block size for  data blocking (default blksz(1)=[nCells])
-     integer          :: levs         !< number of vertical levels
-
-     !
-     integer          :: iau_offset   !< iau running window length
-     logical          :: restart      !< flag whether this is a coldstart (.false.) or a warmstart/restart (.true.)
-
-     ! Tracers
-     integer                    :: nConstituents   !< Number of constituents (tracers).
-     integer                    :: nwat            !< number of hydrometeors in dcyore (including water vapor)
-     character(len=32), pointer :: tracer_names(:) !< tracers names to dereference tracer id
-     integer,           pointer :: tracer_types(:) !< tracers types: 0=generic, 1=chem,prog, 2=chem,diag
-
-  end type MPAS_control_type
 
 contains
 
@@ -100,8 +53,9 @@ contains
   !> Follows mpas_init() in MPAS-Model/src/driver/mpas_subdriver.F
   !>
   !> #########################################################################################
-  subroutine ufs_mpas_init(Cfg, time_start, time_end, total_time, calendar, logUnits,        &
-                           mpas_from_ufs_cnst, ufs_from_mpas_cnst, debug)
+  subroutine ufs_mpas_init(me, master, mpicomm, nconst, nwat, time_start, time_end,          &
+                           total_time, calendar, logUnits, mpas_from_ufs_cnst,               &
+                           ufs_from_mpas_cnst, debug, nlevs, dt_dycore)
     ! MPAS
     use mpas_pool_routines,         only : mpas_pool_add_config, mpas_pool_get_subpool
     use mpas_pool_routines,         only : mpas_pool_add_dimension, mpas_pool_get_field
@@ -123,12 +77,16 @@ contains
     ! PIO
     use pio,                        only : pio_global, pio_get_att
     ! Arguments
-    type(mpas_control_type), intent(inout) :: Cfg
-    integer,                 intent(in   ) :: time_start(6), time_end(6), logUnits(2)
-    integer,                 intent(in   ) :: total_time
-    character(17),           intent(in   ) :: calendar
-    integer, pointer,        intent(in   ) :: mpas_from_ufs_cnst(:), ufs_from_mpas_cnst(:)
-    logical,                 intent(in   ) :: debug
+    integer,          intent(in   ) :: me, master
+    type(MPI_Comm),   intent(in   ) :: mpicomm
+    integer,          intent(in   ) :: nconst
+    integer,          intent(in   ) :: nwat
+    integer,          intent(in   ) :: time_start(6), time_end(6), logUnits(2)
+    integer,          intent(in   ) :: total_time
+    character(17),    intent(in   ) :: calendar
+    integer, pointer, intent(in   ) :: mpas_from_ufs_cnst(:), ufs_from_mpas_cnst(:)
+    logical,          intent(in   ) :: debug
+    integer,          intent(  out) :: nlevs, dt_dycore
     ! Locals
     character(len=*), parameter :: subname = 'ufs_mpas_subdriver::ufs_mpas_init'
     integer :: i, ndate1, ndate2, tod, ierr, ik, kk
@@ -179,7 +137,7 @@ contains
     !
     INQUIRE(FILE='input.nml', EXIST=file_exists)
     if (file_exists) then
-       call read_mpas_namelist('input.nml', domain_ptr % configs, Cfg % mpi_comm, Cfg % master, Cfg % me)
+       call read_mpas_namelist('input.nml', domain_ptr % configs, mpicomm, master, me)
     else
        call mpas_log_write(subname // " Cannot find MPAS namelist file, input.nml", messageType=MPAS_LOG_CRIT)
     end if
@@ -249,7 +207,7 @@ contains
     ! Adding a config named 'cam_pcnst' with the number of constituents will indicate to
     ! MPAS-A setup code that it is operating as a UFS dycore, and that it is necessary to
     ! allocate scalars separately from other Registry-defined fields
-    call mpas_pool_add_config(domain_ptr % configs, 'cam_pcnst', Cfg % nConstituents)
+    call mpas_pool_add_config(domain_ptr % configs, 'cam_pcnst', nconst)
 
     ! Call MPAS framework bootstrap (phase 1)
     call mpas_bootstrap_framework_phase1(domain_ptr, "external mesh file", mpas_IO_NETCDF, pio_file_desc=pioid_ic)
@@ -284,7 +242,7 @@ contains
        call mpas_pool_get_dimension(domain_ptr % blocklist % dimensions, 'num_scalars', num_scalars)
        call mpas_pool_add_dimension(lbc, 'num_scalars', num_scalars)
        call mpas_pool_add_dimension(lbc, 'moist_start', 1)
-       call mpas_pool_add_dimension(lbc, 'moist_end', Cfg % nwat)
+       call mpas_pool_add_dimension(lbc, 'moist_end', nwat)
        call mpas_pool_add_dimension(lbc, 'index_qv', 1)
        nullify (lbc)
        call ufs_mpas_define_lbc_scalars(mpas_from_ufs_cnst, ufs_from_mpas_cnst, ierr)
@@ -336,7 +294,7 @@ contains
     !
     ! Initialize core
     !
-    call ufs_mpas_atm_core_init(Cfg, debug)
+    call ufs_mpas_atm_core_init(debug, nlevs, dt_dycore)
 
   end subroutine ufs_mpas_init
 
@@ -346,7 +304,7 @@ contains
   !> Follows atm_core_init() in MPAS-Model/src/core_atmosphere/mpas_atm_core.F.
   !>
   !> ########################################################################################
-  subroutine ufs_mpas_atm_core_init(Cfg, debug)
+  subroutine ufs_mpas_atm_core_init(debug, nlevs, dt_dycore)
     use mpas_kind_types,            only : StrKIND, RKIND
     use mpas_derived_types,         only : mpas_pool_type, mpas_Time_Type, field0DReal, field2dreal
     use mpas_derived_types,         only : block_type, field3dreal, MPAS_STREAM_MGR_NOERR
@@ -366,8 +324,8 @@ contains
     use mpas_string_utils,          only : mpas_string_replace
     use mpas_field_routines,        only : mpas_allocate_scratch_field
     ! Arguments
-    type(mpas_control_type), intent(inout) :: Cfg
     logical,                 intent(in   ) :: debug
+    integer,                 intent(out  ) :: nlevs, dt_dycore
     type(mpas_pool_type), pointer :: tend_physics_pool
     ! Locals
     character(len=*), parameter :: subname = 'ufs_mpas_subdriver::ufs_mpas_atm_core_init'
@@ -405,7 +363,7 @@ contains
     call mpas_pool_get_dimension(state, 'maxEdges2', maxEdges2)
     call mpas_pool_get_dimension(state, 'num_scalars', num_scalars)
     call mpas_atm_set_dims(nVertLevels1, maxEdges1, maxEdges2, num_scalars)
-    Cfg % levs = nVertLevels1 !DJS: Do we need this?
+    nlevs = nVertLevels1 !DJS: Do we need this?
     nullify (state)
 
     !
@@ -429,6 +387,7 @@ contains
     !
     call mpas_pool_get_config(domain_ptr % blocklist % configs, 'config_do_restart', config_do_restart)
     call mpas_pool_get_config(domain_ptr % blocklist % configs, 'config_dt', dt)
+    dt_dycore = dt
 
     !
     ! Read in initial-conditions
@@ -476,7 +435,6 @@ contains
     call mpas_log_write('Initializing atmospheric variables')
 
     ! How many calls to MPAS dycore for each ATMosphere time step?
-    Cfg%dt_dycore = dt    ! DJS: Does this need to be here?
     n_atmos = dt_atmos/dt ! DJS: Does this need to be here?
 
     !

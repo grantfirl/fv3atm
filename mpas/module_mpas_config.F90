@@ -90,6 +90,8 @@ module module_mpas_config
   integer :: mpas_land_funit
   character(len=256) :: mpas_genparm_file = "GENPARM.TBL"
   integer :: mpas_gprm_funit
+  !>
+  character(len=256) :: constituents_file = "constituents.xml"
 
   !> PIO
   type(iosystem_desc_t), pointer :: pio_subsystem_ic
