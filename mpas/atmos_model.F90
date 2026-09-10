@@ -9,7 +9,7 @@ module atmos_model_mod
   use mpi_f08
   ! MPAS
   use MPAS_typedefs,         only : MPAS_kind_phys => kind_phys
-  use ufs_mpas_constituents, only : constituent_name, is_water_species
+  use ufs_mpas_constituents, only : constituent_name, is_water_species, constituent_type
   ! CCPP
   use CCPP_data,             only : UFSATM_control      => GFS_control
   use CCPP_data,             only : UFSATM_intdiag      => GFS_intdiag
@@ -34,9 +34,8 @@ module atmos_model_mod
   use module_mpas_config,    only : mpas_errfile_funit, mpas_errfilename
   use module_mpas_config,    only : mpas_logfile_funit, mpas_logfilename
   use module_mpas_config,    only : nml_filename, nml_funit
-  use module_mpas_config,    only : tracer_funit, tracer_filename
-  use module_mpas_config,    only : pi, dt_atmos
-  use mod_ufsatm_util,       only : get_atmos_tracer_types
+  use module_mpas_config,    only : tracer_funit, tracer_filename, constituents_file
+  use module_mpas_config,    only : pi, dt_atmos, fcst_ntasks
 #ifdef _OPENMP
   use omp_lib
 #endif
@@ -81,7 +80,8 @@ module atmos_model_mod
   logical :: phys_diag        = .false.
 
   namelist /atmos_model_nml/ blocksize, dycore_only, phys_diag, debug, ccpp_suite, ic_filename,&
-       lbc_filename, oro_filename, regional, stream_list_history, stream_list_restart, stream_list_diag
+       lbc_filename, oro_filename, regional, stream_list_history, stream_list_restart,       &
+       stream_list_diag, constituents_file
 
   ! Component Timers
   real(MPAS_kind_phys) :: setupClock, atmiClock, radClock, physClock,mpasClock, mpClock, outClock
@@ -101,7 +101,6 @@ contains
   !>
   !> #########################################################################################
   subroutine atmos_model_init(Atmos, mpicomm, calendar, CurrTime, StartTime, StopTime)
-    use ufs_mpas_subdriver,     only : MPAS_control_type
     use ufs_mpas_subdriver,     only : ufs_mpas_init
     use ufs_mpas_io,            only : ufs_mpas_open_init, ufs_mpas_open_lbc, ufs_mpas_open_oro
     use ufs_mpas_io,            only : ufs_mpas_read_stream_lists, ufs_mpas_landuse_read
@@ -117,23 +116,29 @@ contains
     type(ESMF_Time),          intent(in   ) :: CurrTime, StartTime, StopTime
 
     ! Locals
-    integer :: i, io, ierr, nConstituents, sec, iCol, mpi_size, mpi_rank, rc
-    type(MPAS_control_type) :: Cfg
-    integer :: times(6), timee(6), ttime, logUnits(2), nthrds
+    integer :: i, io, ierr, sec, iCol, mpi_size, mpi_rank, rc, dt_dyn, dt_phys
+    integer :: times(6), timee(6), ttime, logUnits(2), nthrds, me, master, nlevs
     logical :: file_exists
     real(MPAS_kind_phys) :: start_time, stop_time
+    integer              :: nConstituents   !< Number of constituents (tracers).
+    integer              :: nwat            !< number of hydrometeors in dcyore (including water vapor)
+    integer              :: bdat(8)         !< model begin date in GFS format   (same as idat)
+    integer              :: cdat(8)         !< model current date in GFS format (same as jdat)
+    integer              :: nblks           !< Number of data (physics) blocks
+    integer, pointer     :: blksz(:)        !< Block size for  data blocking (default blksz(1)=[nCells])
+    logical, parameter   :: restart=.false. !< flag whether this is a coldstart (.false.) or a warmstart/restart (.true.)
+    character(len=:), pointer, dimension(:) :: input_nml_file => null()
     character(len=*), parameter :: subname = 'atmos_model::atmos_model_init'
 
     ! Start timer for this procedure (init).
     start_time = MPI_Wtime()
 
     ! Set MPI bookeeping parameters.
-    Cfg%master    = 0
-    Cfg%mpi_comm  = mpicomm
-    call MPI_Comm_rank(MPI_COMM_WORLD, Cfg%me, ierr)
- 
+    master = 0
+    call MPI_Comm_rank(MPI_COMM_WORLD, me, ierr)
+
     ! Open log files.
-    if (Cfg % master == Cfg % me) then
+    if ( me == master) then
        open(newunit=mpas_logfile_funit, file=trim(mpas_logfilename), action='write', status='unknown')
        open(newunit=mpas_errfile_funit, file=trim(mpas_errfilename), action='write', status='unknown')
        logunits(1) = mpas_logfile_funit
@@ -146,7 +151,7 @@ contains
     Atmos % CurrTime  = CurrTime
     Atmos % StopTime  = StopTime
   
-    Cfg%dt_phys   = real(dt_atmos)
+    dt_phys = real(dt_atmos)
     
     ! Get forecast start/stop times (year/month/day/hour/minute/second)
     call ESMF_TimeIntervalGet(StopTime-StartTime, s=ttime, rc=rc)
@@ -159,7 +164,7 @@ contains
     !
     ! Read in ATMosphere namelist (master processor only)
     !
-    if ( Cfg%me == Cfg%master) then
+    if ( me == master) then
        inquire(file = trim(nml_filename), exist=file_exists)
        if (file_exists) then
           open(newunit=nml_funit,file=trim(nml_filename),status='unknown')
@@ -171,31 +176,29 @@ contains
        endif
     end if
     ! Broadcast ATMosphere namelist to all processors.
-    call mpi_barrier(Cfg%mpi_comm, ierr)
-    call mpi_bcast(regional,            1,                        MPI_LOGICAL,   Cfg%master, Cfg%mpi_comm, ierr)
-    call mpi_bcast(dycore_only,         1,                        MPI_LOGICAL,   Cfg%master, Cfg%mpi_comm, ierr)
-    call mpi_bcast(debug,               1,                        MPI_LOGICAL,   Cfg%master, Cfg%mpi_comm, ierr)
-    call mpi_bcast(phys_diag,           1,                        MPI_LOGICAL,   Cfg%master, Cfg%mpi_comm, ierr)
-    call mpi_bcast(ccpp_suite,          len(ccpp_suite),          MPI_CHARACTER, Cfg%master, Cfg%mpi_comm, ierr)
-    call mpi_bcast(blocksize,           1,                        MPI_INTEGER,   Cfg%master, Cfg%mpi_comm, ierr)
-    call mpi_bcast(ic_filename,         len(ic_filename),         MPI_CHARACTER, Cfg%master, Cfg%mpi_comm, ierr)
-    call mpi_bcast(lbc_filename,        len(lbc_filename),        MPI_CHARACTER, Cfg%master, Cfg%mpi_comm, ierr)
-    call mpi_bcast(oro_filename,        len(oro_filename),        MPI_CHARACTER, Cfg%master, Cfg%mpi_comm, ierr)
-    call mpi_bcast(stream_list_history, len(stream_list_history), MPI_CHARACTER, Cfg%master, Cfg%mpi_comm, ierr)
-    call mpi_bcast(stream_list_restart, len(stream_list_restart), MPI_CHARACTER, Cfg%master, Cfg%mpi_comm, ierr)
-    call mpi_bcast(stream_list_diag,    len(stream_list_diag),    MPI_CHARACTER, Cfg%master, Cfg%mpi_comm, ierr)
-    
+    call mpi_barrier(mpicomm, ierr)
+    call mpi_bcast(regional,            1,                        MPI_LOGICAL,   master, mpicomm, ierr)
+    call mpi_bcast(dycore_only,         1,                        MPI_LOGICAL,   master, mpicomm, ierr)
+    call mpi_bcast(debug,               1,                        MPI_LOGICAL,   master, mpicomm, ierr)
+    call mpi_bcast(phys_diag,           1,                        MPI_LOGICAL,   master, mpicomm, ierr)
+    call mpi_bcast(ccpp_suite,          len(ccpp_suite),          MPI_CHARACTER, master, mpicomm, ierr)
+    call mpi_bcast(blocksize,           1,                        MPI_INTEGER,   master, mpicomm, ierr)
+    call mpi_bcast(ic_filename,         len(ic_filename),         MPI_CHARACTER, master, mpicomm, ierr)
+    call mpi_bcast(lbc_filename,        len(lbc_filename),        MPI_CHARACTER, master, mpicomm, ierr)
+    call mpi_bcast(oro_filename,        len(oro_filename),        MPI_CHARACTER, master, mpicomm, ierr)
+    call mpi_bcast(stream_list_history, len(stream_list_history), MPI_CHARACTER, master, mpicomm, ierr)
+    call mpi_bcast(stream_list_restart, len(stream_list_restart), MPI_CHARACTER, master, mpicomm, ierr)
+    call mpi_bcast(stream_list_diag,    len(stream_list_diag),    MPI_CHARACTER, master, mpicomm, ierr)
+    call mpi_bcast(constituents_file,   len(constituents_file),   MPI_CHARACTER, master, mpicomm, ierr)
+
     !
-    ! Handle constituents (scalars/tracers)
+    ! Handle constituents (scalars/tracers) XML
     !
-    Cfg % nwat = 6
-    call get_number_tracers(tracer_funit, tracer_filename, Cfg % nConstituents)
-    allocate (constituent_name(Cfg % nConstituents), is_water_species(Cfg % nConstituents))
-    allocate (Cfg % tracer_names(Cfg % nConstituents), Cfg % tracer_types(Cfg % nConstituents))
-    call get_tracer_names(tracer_funit, tracer_filename, Cfg % nConstituents, Cfg % nwat)
-    do i = 1, Cfg % nConstituents
-       Cfg % tracer_names(i) = trim(constituent_name(i))
-    enddo
+    call get_tracers(constituents_file, nConstituents, nwat, debug, ierr)
+    if (ierr/=0) then
+       print*,'ERROR: Could not parse xml file: ',constituents_file
+       stop
+    end if
 
     ! Open (PIO) MPAS Initial Condition (IC) file.
     call ufs_mpas_open_init(ierr)
@@ -228,12 +231,13 @@ contains
     ! - Set up MPAS logging
     ! - Read in static data, setup MPAS invariant stream
     ! - Setup physical constants used by MPAS dycore
-    call ufs_mpas_init(Cfg, times, timee, ttime, calendar, logUnits, mpas_from_ufs_cnst, ufs_from_mpas_cnst, debug)
+    call ufs_mpas_init(me, master, mpicomm, nConstituents, nwat, times, timee, ttime, calendar,&
+                       logUnits, mpas_from_ufs_cnst, ufs_from_mpas_cnst, debug, nlevs, dt_dyn)
 
     !
     ! Read in MPAS Stream_list file(s) (master processor only in ufs_mpas_read_stream_lists)
     !
-    call ufs_mpas_read_stream_lists(Cfg%me, Cfg%master, Cfg%mpi_comm)
+    call ufs_mpas_read_stream_lists(me, master, mpicomm)
 
     !> #########################################################################################
     !> #########################################################################################
@@ -251,39 +255,38 @@ contains
 #else
     nthrds = 1
 #endif
-    ! Set file ID for namelist file
-    Cfg%nlunit = nml_funit
     
     ! Number of physics blocks
     Atmos % nblks = nCellsSolve / blocksize
     if (mod(nCellsSolve, blocksize) .gt. 0) Atmos % nblks = Atmos % nblks + 1
 
     ! Physics block sizes.
-    Cfg % nblks = Atmos % nblks
-    allocate(Cfg % blksz(Atmos % nblks))
-    Cfg % blksz(:) = blocksize
-    Cfg % blksz(Atmos % nblks) = nCellsSolve - (Atmos % nblks - 1)*blocksize
+    nblks = Atmos % nblks
+    allocate(blksz(Atmos % nblks))
+    blksz(:) = blocksize
+    blksz(Atmos % nblks) = nCellsSolve - (Atmos % nblks - 1)*blocksize
 
     allocate(UFSATM_interstitial(nthrds+1))
     
     ! Update time (UFS specific time formatting array)
-    Cfg%bdat(:) = 0
-    call ESMF_TimeGet (StartTime, YY=Cfg%bdat(1),MM=Cfg%bdat(2),DD=Cfg%bdat(3),H=Cfg%bdat(5),M=Cfg%bdat(6),S=Cfg%bdat(7),rc=rc)
-    Cfg%cdat(:) = 0
-    call ESMF_TimeGet (CurrTime,  YY=Cfg%cdat(1),MM=Cfg%cdat(2),DD=Cfg%cdat(3),H=Cfg%cdat(5),M=Cfg%cdat(6),S=Cfg%cdat(7),rc=rc)
+    bdat(:) = 0
+    call ESMF_TimeGet (StartTime, YY=bdat(1),MM=bdat(2),DD=bdat(3),H=bdat(5),M=bdat(6),S=bdat(7),rc=rc)
+    cdat(:) = 0
+    call ESMF_TimeGet (CurrTime,  YY=cdat(1),MM=cdat(2),DD=cdat(3),H=cdat(5),M=cdat(6),S=cdat(7),rc=rc)
 
     ! Read in physics namelist and allocate data containers.
-    Cfg%fn_nml = nml_filename
     call MPAS_initialize(UFSATM_control, UFSATM_intdiag, UFSATM_grid, UFSATM_tbd, UFSATM_sfcprop, &
-         UFSATM_statein, UFSATM_stateout, UFSATM_cldprop, UFSATM_radtend, UFSATM_coupling, Cfg)
+         UFSATM_statein, UFSATM_stateout, UFSATM_cldprop, UFSATM_radtend, UFSATM_coupling,        &
+         me, master, mpicomm, nlevs, dt_dyn, dt_phys, nml_funit, nml_filename, bdat, cdat, nwat,  &
+         fcst_ntasks, blksz, input_nml_file, constituent_name, constituent_type, restart)
 
     !> Read and initialize landuse fields needed by surface physics.
-    call ufs_mpas_landuse_read(Cfg%mpi_comm, Cfg%me, Cfg%master)
+    call ufs_mpas_landuse_read(mpicomm, me, master)
     call ESMF_TimeGet(CurrTime, dayOfYear=doyc, rc=rc)
     call ufs_mpas_landuse_update(doyc)
 
     !> Read RUC LSM slope data.
-    call use_mpas_slopedata_read(Cfg%mpi_comm, Cfg%me, Cfg%master)
+    call use_mpas_slopedata_read(mpicomm, me, master)
 
     ! Populate UFSATM data containers with MPAS "input" stream. We need to do this becuase
     ! we are calling the physics before the MPAS dynamical core.
@@ -411,7 +414,6 @@ contains
   !> #########################################################################################
   subroutine atmos_model_dynamics(Atmos)
     use ufs_mpas_subdriver, only : ufs_mpas_run
-    use MPAS_init,          only : MPAS_initialize
     
     type (atmos_control_type), intent(inout) :: Atmos
     real(MPAS_kind_phys) :: start_time, stop_time
@@ -469,58 +471,108 @@ contains
     Atmos % CurrTime = Atmos % CurrTime + Atmos % TimeStep
   end subroutine update_atmos_model_state
 
-  !> #########################################################################################
-  !> Internal procedure to get the number of tracers (lines) in the tracer table file.
+  !> ########################################################################################
+  !> Procedure to parse constituents.XML file.
   !>
-  !> #########################################################################################
-  subroutine get_number_tracers(funit, fname, flines)
-    integer,          intent(inout) :: funit
-    character(len=*), intent(in)    :: fname
-    integer,          intent(out)   :: flines
-    character(len=1) :: dummy
-    integer :: status
+  !> ########################################################################################
+  subroutine get_tracers(constituents_file, nvars, nvarsw, debug, ierr)
+    use iso_c_binding
+    use mpas_log,  only : mpas_log_write
+    use mpas_derived_types,  only : MPAS_LOG_CRIT
+    use ezxml_mod
+    implicit none
+    character(len=*), intent(in) :: constituents_file
+    logical, intent(in) :: debug
+    integer, intent(out) :: ierr, nvars, nvarsw
+    type(xml_node) :: root, variable
+    integer :: i, ivar, ivarw
+    character(len=200) :: name, standard_name, units, type, kind, allocatble, dimensions
+    character(len=200) :: water_species
+    character(len=*), parameter :: subname = 'atmos_model:get_tracers'
 
-    ! Get number of lines (tracers) in file
-    flines = 0
-    open(newunit=funit,file=trim(fname),status='unknown')
-    do 
-       read(funit, "(a)",iostat=status) dummy
-       if (status /= 0) exit
-       flines = flines + 1
-    enddo
-    close(funit)
-  end subroutine get_number_tracers
-  !> #########################################################################################
-  !> Internal procedure to get tracer names from the tracer table file.
-  !> ach line of the tracer table is of this format: (a10,a,a40,a,a10,a,i1)
-  !>
-  !> #########################################################################################
-  subroutine get_tracer_names(funit, fname, ntracers, nwat)
-    integer,          intent(inout) :: funit
-    character(len=*), intent(in)    :: fname
-    integer,          intent(in)    :: ntracers
-    integer,          intent(out)   :: nwat
+    ! Initialize
+    ierr   = 0
+    nvars  = 0
+    nvarsw = 0
 
-    integer :: itracer, status
-    character(len=10) :: tracer_name
-    character(len=1) :: c1,c2,c3
-    character(len=40) :: tracer_long_name
-    character(len=10) :: tracer_unit
-    integer :: tracer_type
+    ! Open and parse the XML file.
+    root = xml_parse_file(trim(constituents_file))
+    if (.not. xml_is_valid(root)) then
+       call mpas_log_write(subname // " could not find xml file: "//trim(constituents_file), messageType=MPAS_LOG_CRIT)
+       ierr = -1
+       return
+    end if
 
-    nwat = 0
+    !
+    ! First parse to get number of constituents and number of water-species.
+    !
+    variable = xml_child(root, "var")
+    do while (xml_is_valid(variable))
+       water_species = xml_attr(variable, "water_species")
+       variable = xml_next(variable)
+
+       ! Increment counters
+       nvars = nvars + 1
+       if (trim(water_species) == "yes") then
+          nvarsw = nvarsw + 1
+       end if
+    end do
+    if (debug) then
+       print*, " Number of constituents  : ",nvars
+       print*, " Number of water_species : ",nvarsw
+    end if
+
+    ! Allocate space for tracer names/attributes
+    allocate(constituent_name(nvars))
+    allocate(constituent_type(nvars))
+    allocate(is_water_species(nvars))
+
+    !
+    ! Second parse, save fields and attributes
+    !
+    ivar  = 0
+    ivarw = 0
     is_water_species(:) = .false.
-    open(newunit=funit,file=trim(fname),status='unknown')
-    do itracer=1,ntracers
-       read(funit, "(a10,a,a51,a,a10,a,i1)",iostat=status) tracer_name,c1,tracer_long_name,c2,tracer_unit,c3,tracer_type
-       constituent_name(itracer) = tracer_name
-       if (tracer_type == 0) then
-          is_water_species(itracer) = .true.
-          nwat = nwat+1
-       endif
-    enddo
-    close(funit)
+    constituent_type(:) = 0
+    ! Move to the <var> child element. Process each <var> in <constituents>.
+    variable = xml_child(root, "var")
+    do while (xml_is_valid(variable))
 
-  end subroutine get_tracer_names
+       name          = xml_attr(variable, "name")
+       standard_name = xml_attr(variable, "standard_name")
+       units         = xml_attr(variable, "units")
+       type          = xml_attr(variable, "type")
+       kind          = xml_attr(variable, "kind")
+       allocatble    = xml_attr(variable, "allocatable")
+       dimensions    = xml_attr(variable, "dimensions")
+       water_species = xml_attr(variable, "water_species")
+       if (debug) then
+          print '(A,A)', "  name          : ", trim(name)
+          print '(A,A)', "  units         : ", trim(units)
+          print '(A,A)', "  std_name      : ", trim(standard_name)
+          print '(A,A)', "  type          : ", trim(type)
+          print '(A,A)', "  kind          : ", trim(kind)
+          print '(A,A)', "  alloc         : ", trim(allocatble)
+          print '(A,A)', "  dimensions    : ", trim(dimensions)
+          print '(A,A)', "  water_species : ", trim(water_species)
+       end if
+
+       ! Move to next variable in file
+       variable = xml_next(variable)
+
+       ! Save
+       ivar = ivar + 1
+       if (trim(water_species) == "yes") then
+          is_water_species(ivar) = .true.
+          constituent_type(ivar) = 1
+       end if
+       constituent_name(ivar) = trim(name)
+
+    end do
+
+    ! Clean up memory
+    call xml_free(root)
+
+  end subroutine get_tracers
 
 end module atmos_model_mod

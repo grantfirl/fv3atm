@@ -14,7 +14,8 @@ module ufs_mpas_constituents
   public
 
   ! These are setup during ATM initialization.
-  character(StrKIND), allocatable :: constituent_name(:)
+  integer, allocatable :: constituent_type(:)
+  character(len=32), allocatable :: constituent_name(:)
   integer, allocatable :: index_constituent_to_mpas_scalar(:)
   integer, allocatable :: index_mpas_scalar_to_constituent(:)
   logical, allocatable :: is_water_species(:)
