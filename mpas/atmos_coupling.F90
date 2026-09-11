@@ -941,10 +941,9 @@ contains
     type(GFS_sfcprop_type),      intent(inout) :: physics_sfcprop
     ! Locals
     type(mpas_pool_type), pointer :: sfc_input, mesh, diag_phys
-    integer :: i, ierr, iCol, ithread
+    integer :: i, ierr, iCol, iLev, ithread
     integer, pointer :: nThreads, cellSolveThreadStart(:), cellSolveThreadEnd(:)
-    integer, pointer :: isltyp(:), ivgtyp(:), landmask(:)!, isice_lu, iswater_lu 
-    integer :: isice_lu, iswater_lu
+    integer, pointer :: isltyp(:), ivgtyp(:), landmask(:), nSoilLevels 
     real(RKIND), pointer :: dzs(:,:), sh2o(:,:), smois(:,:), tslb(:,:) 
     real(RKIND), pointer :: albbck(:), skintemp(:), snow(:), snowc(:), snowh(:)
     real(RKIND), pointer :: sst(:), tmn(:), vegfra(:), seaice(:), xice(:), xland(:), znt(:), sfc_albedo(:), canwat(:)
@@ -957,7 +956,8 @@ contains
     call mpas_pool_get_dimension(domain_ptr % blocklist % dimensions,  'nThreads',             nThreads)
     call mpas_pool_get_dimension(domain_ptr % blocklist % dimensions,  'cellSolveThreadStart', cellSolveThreadStart)
     call mpas_pool_get_dimension(domain_ptr % blocklist % dimensions,  'cellSolveThreadEnd',   cellSolveThreadEnd)
-
+    call mpas_pool_get_dimension(domain_ptr % blocklist % dimensions,  'nSoilLevels',          nSoilLevels)
+    
     ! Access MPAS data pools.
     call mpas_pool_get_subpool(domain_ptr % blocklist % structs, 'sfc_input', sfc_input)
     call mpas_pool_get_subpool(domain_ptr % blocklist % structs, 'mesh', mesh)
@@ -965,12 +965,10 @@ contains
     !using fv3atm_sfc_io.F90/Sfc_io_transfer() as a template; mpas_init_atm_static.F from MPAS-model for syntax
     
     !just grab the data from sfc_input as it exists; will figure out where/how to organize into GFS_typedefs later
-    call mpas_pool_get_array(sfc_input, 'dzs',       dzs) !dim: (nSoilLevels nCells Time); soil layer thickness (m)
+    !call mpas_pool_get_array(sfc_input, 'dzs',       dzs) !dim: (nSoilLevels nCells Time); soil layer thickness (m), zs/dzs are
+    !initialized in RUC LSM or GFS_typedefs - no need to use the read values
     call mpas_pool_get_array(sfc_input, 'isltyp',    isltyp) !dim (nCells); dominant soil category
     call mpas_pool_get_array(sfc_input, 'ivgtyp',    ivgtyp) !dim (nCells); dominant vegetation category
-    !isice_lu and iswater_lu are not found in the sfc_input or mesh pools, despite being listed in the registry and found in .nc input file
-    !call mpas_pool_get_array(sfc_input, 'isice_lu',  isice_lu) !dim (nCells); index category for snow/ice
-    !call mpas_pool_get_array(sfc_input, 'iswater_lu',iswater_lu) !dim (nCells); index category for water
     call mpas_pool_get_array(sfc_input, 'landmask',  landmask) !dim (nCells); land-ocean mask (1=land ; 0=ocean)
     call mpas_pool_get_array(sfc_input, 'mminlu',    mminlu) ! (string) land use classification
     call mpas_pool_get_array(sfc_input, 'sfc_albbck',albbck) !dim (nCells Time); background surface albedo    
@@ -994,16 +992,15 @@ contains
     call mpas_pool_get_array(sfc_input, 'greenfrac', greenfrac) !dim (nMonths nCells); monthly-mean climatological greenness fraction (percent)
     call mpas_pool_get_array(sfc_input, 'albedo12m', albedo12m) !dim (nMonhts nCells); monthly-mean climatological surface albedo (percent)
     
-    !call mpas_pool_get_array(sfc_input, 'canwat',    canwat) !dim (nCells); water in canopy (kg m^-2)
+    call mpas_pool_get_array(sfc_input, 'canwat',    canwat) !dim (nCells); water in canopy (kg m^-2)
     
     call mpas_pool_get_array(diag_phys, 'znt',       znt) !dim (nCells); roughness length (m)
     call mpas_pool_get_array(diag_phys, 'sfc_albedo',sfc_albedo ) !dim (nCells); surface albedo (fraction)
     
     
-    write(*,*) 'shape/min/max dzs',SHAPE(dzs),minval(dzs),maxval(dzs)
+    !write(*,*) 'shape/min/max dzs',SHAPE(dzs),minval(dzs),maxval(dzs)
     write(*,*) 'shape/min/max isltyp',SHAPE(isltyp),minval(isltyp),maxval(isltyp)
     write(*,*) 'shape/min/max ivgtyp',SHAPE(ivgtyp),minval(ivgtyp),maxval(ivgtyp)
-    !write(*,*) 'isice_lu, iswater_lu',isice_lu, iswater_lu
     write(*,*) 'shape/min/max landmask',SHAPE(landmask),minval(landmask),maxval(landmask)
     write(*,*) 'mminlu',mminlu
     write(*,*) 'shape/min/max albbck',SHAPE(albbck),minval(albbck),maxval(albbck)
@@ -1027,16 +1024,16 @@ contains
     write(*,*) 'shape/min/max greenfrac',SHAPE(greenfrac),minval(greenfrac),maxval(greenfrac)
     write(*,*) 'shape/min/max albedo12m',SHAPE(albedo12m),minval(albedo12m),maxval(albedo12m)
     
-    !temporarily hard-code values of isice_lu and iswater_lu (from x1.40962.init.nc), since they're not being imported from the sfc_input pool
-    isice_lu = 15
-    iswater_lu = 17
-    
     do ithread = 1,nThreads
       do iCol = cellSolveThreadStart(ithread),cellSolveThreadEnd(ithread)
         if (landmask(iCol) == 1) then
           physics_sfcprop % slmsk(iCol) = 1.0_RKIND
-        elseif (seaice(iCol) > 0.0_RKIND) then
-          physics_sfcprop % slmsk(iCol) = 2.0_RKIND
+          physics_sfcprop % landfrac(iCol) = 1.0_RKIND
+        else
+          physics_sfcprop % oceanfrac(iCol) = 1.0_RKIND
+          if (seaice(iCol) > 0.0_RKIND) then
+            physics_sfcprop % slmsk(iCol) = 2.0_RKIND
+          end if
         endif
         physics_sfcprop % tsfco(iCol) = sst(iCol)
         physics_sfcprop % weasd(iCol) = snow(iCol)  !weasd is in mm, snow is in kg m-2; after dividing by density of water and converting to mm, these are equivalent
@@ -1050,7 +1047,7 @@ contains
         physics_sfcprop % facsf(iCol) = 0.5!? - from gcycle?
         physics_sfcprop % facwf(iCol) = 0.5!? - from gcycle?
         physics_sfcprop % vfrac(iCol) = vegfra(iCol)*0.01_RKIND !conversion to decimal from percent
-        !physics_sfcprop % canopy(iCol)= canwat(iCol) !not in sfc_input stream?
+        physics_sfcprop % canopy(iCol)= canwat(iCol)
         !physics_sfcprop % f10m(iCol)  = 0.0_RKIND !no input in ICs; intent(out) in sfc_diag.F
         !physics_sfcprop % t2m(iCol)   = 0.0_RKIND !no input in ICs; intent(out) in sfc_diag.F
         !physics_sfcprop % q2m(iCol)   = 0.0_RKIND !no input in ICs; intent(out) in sfc_diag.F
@@ -1078,7 +1075,7 @@ contains
         !physics_sfcprop % snodl(iCol) = 
         !physics_sfcprop % weasdl(iCol) = 
         physics_sfcprop % tsfc(iCol) = skintemp(iCol)
-        !physics_sfcprop % tsfcl(iCol) = 
+        physics_sfcprop % tsfcl(iCol) = skintemp(iCol)
         !physics_sfcprop % zorlw(iCol) = 
         !physics_sfcprop % zorll(iCol) =
         !physics_sfcprop % zorli(iCol) =
@@ -1091,8 +1088,26 @@ contains
         !physics_sfcprop % sncovr_ice(iCol) = 
         !physics_sfcprop % snodi(iCol) = 
         !physics_sfcprop % weasdi(iCol) =   
+        do iLev=1, nSoilLevels
+          physics_sfcprop % sh2o(iCol, iLev) = sh2o(iLev, iCol)
+          physics_sfcprop % smois(iCol, iLev) = smois(iLev, iCol)
+          physics_sfcprop % smc(iCol, iLev) = smois(iLev, iCol)
+          physics_sfcprop % tslb(iCol, iLev) = tslb(iLev, iCol)
+          physics_sfcprop % stc(iCol, iLev) = tslb(iLev, iCol)  
+          !need to define stc, smc, slc instead becasue CCPP version of RUC LSM expects that? set lsoil = lsoil_lsm = 9?
+        end do
       end do
     end do
+    
+    !dzs is defined for every cell in the input data, but the variable in GFS_typedefs only has soil depth as a dimension (is
+    !uniform for every grid cell)
+    !physics_control % dzs(1) = dzs(1,1)
+    !physics_control % zs(1) = -1*physics_control % dzs(1)
+    !do iLev = 2, nSoilLevels
+    !  physics_control % dzs(iLev) = dzs(iLev,1)
+    !  physics_control % zs(iLev) = physics_control % zs(iLev-1) - physics_control % dzs(iLev)
+    !end do
+
     
   end subroutine ufs_mpas_sfc_to_physics
 
